@@ -30,7 +30,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     func test_init_doesNotSendAnyRequest() {
         let (_, client) = makeSUT()
 
-        XCTAssertEqual(client.sentRequests, [])
+        XCTAssertEqual(client.sentRequests, [], "Should not perform any request")
     }
 
     func test_send_startRequestWithURL() {
