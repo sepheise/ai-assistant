@@ -12,9 +12,22 @@ protocol HTTPClient {
 }
 
 class OpenAIMessageSender {
+    private struct RequestBody: Encodable {
+        let messages: [RequestMessage]
+        let model: String
+        let stream: Bool
+    }
+
+    private struct RequestMessage: Encodable {
+        let content: String
+        let role: String
+    }
+
     let client: HTTPClient
     let url: URL
     let apiKey: String
+    let defaultModel = "gpt-3.5-turbo"
+    let defaultStreamOption = true
 
     init(client: HTTPClient, url: URL, apiKey: String) {
         self.client = client
@@ -22,13 +35,23 @@ class OpenAIMessageSender {
         self.apiKey = apiKey
     }
 
-    func send() {
+    func send(text: String) {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [
             "Content-Type": "application/json",
             "Authorization": "Bearer \(apiKey)"
         ]
+
+        let requestBody = RequestBody(
+            messages: [RequestMessage(content: text, role: "user")],
+            model: defaultModel,
+            stream: defaultStreamOption
+        )
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        urlRequest.httpBody = try! encoder.encode(requestBody)
 
         client.lines(for: urlRequest)
     }
@@ -41,18 +64,30 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests, [], "Should not perform any request")
     }
 
-    func test_send_startRequestWithURLAndHTTPMethodAndHeaders() {
+    func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() {
         let url = URL(string: "http://any-url.com")!
         let apiKey = anySecretKey()
+        let textInput = "any message"
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        sut.send()
+        sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
         XCTAssertEqual(client.sentRequests.first?.httpMethod, "POST")
         XCTAssertEqual(client.sentRequests.first?.value(forHTTPHeaderField: "Content-Type"), "application/json")
         XCTAssertEqual(client.sentRequests.first?.value(forHTTPHeaderField: "Authorization"), "Bearer \(apiKey)")
+
+        let expectedBodyJSON: [String: Any] = [
+            "model": "gpt-3.5-turbo",
+            "stream": true,
+            "messages": [
+                ["role": "user", "content": "\(textInput)"]
+            ]
+        ]
+        let expectedHTTPBody = try! JSONSerialization.data(withJSONObject: expectedBodyJSON, options: [.sortedKeys])
+
+        XCTAssertEqual(client.sentRequests.first?.httpBody, expectedHTTPBody)
     }
 }
 
