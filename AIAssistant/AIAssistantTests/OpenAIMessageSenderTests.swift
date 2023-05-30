@@ -21,7 +21,9 @@ class OpenAIMessageSender {
     }
 
     func send() {
-        let urlRequest = URLRequest(url: url)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+
         client.lines(for: urlRequest)
     }
 }
@@ -33,7 +35,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests, [], "Should not perform any request")
     }
 
-    func test_send_startRequestWithURL() {
+    func test_send_startRequestWithURLAndHTTPMethod() {
         let url = URL(string: "http://any-url.com")!
         let (sut, client) = makeSUT(url: url)
 
@@ -41,6 +43,7 @@ class OpenAIMessageSenderTests: XCTestCase {
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
+        XCTAssertEqual(client.sentRequests.first?.httpMethod, "POST")
     }
 }
 
