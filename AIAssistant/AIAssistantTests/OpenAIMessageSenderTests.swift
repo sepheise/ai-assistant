@@ -11,6 +11,11 @@ protocol HTTPClient {
     func lines(for: URLRequest)
 }
 
+struct Message {
+    let role: String
+    let content: String
+}
+
 class OpenAIMessageSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
@@ -28,11 +33,13 @@ class OpenAIMessageSender {
     private let apiKey: String
     private let defaultModel = "gpt-3.5-turbo"
     private let defaultStreamOption = true
+    private let previousMessages: [Message]
 
-    init(client: HTTPClient, url: URL, apiKey: String) {
+    init(client: HTTPClient, url: URL, apiKey: String, previousMessages: [Message] = []) {
         self.client = client
         self.url = url
         self.apiKey = apiKey
+        self.previousMessages = previousMessages
     }
 
     func send(text: String) {
@@ -43,8 +50,12 @@ class OpenAIMessageSender {
             "Authorization": "Bearer \(apiKey)"
         ]
 
+        let messages = previousMessages
+            .appending(Message(role: "user", content: text))
+            .map({ RequestMessage(content: $0.content, role: $0.role) })
+
         let requestBody = RequestBody(
-            messages: [RequestMessage(content: text, role: "user")],
+            messages: messages,
             model: defaultModel,
             stream: defaultStreamOption
         )
@@ -54,6 +65,15 @@ class OpenAIMessageSender {
         urlRequest.httpBody = try! encoder.encode(requestBody)
 
         client.lines(for: urlRequest)
+    }
+}
+
+extension Array {
+    // Generates a copy of the Array including given element
+    func appending(_ element: Element) -> Array {
+        var newArray = self
+        newArray.append(element)
+        return newArray
     }
 }
 
@@ -89,13 +109,39 @@ class OpenAIMessageSenderTests: XCTestCase {
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedHTTPBody)
     }
+
+    func test_send_includePreviousMessages() {
+        let textInput = "any message"
+        let previousMessages: [Message] = [
+            Message(role: "system", content: "message 1"),
+            Message(role: "user", content: "message 2"),
+            Message(role: "assistant", content: "message 3")
+        ]
+        let (sut, client) = makeSUT(previousMessages: previousMessages)
+
+        sut.send(text: textInput)
+
+        let expectedBodyJSON: [String: Any] = [
+            "model": "gpt-3.5-turbo",
+            "stream": true,
+            "messages": [
+                ["role": "system", "content": "message 1"],
+                ["role": "user", "content": "message 2"],
+                ["role": "assistant", "content": "message 3"],
+                ["role": "user", "content": "\(textInput)"]
+            ]
+        ]
+        let expectedHTTPBody = try! JSONSerialization.data(withJSONObject: expectedBodyJSON, options: [.sortedKeys])
+
+        XCTAssertEqual(client.sentRequests.first?.httpBody, expectedHTTPBody)
+    }
 }
 
 // MARK: Helpers
 
-private func makeSUT(url: URL = URL(string: "http://any-url.com")!, apiKey: String = anySecretKey()) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
+private func makeSUT(url: URL = URL(string: "http://any-url.com")!, apiKey: String = anySecretKey(), previousMessages: [Message] = []) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy()
-    let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey)
+    let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
 
     return (sut, client)
 }
