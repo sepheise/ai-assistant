@@ -23,11 +23,11 @@ class OpenAIMessageSender {
         let role: String
     }
 
-    let client: HTTPClient
-    let url: URL
-    let apiKey: String
-    let defaultModel = "gpt-3.5-turbo"
-    let defaultStreamOption = true
+    private let client: HTTPClient
+    private let url: URL
+    private let apiKey: String
+    private let defaultModel = "gpt-3.5-turbo"
+    private let defaultStreamOption = true
 
     init(client: HTTPClient, url: URL, apiKey: String) {
         self.client = client
