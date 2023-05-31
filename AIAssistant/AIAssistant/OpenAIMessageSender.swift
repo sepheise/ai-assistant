@@ -11,6 +11,7 @@ public enum SendMessageError: Error {
     case exceededInputCharactersLimit
     case connectivity
     case readingResponse
+    case didntReceiveTermination
 }
 
 public class OpenAIMessageSender {
@@ -67,20 +68,34 @@ public class OpenAIMessageSender {
 
         return AsyncThrowingStream { continuation in
             Task {
+                var lastLine: String?
+
                 for await line in lines {
                     guard line.hasPrefix("data: ") else {
-                        continuation.finish(throwing: SendMessageError.readingResponse)
+                        continuation.yield(with: .failure(SendMessageError.readingResponse))
                         return
                     }
 
-                    if let lineData = line.dropFirst(6).data(using: .utf8),
-                       let decoded = try? JSONDecoder().decode(StreamCompletionResponse.self, from: lineData),
-                       let content = decoded.choices.first?.delta.content {
+                    guard let lineData = line.dropFirst(6).data(using: .utf8) else {
+                        continuation.yield(with: .failure(SendMessageError.readingResponse))
+                        return
+                    }
 
+                    if let decoded = try? JSONDecoder().decode(StreamCompletionResponse.self, from: lineData),
+                       let content = decoded.choices.first?.delta.content {
                         continuation.yield(with: .success(content))
                     }
+
+                    lastLine = line
                 }
-                continuation.finish()
+
+                if let lastLine = lastLine,
+                   lastLine == "data: [DONE]" {
+                    continuation.finish()
+                } else {
+                    continuation.finish(throwing: SendMessageError.didntReceiveTermination)
+                }
+
             }
         }
     }

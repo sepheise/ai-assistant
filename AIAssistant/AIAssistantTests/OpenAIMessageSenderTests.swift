@@ -118,6 +118,21 @@ class OpenAIMessageSenderTests: XCTestCase {
 
         XCTAssertEqual(receivedText, expectedText)
     }
+
+    func test_send_deliversIncompleteResponseErrorWhenTerminationIsNotReceived() async throws {
+        let textInput = "any message"
+        let incompleteLinesStream = incompleteLinesStream()
+        let (sut, _) = makeSUT(clientResult: .success(incompleteLinesStream))
+
+        let textStream = try await sut.send(text: textInput)
+
+        do {
+            for try await _ in textStream {}
+            XCTFail("Expected error \(SendMessageError.didntReceiveTermination)")
+        } catch {
+            XCTAssertEqual(error as? SendMessageError, .didntReceiveTermination)
+        }
+    }
 }
 
 // MARK: Helpers
@@ -159,6 +174,17 @@ private func anySecretKey() -> String {
 
 private func anyValidLinesStream() -> LinesStream {
     return linesStream(from: validResponseLines())
+}
+
+private func incompleteLinesStream() -> LinesStream {
+    return linesStream(from: [
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
+        """,
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"Hello"},"index":0,"finish_reason":null}]}
+        """
+    ])
 }
 
 private func validResponseLines() -> [String] {
