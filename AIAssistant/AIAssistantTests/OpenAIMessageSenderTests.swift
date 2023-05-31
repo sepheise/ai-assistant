@@ -38,6 +38,20 @@ class OpenAIMessageSender {
         let role: String
     }
 
+    private struct StreamCompletionResponse: Decodable {
+        let choices: [StreamChoice]
+    }
+
+    private struct StreamChoice: Decodable {
+        let finishReason: String?
+        let delta: StreamMessage
+    }
+
+    private struct StreamMessage: Decodable {
+        let role: String?
+        let content: String?
+    }
+
     private let client: HTTPClient
     private let url: URL
     private let apiKey: String
@@ -53,7 +67,7 @@ class OpenAIMessageSender {
         self.previousMessages = previousMessages
     }
 
-    func send(text: String) async throws {
+    func send(text: String) async throws -> AsyncThrowingStream<String, Error> {
         guard isRespectingCharactersLimit(text: text) else {
             throw SendMessageError.exceededInputCharactersLimit
         }
@@ -64,9 +78,22 @@ class OpenAIMessageSender {
             throw SendMessageError.connectivity
         }
 
-        for await line in lines {
-            if !line.hasPrefix("data: ") {
-                throw SendMessageError.readingResponse
+        return AsyncThrowingStream { continuation in
+            Task {
+                for await line in lines {
+                    guard line.hasPrefix("data: ") else {
+                        continuation.finish(throwing: SendMessageError.readingResponse)
+                        return
+                    }
+
+                    if let lineData = line.dropFirst(6).data(using: .utf8),
+                       let decoded = try? JSONDecoder().decode(StreamCompletionResponse.self, from: lineData),
+                       let content = decoded.choices.first?.delta.content {
+
+                        continuation.yield(with: .success(content))
+                    }
+                }
+                continuation.finish()
             }
         }
     }
@@ -131,7 +158,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let textInput = "any message"
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        try await sut.send(text: textInput)
+        _ = try await sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
@@ -163,7 +190,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         ])
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
-        try await sut.send(text: textInput)
+        _ = try await sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
@@ -202,12 +229,31 @@ class OpenAIMessageSenderTests: XCTestCase {
         let textInput = "any message"
         let (sut, _) = makeSUT(clientResult: .success(linesStream(from: ["invalid line"])))
 
+        guard let textStream = try? await sut.send(text: textInput) else {
+            XCTFail("Expected to get the text stream")
+            return
+        }
+
         do {
-            _ = try await sut.send(text: textInput)
-            XCTFail("Expected error: \(SendMessageError.readingResponse)")
+            for try await _ in textStream {}
         } catch {
             XCTAssertEqual(error as? SendMessageError, .readingResponse)
         }
+    }
+
+    func test_send_deliversTextOnSuccessfullyParsedText() async throws {
+        let textInput = "any message"
+        let expectedText = "Hello there!"
+        let (sut, _) = makeSUT(clientResult: .success(linesStream(from: validResponseLines())))
+
+        let textStream = try await sut.send(text: textInput)
+
+        var receivedText = ""
+        for try await text in textStream {
+            receivedText += text
+        }
+
+        XCTAssertEqual(receivedText, expectedText)
     }
 }
 
@@ -265,7 +311,6 @@ private func validResponseLines() -> [String] {
         """,
         """
         data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"!"},"index":0,"finish_reason":null}]}
-        }
         """,
         """
         data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{},"index":0,"finish_reason":"stop"}]}
