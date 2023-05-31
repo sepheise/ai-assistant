@@ -16,6 +16,12 @@ struct Message {
     let content: String
 }
 
+typealias SendMessageResult = Swift.Result<String, SendMessageError>
+
+enum SendMessageError: Error {
+    case exceededInputCharactersLimit
+}
+
 class OpenAIMessageSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
@@ -33,6 +39,7 @@ class OpenAIMessageSender {
     private let apiKey: String
     private let defaultModel = "gpt-3.5-turbo"
     private let defaultStreamOption = true
+    private let charactersLimit = 3000
     private let previousMessages: [Message]
 
     init(client: HTTPClient, url: URL, apiKey: String, previousMessages: [Message] = []) {
@@ -42,7 +49,12 @@ class OpenAIMessageSender {
         self.previousMessages = previousMessages
     }
 
-    func send(text: String) {
+    func send(text: String, completion: @escaping (SendMessageResult) -> Void) {
+        guard isRespectingCharactersLimit(text: text) else {
+            completion(.failure(.exceededInputCharactersLimit))
+            return
+        }
+
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [
@@ -65,6 +77,15 @@ class OpenAIMessageSender {
         urlRequest.httpBody = try! encoder.encode(requestBody)
 
         client.lines(for: urlRequest)
+    }
+
+    func isRespectingCharactersLimit(text: String) -> Bool {
+        let previousMessagesCharactersCount = previousMessages
+            .reduce(into: 0) { partialResult, message in
+                partialResult += message.content.count
+            }
+
+        return previousMessagesCharactersCount + text.count <= charactersLimit
     }
 }
 
@@ -90,7 +111,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let textInput = "any message"
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        sut.send(text: textInput)
+        sut.send(text: textInput) { _ in }
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
@@ -122,9 +143,31 @@ class OpenAIMessageSenderTests: XCTestCase {
         ])
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
-        sut.send(text: textInput)
+        sut.send(text: textInput) { _ in }
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
+    }
+
+    func test_send_deliversErrorOnInputExceedingCharacterLimit() {
+        let textInput = "Adding this text exceeds character limit"
+        let threeThousandCharactersString = String(repeating: "a", count: 3000)
+        let previousMessages: [Message] = [
+            Message(role: "assistant", content: threeThousandCharactersString)
+        ]
+        let (sut, client) = makeSUT(previousMessages: previousMessages)
+
+        let exp = expectation(description: "Wait for send message completion")
+
+        var receivedResult: SendMessageResult?
+        sut.send(text: textInput) { result in
+            receivedResult = result
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1.0)
+
+        XCTAssertEqual(receivedResult, .failure(.exceededInputCharactersLimit))
+        XCTAssertEqual(client.sentRequests.count, 0)
     }
 }
 
