@@ -18,8 +18,6 @@ struct Message {
     let content: String
 }
 
-typealias SendMessageResult = Swift.Result<String, SendMessageError>
-
 enum SendMessageError: Error {
     case exceededInputCharactersLimit
     case connectivity
