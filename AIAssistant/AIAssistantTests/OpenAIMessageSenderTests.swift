@@ -8,7 +8,7 @@
 import XCTest
 
 protocol HTTPClient {
-    func lines(for: URLRequest)
+    func lines(for: URLRequest, completion: @escaping (Swift.Result<String, Error>) -> Void)
 }
 
 struct Message {
@@ -20,6 +20,7 @@ typealias SendMessageResult = Swift.Result<String, SendMessageError>
 
 enum SendMessageError: Error {
     case exceededInputCharactersLimit
+    case connectivity
 }
 
 class OpenAIMessageSender {
@@ -57,7 +58,14 @@ class OpenAIMessageSender {
 
         let urlRequest = urlRequest(text: text)
 
-        client.lines(for: urlRequest)
+        client.lines(for: urlRequest) { result in
+            switch result {
+            case .failure:
+                completion(.failure(.connectivity))
+            default:
+                completion(.success(""))
+            }
+        }
     }
 
     func isRespectingCharactersLimit(text: String) -> Bool {
@@ -178,6 +186,25 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(receivedResult, .failure(.exceededInputCharactersLimit))
         XCTAssertEqual(client.sentRequests.count, 0)
     }
+
+    func test_send_deliversConnectivityErrorOnRequestError() {
+        let textInput = "any message"
+        let (sut, client) = makeSUT()
+
+        let exp = expectation(description: "Wait for send message completion")
+
+        var receivedResult: SendMessageResult?
+        sut.send(text: textInput) { result in
+            receivedResult = result
+            exp.fulfill()
+        }
+
+        client.completeWithError()
+
+        wait(for: [exp], timeout: 1.0)
+
+        XCTAssertEqual(receivedResult, .failure(.connectivity))
+    }
 }
 
 // MARK: Helpers
@@ -207,8 +234,15 @@ private func anySecretKey() -> String {
 
 private class HTTPClientSpy: HTTPClient {
     var sentRequests = [URLRequest]()
+    var completions = [(Swift.Result<String, Error>) -> Void]()
 
-    func lines(for urlRequest: URLRequest) {
+    func lines(for urlRequest: URLRequest, completion: @escaping (Swift.Result<String, Error>) -> Void) {
         sentRequests.append(urlRequest)
+        completions.append(completion)
+    }
+
+    func completeWithError(at index: Int = 0) {
+        let error = NSError(domain: "an error", code: 0)
+        completions[index](.failure(error))
     }
 }
