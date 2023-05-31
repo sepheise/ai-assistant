@@ -8,7 +8,7 @@
 import XCTest
 
 protocol HTTPClient {
-    func lines(for: URLRequest) throws
+    func lines(for: URLRequest) throws -> LinesStream
 }
 
 typealias LinesStream = AsyncStream<String>
@@ -23,6 +23,7 @@ typealias SendMessageResult = Swift.Result<String, SendMessageError>
 enum SendMessageError: Error {
     case exceededInputCharactersLimit
     case connectivity
+    case readingResponse
 }
 
 class OpenAIMessageSender {
@@ -52,17 +53,21 @@ class OpenAIMessageSender {
         self.previousMessages = previousMessages
     }
 
-    func send(text: String) throws {
+    func send(text: String) async throws {
         guard isRespectingCharactersLimit(text: text) else {
             throw SendMessageError.exceededInputCharactersLimit
         }
-
+        
         let urlRequest = urlRequest(text: text)
-
-        do {
-            try client.lines(for: urlRequest)
-        } catch {
+        
+        guard let lines = try? client.lines(for: urlRequest) else {
             throw SendMessageError.connectivity
+        }
+
+        for await line in lines {
+            if !line.hasPrefix("data: ") {
+                throw SendMessageError.readingResponse
+            }
         }
     }
 
@@ -120,13 +125,13 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests, [], "Should not perform any request")
     }
 
-    func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() throws {
+    func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() async throws {
         let url = URL(string: "http://any-url.com")!
         let apiKey = anySecretKey()
         let textInput = "any message"
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        try sut.send(text: textInput)
+        try await sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
@@ -143,7 +148,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
 
-    func test_send_includePreviousMessages() throws {
+    func test_send_includePreviousMessages() async throws {
         let textInput = "any message"
         let previousMessages: [Message] = [
             Message(role: "system", content: "message 1"),
@@ -158,12 +163,12 @@ class OpenAIMessageSenderTests: XCTestCase {
         ])
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
-        try sut.send(text: textInput)
+        try await sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
 
-    func test_send_deliversErrorOnInputExceedingCharacterLimit() throws {
+    func test_send_deliversErrorOnInputExceedingCharacterLimit() async {
         let textInput = "Adding this text exceeds character limit"
         let threeThousandCharactersString = String(repeating: "a", count: 3000)
         let previousMessages: [Message] = [
@@ -172,7 +177,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
         do {
-            _ = try sut.send(text: textInput)
+            _ = try await sut.send(text: textInput)
             XCTFail("Expected error: \(SendMessageError.exceededInputCharactersLimit)")
         } catch {
             XCTAssertEqual(error as? SendMessageError, .exceededInputCharactersLimit)
@@ -181,15 +186,27 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests.count, 0)
     }
 
-    func test_send_deliversConnectivityErrorOnRequestError() {
+    func test_send_deliversConnectivityErrorOnRequestError() async {
         let textInput = "any message"
         let (sut, _) = makeSUT(clientResult: .failure(NSError(domain: "an error", code: 0)))
 
         do {
-            _ = try sut.send(text: textInput)
+            _ = try await sut.send(text: textInput)
             XCTFail("Expected error: \(SendMessageError.connectivity)")
         } catch {
             XCTAssertEqual(error as? SendMessageError, .connectivity)
+        }
+    }
+
+    func test_send_deliversReadingResponseErrorWhenLineDontStartWithData() async {
+        let textInput = "any message"
+        let (sut, _) = makeSUT(clientResult: .success(linesStream(from: ["invalid line"])))
+
+        do {
+            _ = try await sut.send(text: textInput)
+            XCTFail("Expected error: \(SendMessageError.readingResponse)")
+        } catch {
+            XCTAssertEqual(error as? SendMessageError, .readingResponse)
         }
     }
 }
@@ -200,12 +217,21 @@ private func makeSUT(
     url: URL = URL(string: "http://any-url.com")!,
     apiKey: String = anySecretKey(),
     previousMessages: [Message] = [],
-    clientResult: Result<Void, Error> = .success(())
+    clientResult: Result<LinesStream, Error> = .success(anyValidLinesStream())
 ) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
     let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
 
     return (sut, client)
+}
+
+private func linesStream(from lines: [String]) -> LinesStream {
+    return LinesStream { continuation in
+        for line in lines {
+            continuation.yield(with: .success(line))
+        }
+        continuation.finish()
+    }
 }
 
 private func httpBody(model: String = "gpt-3.5-turbo", stream: Bool = true, messages: [[String: Any]] = []) -> Data {
@@ -222,17 +248,45 @@ private func anySecretKey() -> String {
     return "some secret key"
 }
 
+private func anyValidLinesStream() -> LinesStream {
+    return linesStream(from: validResponseLines())
+}
+
+private func validResponseLines() -> [String] {
+    return [
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
+        """,
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"Hello"},"index":0,"finish_reason":null}]}
+        """,
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":" there"},"index":0,"finish_reason":null}]}
+        """,
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"!"},"index":0,"finish_reason":null}]}
+        }
+        """,
+        """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{},"index":0,"finish_reason":"stop"}]}
+        """,
+        """
+        data: [DONE]
+        """
+    ]
+}
+
 // MARK: Test Doubles
 
 private class HTTPClientSpy: HTTPClient {
     private(set) var sentRequests = [URLRequest]()
-    let result: Result<Void, Error>
+    let result: Result<LinesStream, Error>
 
-    init(result: Result<Void, Error>) {
+    init(result: Result<LinesStream, Error>) {
         self.result = result
     }
 
-    func lines(for urlRequest: URLRequest) throws {
+    func lines(for urlRequest: URLRequest) throws -> LinesStream {
         sentRequests.append(urlRequest)
         return try result.get()
     }
