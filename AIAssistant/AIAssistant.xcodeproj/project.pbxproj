@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */; };
+		5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3042A26F9A400BA4D6B /* HTTPClient.swift */; };
+		5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3062A26F9CF00BA4D6B /* Message.swift */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
 /* End PBXBuildFile section */
@@ -22,6 +25,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSender.swift; sourceTree = "<group>"; };
+		5103D3042A26F9A400BA4D6B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		5103D3062A26F9CF00BA4D6B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		515B91DC2A26306100599B59 /* AIAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AIAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91E42A26306100599B59 /* AIAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSenderTests.swift; sourceTree = "<group>"; };
@@ -67,6 +73,9 @@
 		515B91DE2A26306100599B59 /* AIAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
+				5103D3042A26F9A400BA4D6B /* HTTPClient.swift */,
+				5103D3062A26F9CF00BA4D6B /* Message.swift */,
 			);
 			path = AIAssistant;
 			sourceTree = "<group>";
@@ -140,6 +149,7 @@
 				TargetAttributes = {
 					515B91DB2A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
+						LastSwiftMigration = 1430;
 					};
 					515B91E32A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
@@ -188,6 +198,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
+				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,
+				5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +345,7 @@
 		515B91EF2A26306100599B59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -356,6 +370,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -363,6 +378,7 @@
 		515B91F02A26306100599B59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -394,6 +410,7 @@
 		515B91F22A26306100599B59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -411,6 +428,7 @@
 		515B91F32A26306100599B59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
