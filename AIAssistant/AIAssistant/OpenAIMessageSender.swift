@@ -7,14 +7,7 @@
 
 import Foundation
 
-public enum SendMessageError: Error {
-    case invalidInput
-    case connectivity
-    case unexpectedResponse
-    case incompleteResponse
-}
-
-public class OpenAIMessageSender {
+public class OpenAIMessageSender: MessageSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
         let model: String
@@ -55,7 +48,7 @@ public class OpenAIMessageSender {
         self.previousMessages = previousMessages
     }
 
-    public func send(text: String) async throws -> AsyncThrowingStream<String, Error> {
+    public func send(text: String) async throws -> ResponseTextStream {
         guard isRespectingCharactersLimit(text: text) else {
             throw SendMessageError.invalidInput
         }
@@ -66,7 +59,7 @@ public class OpenAIMessageSender {
             throw SendMessageError.connectivity
         }
 
-        return AsyncThrowingStream { continuation in
+        return ResponseTextStream { continuation in
             Task {
                 var lastLine: String?
 
@@ -100,7 +93,7 @@ public class OpenAIMessageSender {
         }
     }
 
-    func isRespectingCharactersLimit(text: String) -> Bool {
+    private func isRespectingCharactersLimit(text: String) -> Bool {
         let previousMessagesCharactersCount = previousMessages
             .reduce(into: 0) { partialResult, message in
                 partialResult += message.content.count

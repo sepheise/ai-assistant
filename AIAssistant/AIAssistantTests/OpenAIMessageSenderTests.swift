@@ -142,7 +142,7 @@ private func makeSUT(
     apiKey: String = anySecretKey(),
     previousMessages: [Message] = [],
     clientResult: Result<LinesStream, Error> = .success(anyValidLinesStream())
-) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
+) -> (sut: MessageSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
     let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
 
