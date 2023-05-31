@@ -8,10 +8,10 @@
 import Foundation
 
 public enum SendMessageError: Error {
-    case exceededInputCharactersLimit
+    case invalidInput
     case connectivity
-    case readingResponse
-    case didntReceiveTermination
+    case unexpectedResponse
+    case incompleteResponse
 }
 
 public class OpenAIMessageSender {
@@ -57,7 +57,7 @@ public class OpenAIMessageSender {
 
     public func send(text: String) async throws -> AsyncThrowingStream<String, Error> {
         guard isRespectingCharactersLimit(text: text) else {
-            throw SendMessageError.exceededInputCharactersLimit
+            throw SendMessageError.invalidInput
         }
 
         let urlRequest = urlRequest(text: text)
@@ -72,12 +72,12 @@ public class OpenAIMessageSender {
 
                 for await line in lines {
                     guard line.hasPrefix("data: ") else {
-                        continuation.yield(with: .failure(SendMessageError.readingResponse))
+                        continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
                         return
                     }
 
                     guard let lineData = line.dropFirst(6).data(using: .utf8) else {
-                        continuation.yield(with: .failure(SendMessageError.readingResponse))
+                        continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
                         return
                     }
 
@@ -93,7 +93,7 @@ public class OpenAIMessageSender {
                    lastLine == "data: [DONE]" {
                     continuation.finish()
                 } else {
-                    continuation.finish(throwing: SendMessageError.didntReceiveTermination)
+                    continuation.finish(throwing: SendMessageError.incompleteResponse)
                 }
 
             }

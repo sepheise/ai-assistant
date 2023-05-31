@@ -58,7 +58,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
 
-    func test_send_deliversErrorOnInputExceedingCharacterLimit() async {
+    func test_send_deliversInvalidInputErrorOnInputExceedingCharacterLimit() async {
         let textInput = "Adding this text exceeds character limit"
         let threeThousandCharactersString = String(repeating: "a", count: 3000)
         let previousMessages: [Message] = [
@@ -68,9 +68,9 @@ class OpenAIMessageSenderTests: XCTestCase {
 
         do {
             _ = try await sut.send(text: textInput)
-            XCTFail("Expected error: \(SendMessageError.exceededInputCharactersLimit)")
+            XCTFail("Expected error: \(SendMessageError.invalidInput)")
         } catch {
-            XCTAssertEqual(error as? SendMessageError, .exceededInputCharactersLimit)
+            XCTAssertEqual(error as? SendMessageError, .invalidInput)
         }
 
         XCTAssertEqual(client.sentRequests.count, 0)
@@ -88,7 +88,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         }
     }
 
-    func test_send_deliversReadingResponseErrorWhenLineDontStartWithData() async {
+    func test_send_deliversUnexpectedResponseErrorWhenLineDontStartWithData() async {
         let textInput = "any message"
         let (sut, _) = makeSUT(clientResult: .success(linesStream(from: ["invalid line"])))
 
@@ -100,7 +100,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         do {
             for try await _ in textStream {}
         } catch {
-            XCTAssertEqual(error as? SendMessageError, .readingResponse)
+            XCTAssertEqual(error as? SendMessageError, .unexpectedResponse)
         }
     }
 
@@ -128,9 +128,9 @@ class OpenAIMessageSenderTests: XCTestCase {
 
         do {
             for try await _ in textStream {}
-            XCTFail("Expected error \(SendMessageError.didntReceiveTermination)")
+            XCTFail("Expected error \(SendMessageError.incompleteResponse)")
         } catch {
-            XCTAssertEqual(error as? SendMessageError, .didntReceiveTermination)
+            XCTAssertEqual(error as? SendMessageError, .incompleteResponse)
         }
     }
 }
