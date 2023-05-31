@@ -8,8 +8,10 @@
 import XCTest
 
 protocol HTTPClient {
-    func lines(for: URLRequest, completion: @escaping (Swift.Result<String, Error>) -> Void)
+    func lines(for: URLRequest) throws
 }
+
+typealias LinesStream = AsyncStream<String>
 
 struct Message {
     let role: String
@@ -50,21 +52,17 @@ class OpenAIMessageSender {
         self.previousMessages = previousMessages
     }
 
-    func send(text: String, completion: @escaping (SendMessageResult) -> Void) {
+    func send(text: String) throws {
         guard isRespectingCharactersLimit(text: text) else {
-            completion(.failure(.exceededInputCharactersLimit))
-            return
+            throw SendMessageError.exceededInputCharactersLimit
         }
 
         let urlRequest = urlRequest(text: text)
 
-        client.lines(for: urlRequest) { result in
-            switch result {
-            case .failure:
-                completion(.failure(.connectivity))
-            default:
-                completion(.success(""))
-            }
+        do {
+            try client.lines(for: urlRequest)
+        } catch {
+            throw SendMessageError.connectivity
         }
     }
 
@@ -122,13 +120,13 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests, [], "Should not perform any request")
     }
 
-    func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() {
+    func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() throws {
         let url = URL(string: "http://any-url.com")!
         let apiKey = anySecretKey()
         let textInput = "any message"
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        sut.send(text: textInput) { _ in }
+        try sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
@@ -145,7 +143,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
 
-    func test_send_includePreviousMessages() {
+    func test_send_includePreviousMessages() throws {
         let textInput = "any message"
         let previousMessages: [Message] = [
             Message(role: "system", content: "message 1"),
@@ -160,12 +158,12 @@ class OpenAIMessageSenderTests: XCTestCase {
         ])
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
-        sut.send(text: textInput) { _ in }
+        try sut.send(text: textInput)
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
 
-    func test_send_deliversErrorOnInputExceedingCharacterLimit() {
+    func test_send_deliversErrorOnInputExceedingCharacterLimit() throws {
         let textInput = "Adding this text exceeds character limit"
         let threeThousandCharactersString = String(repeating: "a", count: 3000)
         let previousMessages: [Message] = [
@@ -173,44 +171,38 @@ class OpenAIMessageSenderTests: XCTestCase {
         ]
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 
-        let exp = expectation(description: "Wait for send message completion")
-
-        var receivedResult: SendMessageResult?
-        sut.send(text: textInput) { result in
-            receivedResult = result
-            exp.fulfill()
+        do {
+            _ = try sut.send(text: textInput)
+            XCTFail("Expected error: \(SendMessageError.exceededInputCharactersLimit)")
+        } catch {
+            XCTAssertEqual(error as? SendMessageError, .exceededInputCharactersLimit)
         }
 
-        wait(for: [exp], timeout: 1.0)
-
-        XCTAssertEqual(receivedResult, .failure(.exceededInputCharactersLimit))
         XCTAssertEqual(client.sentRequests.count, 0)
     }
 
     func test_send_deliversConnectivityErrorOnRequestError() {
         let textInput = "any message"
-        let (sut, client) = makeSUT()
+        let (sut, _) = makeSUT(clientResult: .failure(NSError(domain: "an error", code: 0)))
 
-        let exp = expectation(description: "Wait for send message completion")
-
-        var receivedResult: SendMessageResult?
-        sut.send(text: textInput) { result in
-            receivedResult = result
-            exp.fulfill()
+        do {
+            _ = try sut.send(text: textInput)
+            XCTFail("Expected error: \(SendMessageError.connectivity)")
+        } catch {
+            XCTAssertEqual(error as? SendMessageError, .connectivity)
         }
-
-        client.completeWithError()
-
-        wait(for: [exp], timeout: 1.0)
-
-        XCTAssertEqual(receivedResult, .failure(.connectivity))
     }
 }
 
 // MARK: Helpers
 
-private func makeSUT(url: URL = URL(string: "http://any-url.com")!, apiKey: String = anySecretKey(), previousMessages: [Message] = []) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
-    let client = HTTPClientSpy()
+private func makeSUT(
+    url: URL = URL(string: "http://any-url.com")!,
+    apiKey: String = anySecretKey(),
+    previousMessages: [Message] = [],
+    clientResult: Result<Void, Error> = .success(())
+) -> (sut: OpenAIMessageSender, client: HTTPClientSpy) {
+    let client = HTTPClientSpy(result: clientResult)
     let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
 
     return (sut, client)
@@ -233,16 +225,15 @@ private func anySecretKey() -> String {
 // MARK: Test Doubles
 
 private class HTTPClientSpy: HTTPClient {
-    var sentRequests = [URLRequest]()
-    var completions = [(Swift.Result<String, Error>) -> Void]()
+    private(set) var sentRequests = [URLRequest]()
+    let result: Result<Void, Error>
 
-    func lines(for urlRequest: URLRequest, completion: @escaping (Swift.Result<String, Error>) -> Void) {
-        sentRequests.append(urlRequest)
-        completions.append(completion)
+    init(result: Result<Void, Error>) {
+        self.result = result
     }
 
-    func completeWithError(at index: Int = 0) {
-        let error = NSError(domain: "an error", code: 0)
-        completions[index](.failure(error))
+    func lines(for urlRequest: URLRequest) throws {
+        sentRequests.append(urlRequest)
+        return try result.get()
     }
 }
