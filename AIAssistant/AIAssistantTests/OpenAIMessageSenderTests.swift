@@ -55,6 +55,21 @@ class OpenAIMessageSender {
             return
         }
 
+        let urlRequest = urlRequest(text: text)
+
+        client.lines(for: urlRequest)
+    }
+
+    func isRespectingCharactersLimit(text: String) -> Bool {
+        let previousMessagesCharactersCount = previousMessages
+            .reduce(into: 0) { partialResult, message in
+                partialResult += message.content.count
+            }
+
+        return previousMessagesCharactersCount + text.count <= charactersLimit
+    }
+
+    private func urlRequest(text: String) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [
@@ -74,18 +89,12 @@ class OpenAIMessageSender {
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
-        urlRequest.httpBody = try! encoder.encode(requestBody)
 
-        client.lines(for: urlRequest)
-    }
+        let encodedBody = try! encoder.encode(requestBody)
 
-    func isRespectingCharactersLimit(text: String) -> Bool {
-        let previousMessagesCharactersCount = previousMessages
-            .reduce(into: 0) { partialResult, message in
-                partialResult += message.content.count
-            }
+        urlRequest.httpBody = encodedBody
 
-        return previousMessagesCharactersCount + text.count <= charactersLimit
+        return urlRequest
     }
 }
 
