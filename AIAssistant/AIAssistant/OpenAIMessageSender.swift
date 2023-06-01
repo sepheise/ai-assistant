@@ -55,7 +55,7 @@ public class OpenAIMessageSender: MessageSender {
 
         let urlRequest = urlRequest(text: text)
 
-        guard let lines = try? client.lines(for: urlRequest) else {
+        guard let lines = try? await client.lines(from: urlRequest) else {
             throw SendMessageError.connectivity
         }
 

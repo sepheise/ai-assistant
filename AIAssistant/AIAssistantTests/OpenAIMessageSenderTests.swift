@@ -141,7 +141,7 @@ private func makeSUT(
     url: URL = URL(string: "http://any-url.com")!,
     apiKey: String = anySecretKey(),
     previousMessages: [Message] = [],
-    clientResult: Result<LinesStream, Error> = .success(anyValidLinesStream())
+    clientResult: Result<HTTPClient.LinesStream, Error> = .success(anyValidLinesStream())
 ) -> (sut: MessageSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
     let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
@@ -149,8 +149,8 @@ private func makeSUT(
     return (sut, client)
 }
 
-private func linesStream(from lines: [String]) -> LinesStream {
-    return LinesStream { continuation in
+private func linesStream(from lines: [String]) -> HTTPClient.LinesStream {
+    return HTTPClient.LinesStream { continuation in
         for line in lines {
             continuation.yield(with: .success(line))
         }
@@ -172,11 +172,11 @@ private func anySecretKey() -> String {
     return "some secret key"
 }
 
-private func anyValidLinesStream() -> LinesStream {
+private func anyValidLinesStream() -> HTTPClient.LinesStream {
     return linesStream(from: validResponseLines())
 }
 
-private func incompleteLinesStream() -> LinesStream {
+private func incompleteLinesStream() -> HTTPClient.LinesStream {
     return linesStream(from: [
         """
         data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
@@ -214,13 +214,13 @@ private func validResponseLines() -> [String] {
 
 private class HTTPClientSpy: HTTPClient {
     private(set) var sentRequests = [URLRequest]()
-    let result: Result<LinesStream, Error>
+    let result: Result<HTTPClient.LinesStream, Error>
 
-    init(result: Result<LinesStream, Error>) {
+    init(result: Result<HTTPClient.LinesStream, Error>) {
         self.result = result
     }
 
-    func lines(for urlRequest: URLRequest) throws -> LinesStream {
+    func lines(from urlRequest: URLRequest) throws -> HTTPClient.LinesStream {
         sentRequests.append(urlRequest)
         return try result.get()
     }

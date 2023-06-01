@@ -8,7 +8,11 @@
 import Foundation
 
 public protocol HTTPClient {
-    func lines(for: URLRequest) throws -> LinesStream
+    typealias LinesStream = AsyncStream<String>
+
+    func lines(from: URLRequest) async throws -> LinesStream
 }
 
-public typealias LinesStream = AsyncStream<String>
+public enum HTTPClientError: Error {
+    case connectivity
+}
