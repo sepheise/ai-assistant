@@ -26,9 +26,17 @@ class URLSessionHTTPClient: HTTPClient {
 }
 
 class URLSessionHTTPClientTests: XCTestCase {
-    func test_lines_deliversErrorOnRequestError() async {
+    override class func setUp() {
+        super.setUp()
         URLProtocolStub.startInterceptingRequests()
+    }
 
+    override class func tearDown() {
+        super.tearDown()
+        URLProtocolStub.stopInterceptingRequests()
+    }
+
+    func test_lines_deliversErrorOnRequestError() async {
         let urlRequest = URLRequest(url: URL(string: "http://any-url.com")!)
         let anyError = anyNSError()
         URLProtocolStub.stub(data: nil, response: nil, error: anyError)
@@ -40,12 +48,9 @@ class URLSessionHTTPClientTests: XCTestCase {
         } catch {
             XCTAssertEqual(error as? HTTPClientError, .connectivity)
         }
-
-        URLProtocolStub.stopInterceptingRequests()
     }
 
     func test_lines_deliversErrorOnAllInvalidCases() async {
-        URLProtocolStub.startInterceptingRequests()
         await resultErrorFor(data: nil, response: nil, error: nil)
         await resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: nil)
         await resultErrorFor(data: anyData(), response: nil, error: nil)
@@ -55,7 +60,6 @@ class URLSessionHTTPClientTests: XCTestCase {
         await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: anyNSError())
         await resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError())
         await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil)
-        URLProtocolStub.stopInterceptingRequests()
     }
 }
 
