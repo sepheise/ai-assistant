@@ -16,12 +16,19 @@ class URLSessionHTTPClient: HTTPClient {
     }
 
     func lines(from request: URLRequest) async throws -> LinesStream {
-        guard let (_, response) = try? await session.bytes(for: request),
+        guard let (bytesStream, response) = try? await session.bytes(for: request),
               let _ = response as? HTTPURLResponse else {
             throw HTTPClientError.connectivity
         }
 
-        throw NSError(domain: "not yet implemented", code: 0)
+        return LinesStream { continuation in
+            Task {
+                for try await line in bytesStream.lines {
+                    continuation.yield(with: .success(line))
+                }
+                continuation.finish()
+            }
+        }
     }
 }
 
@@ -37,7 +44,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
 
     func test_lines_deliversErrorOnRequestError() async {
-        let urlRequest = URLRequest(url: URL(string: "http://any-url.com")!)
+        let urlRequest = URLRequest(url: anyURL())
         let anyError = anyNSError()
         URLProtocolStub.stub(data: nil, response: nil, error: anyError)
         let sut = URLSessionHTTPClient()
@@ -61,13 +68,49 @@ class URLSessionHTTPClientTests: XCTestCase {
         await resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError())
         await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil)
     }
+
+    func test_lines_deliversLinesOnSuccessfulResponse() async throws {
+        let urlRequest = URLRequest(url: anyURL())
+        let validData = Data(validResponseString().utf8)
+        let succesfulResponse = successfulHTTPURLResponse()
+        URLProtocolStub.stub(data: validData, response: succesfulResponse, error: nil)
+        let sut = URLSessionHTTPClient()
+
+        let linesStream = try await sut.lines(from: urlRequest)
+
+        let expectedLines: [String] = [
+            """
+            data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
+            """,
+            """
+            data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"Hello"},"index":0,"finish_reason":null}]}
+            """,
+            """
+            data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":" there"},"index":0,"finish_reason":null}]}
+            """,
+            """
+            data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"!"},"index":0,"finish_reason":null}]}
+            """,
+            """
+            data: [DONE]
+            """
+        ]
+
+        var receivedLines = [String]()
+        for try await line in linesStream {
+            receivedLines.append(line)
+        }
+
+        XCTAssertEqual(receivedLines.count, 5)
+        XCTAssertEqual(receivedLines, expectedLines)
+    }
 }
 
 // MARK: - Helper methods
 
 private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?) async {
     URLProtocolStub.stub(data: data, response: response, error: error)
-    let urlRequest = URLRequest(url: URL(string: "http://any-url.com")!)
+    let urlRequest = URLRequest(url: anyURL())
     let sut = URLSessionHTTPClient()
 
     do {
@@ -151,4 +194,22 @@ class URLProtocolStub: URLProtocol {
     }
 
     override func stopLoading() {}
+}
+
+// MARK: - Stub data
+
+private func validResponseString() -> String {
+    return """
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"role":"assistant"},"index":0,"finish_reason":null}]}
+
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"Hello"},"index":0,"finish_reason":null}]}
+
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":" there"},"index":0,"finish_reason":null}]}
+
+        data: {"id":"chatcmpl-7Jgsv2kvsTBdl1KYYooO17tDRLvKm","object":"chat.completion.chunk","created":1684927437,"model":"gpt-3.5-turbo-0301","choices":[{"delta":{"content":"!"},"index":0,"finish_reason":null}]}
+
+        data: [DONE]
+
+
+        """
 }
