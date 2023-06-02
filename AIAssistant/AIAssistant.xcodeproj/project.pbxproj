@@ -79,11 +79,10 @@
 		515B91DE2A26306100599B59 /* AIAssistant */ = {
 			isa = PBXGroup;
 			children = (
+				51CAA0132A2A7EE10074E577 /* Domain */,
+				51CAA0122A2A7ED90074E577 /* Infrastructure */,
 				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
-				5103D3042A26F9A400BA4D6B /* HTTPClient.swift */,
-				5103D3062A26F9CF00BA4D6B /* Message.swift */,
 				5103D3082A279E3400BA4D6B /* MessageSender.swift */,
-				51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */,
 			);
 			path = AIAssistant;
 			sourceTree = "<group>";
@@ -95,6 +94,23 @@
 				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
 			);
 			path = AIAssistantTests;
+			sourceTree = "<group>";
+		};
+		51CAA0122A2A7ED90074E577 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				5103D3042A26F9A400BA4D6B /* HTTPClient.swift */,
+				51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		51CAA0132A2A7EE10074E577 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				5103D3062A26F9CF00BA4D6B /* Message.swift */,
+			);
+			path = Domain;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
