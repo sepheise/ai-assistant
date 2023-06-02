@@ -10,7 +10,7 @@ import Foundation
 public protocol HTTPClient {
     typealias LinesStream = AsyncStream<String>
 
-    func lines(from: URLRequest) async throws -> LinesStream
+    func lines(from: URLRequest) async throws -> (LinesStream, URLResponse)
 }
 
 public enum HTTPClientError: Error {

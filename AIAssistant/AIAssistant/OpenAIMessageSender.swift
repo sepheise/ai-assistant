@@ -55,8 +55,13 @@ public class OpenAIMessageSender: MessageSender {
 
         let urlRequest = urlRequest(text: text)
 
-        guard let lines = try? await client.lines(from: urlRequest) else {
+        guard let (lines, response) = try? await client.lines(from: urlRequest) else {
             throw SendMessageError.connectivity
+        }
+
+        guard let resp = response as? HTTPURLResponse,
+              resp.statusCode == 200 else {
+            throw SendMessageError.unexpectedResponse
         }
 
         return ResponseTextStream { continuation in

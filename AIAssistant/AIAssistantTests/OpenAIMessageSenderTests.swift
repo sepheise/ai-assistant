@@ -88,9 +88,25 @@ class OpenAIMessageSenderTests: XCTestCase {
         }
     }
 
+    func test_send_deliversUnexpectedResponseErrorWhenStatusIsDifferentThan200() async {
+        let textInput = "any message"
+        let linesStream = anyValidLinesStream()
+        let response = HTTPURLResponse(url: URL(string: "http://any-url.com")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
+        let (sut, _) = makeSUT(clientResult: .success((linesStream, response)))
+
+        do {
+            _ = try await sut.send(text: textInput)
+            XCTFail("Expected error: \(SendMessageError.unexpectedResponse)")
+        } catch {
+            XCTAssertEqual(error as? SendMessageError, .unexpectedResponse)
+        }
+    }
+
     func test_send_deliversUnexpectedResponseErrorWhenLineDontStartWithData() async {
         let textInput = "any message"
-        let (sut, _) = makeSUT(clientResult: .success(linesStream(from: ["invalid line"])))
+        let anySuccessfulResponse = successfulHTTPURLResponse()
+        let invalidLinesStream = linesStream(from: ["invalid line"])
+        let (sut, _) = makeSUT(clientResult: .success((invalidLinesStream, anySuccessfulResponse)))
 
         guard let textStream = try? await sut.send(text: textInput) else {
             XCTFail("Expected to get the text stream")
@@ -107,7 +123,9 @@ class OpenAIMessageSenderTests: XCTestCase {
     func test_send_deliversTextOnSuccessfullyParsedText() async throws {
         let textInput = "any message"
         let expectedText = "Hello there!"
-        let (sut, _) = makeSUT(clientResult: .success(linesStream(from: validResponseLines())))
+        let anySuccessfulResponse = successfulHTTPURLResponse()
+        let validLinesStream = linesStream(from: validResponseLines())
+        let (sut, _) = makeSUT(clientResult: .success((validLinesStream, anySuccessfulResponse)))
 
         let textStream = try await sut.send(text: textInput)
 
@@ -122,7 +140,8 @@ class OpenAIMessageSenderTests: XCTestCase {
     func test_send_deliversIncompleteResponseErrorWhenTerminationIsNotReceived() async throws {
         let textInput = "any message"
         let incompleteLinesStream = incompleteLinesStream()
-        let (sut, _) = makeSUT(clientResult: .success(incompleteLinesStream))
+        let anySuccessfulResponse = successfulHTTPURLResponse()
+        let (sut, _) = makeSUT(clientResult: .success((incompleteLinesStream, anySuccessfulResponse)))
 
         let textStream = try await sut.send(text: textInput)
 
@@ -141,7 +160,7 @@ private func makeSUT(
     url: URL = URL(string: "http://any-url.com")!,
     apiKey: String = anySecretKey(),
     previousMessages: [Message] = [],
-    clientResult: Result<HTTPClient.LinesStream, Error> = .success(anyValidLinesStream())
+    clientResult: Result<(HTTPClient.LinesStream, URLResponse), Error> = .success((anyValidLinesStream(), successfulHTTPURLResponse()))
 ) -> (sut: MessageSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
     let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
@@ -170,6 +189,10 @@ private func httpBody(model: String = "gpt-3.5-turbo", stream: Bool = true, mess
 
 private func anySecretKey() -> String {
     return "some secret key"
+}
+
+private func successfulHTTPURLResponse() -> HTTPURLResponse {
+    return HTTPURLResponse(url: URL(string: "http://any-url.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
 }
 
 private func anyValidLinesStream() -> HTTPClient.LinesStream {
@@ -214,13 +237,13 @@ private func validResponseLines() -> [String] {
 
 private class HTTPClientSpy: HTTPClient {
     private(set) var sentRequests = [URLRequest]()
-    let result: Result<HTTPClient.LinesStream, Error>
+    let result: Result<(HTTPClient.LinesStream, URLResponse), Error>
 
-    init(result: Result<HTTPClient.LinesStream, Error>) {
+    init(result: Result<(HTTPClient.LinesStream, URLResponse), Error>) {
         self.result = result
     }
 
-    func lines(from urlRequest: URLRequest) throws -> HTTPClient.LinesStream {
+    func lines(from urlRequest: URLRequest) throws -> (HTTPClient.LinesStream, URLResponse) {
         sentRequests.append(urlRequest)
         return try result.get()
     }

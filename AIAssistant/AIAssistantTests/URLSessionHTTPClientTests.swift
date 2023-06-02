@@ -8,20 +8,20 @@
 import XCTest
 import AIAssistant
 
-class URLSessionHTTPClient: HTTPClient {
+class URLSessionHTTPClient {
     let session: URLSession
 
     init(session: URLSession = .shared) {
         self.session = session
     }
 
-    func lines(from request: URLRequest) async throws -> LinesStream {
+    func lines(from request: URLRequest) async throws -> HTTPClient.LinesStream {
         guard let (bytesStream, response) = try? await session.bytes(for: request),
               let _ = response as? HTTPURLResponse else {
             throw HTTPClientError.connectivity
         }
 
-        return LinesStream { continuation in
+        return HTTPClient.LinesStream { continuation in
             Task {
                 for try await line in bytesStream.lines {
                     continuation.yield(with: .success(line))
@@ -139,7 +139,6 @@ private func receivedLinesFor(data: Data?, response: URLResponse? = successfulHT
     }
     return receivedLines
 }
-
 
 private func anyURL() -> URL {
     return URL(string: "http://any-url.com")!
