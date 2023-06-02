@@ -1,0 +1,38 @@
+name: main-ci
+on: 
+  push:
+    branches:
+      - 'main'
+      - 'ci/**'
+jobs:
+  test:
+    runs-on: macos-13
+    outputs:
+      buildStatus: ${{ steps.build-status.outputs.status }}
+      testStatus: ${{ steps.tests-status.outputs.status }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build for testing
+        run: |
+          xcodebuild build-for-testing \
+            -project AIAssistant/AIAssistant.xcodeproj \
+            -scheme CI CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      - name: Save build status
+        id: build-status
+        run: echo "::set-output name=status::${{ job.status }}"
+      - name: Run CI scheme Tests
+        run: |
+          xcodebuild test \
+            -project AIAssistant/AIAssistant.xcodeproj \
+            -scheme CI CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+            -resultBundlePath results/ResultBundle.xcresult
+      - name: Save tests status
+        id: tests-status
+        run: echo "::set-output name=status::${{ job.status }}"
+      - name: Archive tests results
+        uses: actions/upload-artifact@v3
+        with:
+          name: tests-results
+          path: results
+          retention-days: 1
