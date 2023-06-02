@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "75E5E1A8-6AF4-447B-A50F-DA389AD65D9E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:AIAssistant.xcodeproj",
+          "identifier" : "515B91DB2A26306100599B59",
+          "name" : "AIAssistant"
+        }
+      ]
+    },
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:AIAssistant.xcodeproj",
+        "identifier" : "515B91E32A26306100599B59",
+        "name" : "AIAssistantTests"
+      }
+    }
+  ],
+  "version" : 1
+}
