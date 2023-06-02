@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "E374FE7F-0EAF-4E8A-9715-0103B43C30E5",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:AIAssistant.xcodeproj",
+          "identifier" : "515B91DB2A26306100599B59",
+          "name" : "AIAssistant"
+        }
+      ]
+    },
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+
+  ],
+  "version" : 1
+}
