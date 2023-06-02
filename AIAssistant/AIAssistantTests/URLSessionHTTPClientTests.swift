@@ -58,57 +58,33 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
 
     func test_lines_deliversErrorOnAllInvalidCases() async {
-        await resultErrorFor(data: nil, response: nil, error: nil)
-        await resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: nil)
-        await resultErrorFor(data: anyData(), response: nil, error: nil)
-        await resultErrorFor(data: anyData(), response: nil, error: anyNSError())
-        await resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: anyNSError())
-        await resultErrorFor(data: nil, response: anyHTTPURLResponse(), error: anyNSError())
-        await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: anyNSError())
-        await resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError())
-        await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil)
+        await expectResultErrorFor(data: nil, response: nil, error: nil)
+        await expectResultErrorFor(data: nil, response: nonHTTPURLResponse(), error: nil)
+        await expectResultErrorFor(data: anyData(), response: nil, error: nil)
+        await expectResultErrorFor(data: anyData(), response: nil, error: anyNSError())
+        await expectResultErrorFor(data: nil, response: nonHTTPURLResponse(), error: anyNSError())
+        await expectResultErrorFor(data: nil, response: anyHTTPURLResponse(), error: anyNSError())
+        await expectResultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: anyNSError())
+        await expectResultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError())
+        await expectResultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil)
     }
 
     func test_lines_deliversEmptyLinesOnNilData() async throws {
-        let urlRequest = URLRequest(url: anyURL())
-        let succesfulResponse = successfulHTTPURLResponse()
-        URLProtocolStub.stub(data: nil, response: succesfulResponse, error: nil)
-        let sut = URLSessionHTTPClient()
-
-        let linesStream = try await sut.lines(from: urlRequest)
-
-        var receivedLines = [String]()
-        for try await line in linesStream {
-            receivedLines.append(line)
-        }
+        let receivedLines = try await receivedLinesFor(data: nil)
 
         XCTAssertEqual(receivedLines, [])
     }
 
     func test_lines_deliversEmptyLinesOnEmptyData() async throws {
-        let urlRequest = URLRequest(url: anyURL())
-        let succesfulResponse = successfulHTTPURLResponse()
-        URLProtocolStub.stub(data: Data("".utf8), response: succesfulResponse, error: nil)
-        let sut = URLSessionHTTPClient()
+        let emptyData = Data("".utf8)
 
-        let linesStream = try await sut.lines(from: urlRequest)
-
-        var receivedLines = [String]()
-        for try await line in linesStream {
-            receivedLines.append(line)
-        }
+        let receivedLines = try await receivedLinesFor(data: emptyData)
 
         XCTAssertEqual(receivedLines, [])
     }
 
     func test_lines_deliversLinesOnSuccessfulResponse() async throws {
-        let urlRequest = URLRequest(url: anyURL())
         let validData = Data(validResponseString().utf8)
-        let succesfulResponse = successfulHTTPURLResponse()
-        URLProtocolStub.stub(data: validData, response: succesfulResponse, error: nil)
-        let sut = URLSessionHTTPClient()
-
-        let linesStream = try await sut.lines(from: urlRequest)
 
         let expectedLines: [String] = [
             """
@@ -128,19 +104,15 @@ class URLSessionHTTPClientTests: XCTestCase {
             """
         ]
 
-        var receivedLines = [String]()
-        for try await line in linesStream {
-            receivedLines.append(line)
-        }
+        let receivedLines = try await receivedLinesFor(data: validData)
 
-        XCTAssertEqual(receivedLines.count, 5)
         XCTAssertEqual(receivedLines, expectedLines)
     }
 }
 
 // MARK: - Helper methods
 
-private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?) async {
+private func expectResultErrorFor(data: Data?, response: URLResponse?, error: Error?) async {
     URLProtocolStub.stub(data: data, response: response, error: error)
     let urlRequest = URLRequest(url: anyURL())
     let sut = URLSessionHTTPClient()
@@ -152,6 +124,22 @@ private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?) 
         XCTAssertEqual(error as? HTTPClientError, .connectivity)
     }
 }
+
+private func receivedLinesFor(data: Data?, response: URLResponse? = successfulHTTPURLResponse(), error: Error? = nil) async throws -> [String] {
+    let urlRequest = URLRequest(url: anyURL())
+    let succesfulResponse = successfulHTTPURLResponse()
+    URLProtocolStub.stub(data: data, response: succesfulResponse, error: error)
+    let sut = URLSessionHTTPClient()
+
+    let linesStream = try await sut.lines(from: urlRequest)
+
+    var receivedLines = [String]()
+    for try await line in linesStream {
+        receivedLines.append(line)
+    }
+    return receivedLines
+}
+
 
 private func anyURL() -> URL {
     return URL(string: "http://any-url.com")!
