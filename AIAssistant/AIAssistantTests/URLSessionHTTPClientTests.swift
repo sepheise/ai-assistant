@@ -69,6 +69,38 @@ class URLSessionHTTPClientTests: XCTestCase {
         await resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil)
     }
 
+    func test_lines_deliversEmptyLinesOnNilData() async throws {
+        let urlRequest = URLRequest(url: anyURL())
+        let succesfulResponse = successfulHTTPURLResponse()
+        URLProtocolStub.stub(data: nil, response: succesfulResponse, error: nil)
+        let sut = URLSessionHTTPClient()
+
+        let linesStream = try await sut.lines(from: urlRequest)
+
+        var receivedLines = [String]()
+        for try await line in linesStream {
+            receivedLines.append(line)
+        }
+
+        XCTAssertEqual(receivedLines, [])
+    }
+
+    func test_lines_deliversEmptyLinesOnEmptyData() async throws {
+        let urlRequest = URLRequest(url: anyURL())
+        let succesfulResponse = successfulHTTPURLResponse()
+        URLProtocolStub.stub(data: Data("".utf8), response: succesfulResponse, error: nil)
+        let sut = URLSessionHTTPClient()
+
+        let linesStream = try await sut.lines(from: urlRequest)
+
+        var receivedLines = [String]()
+        for try await line in linesStream {
+            receivedLines.append(line)
+        }
+
+        XCTAssertEqual(receivedLines, [])
+    }
+
     func test_lines_deliversLinesOnSuccessfulResponse() async throws {
         let urlRequest = URLRequest(url: anyURL())
         let validData = Data(validResponseString().utf8)
