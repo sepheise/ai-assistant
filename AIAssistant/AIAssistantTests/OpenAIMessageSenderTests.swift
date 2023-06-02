@@ -16,9 +16,9 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_startRequestWithAllNecessaryParametersDefaultOptionsAndTextInput() async throws {
-        let url = URL(string: "http://any-url.com")!
+        let url = anyURL()
         let apiKey = anySecretKey()
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
         _ = try await sut.send(text: textInput)
@@ -39,7 +39,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_includePreviousMessages() async throws {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let previousMessages: [Message] = [
             Message(role: "system", content: "message 1"),
             Message(role: "user", content: "message 2"),
@@ -77,7 +77,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_deliversConnectivityErrorOnRequestError() async {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let (sut, _) = makeSUT(clientResult: .failure(NSError(domain: "an error", code: 0)))
 
         do {
@@ -89,9 +89,9 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_deliversUnexpectedResponseErrorWhenStatusIsDifferentThan200() async {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let linesStream = anyValidLinesStream()
-        let response = HTTPURLResponse(url: URL(string: "http://any-url.com")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
+        let response = HTTPURLResponse(url: anyURL(), statusCode: 404, httpVersion: nil, headerFields: nil)!
         let (sut, _) = makeSUT(clientResult: .success((linesStream, response)))
 
         do {
@@ -103,7 +103,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_deliversUnexpectedResponseErrorWhenLineDontStartWithData() async {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let invalidLinesStream = linesStream(from: ["invalid line"])
         let (sut, _) = makeSUT(clientResult: .success((invalidLinesStream, anySuccessfulResponse)))
@@ -121,7 +121,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_deliversTextOnSuccessfullyParsedText() async throws {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let expectedText = "Hello there!"
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let validLinesStream = linesStream(from: validResponseLines())
@@ -138,7 +138,7 @@ class OpenAIMessageSenderTests: XCTestCase {
     }
 
     func test_send_deliversIncompleteResponseErrorWhenTerminationIsNotReceived() async throws {
-        let textInput = "any message"
+        let textInput = anyTextInput()
         let incompleteLinesStream = incompleteLinesStream()
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let (sut, _) = makeSUT(clientResult: .success((incompleteLinesStream, anySuccessfulResponse)))
@@ -157,7 +157,7 @@ class OpenAIMessageSenderTests: XCTestCase {
 // MARK: Helpers
 
 private func makeSUT(
-    url: URL = URL(string: "http://any-url.com")!,
+    url: URL = anyURL(),
     apiKey: String = anySecretKey(),
     previousMessages: [Message] = [],
     clientResult: Result<(HTTPClient.LinesStream, URLResponse), Error> = .success((anyValidLinesStream(), successfulHTTPURLResponse()))
@@ -191,8 +191,16 @@ private func anySecretKey() -> String {
     return "some secret key"
 }
 
+private func anyURL() -> URL {
+    return URL(string: "http://any-url.com")!
+}
+
+private func anyTextInput() -> String {
+    return "any text input"
+}
+
 private func successfulHTTPURLResponse() -> HTTPURLResponse {
-    return HTTPURLResponse(url: URL(string: "http://any-url.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
 }
 
 private func anyValidLinesStream() -> HTTPClient.LinesStream {
