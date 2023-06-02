@@ -8,30 +8,6 @@
 import XCTest
 import AIAssistant
 
-class URLSessionHTTPClient {
-    let session: URLSession
-
-    init(session: URLSession = .shared) {
-        self.session = session
-    }
-
-    func lines(from request: URLRequest) async throws -> HTTPClient.LinesStream {
-        guard let (bytesStream, response) = try? await session.bytes(for: request),
-              let _ = response as? HTTPURLResponse else {
-            throw HTTPClientError.connectivity
-        }
-
-        return HTTPClient.LinesStream { continuation in
-            Task {
-                for try await line in bytesStream.lines {
-                    continuation.yield(with: .success(line))
-                }
-                continuation.finish()
-            }
-        }
-    }
-}
-
 class URLSessionHTTPClientTests: XCTestCase {
     override class func setUp() {
         super.setUp()
@@ -131,7 +107,7 @@ private func receivedLinesFor(data: Data?, response: URLResponse? = successfulHT
     URLProtocolStub.stub(data: data, response: succesfulResponse, error: error)
     let sut = URLSessionHTTPClient()
 
-    let linesStream = try await sut.lines(from: urlRequest)
+    let (linesStream, _) = try await sut.lines(from: urlRequest)
 
     var receivedLines = [String]()
     for try await line in linesStream {
