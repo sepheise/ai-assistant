@@ -21,7 +21,14 @@
     "testExecutionOrdering" : "random"
   },
   "testTargets" : [
-
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:AIAssistant.xcodeproj",
+        "identifier" : "515B91E32A26306100599B59",
+        "name" : "AIAssistantTests"
+      }
+    }
   ],
   "version" : 1
 }
