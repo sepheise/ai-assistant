@@ -112,8 +112,8 @@ public class OpenAIMessageSender: MessageSender {
         ]
 
         let messages = previousMessages
-            .appending(Message(role: "user", content: text))
-            .map({ RequestMessage(content: $0.content, role: $0.role) })
+            .appending(Message(role: .user, content: text))
+            .map({ RequestMessage(content: $0.content, role: $0.role.description) })
 
         let requestBody = RequestBody(
             messages: messages,

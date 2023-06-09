@@ -41,14 +41,12 @@ class OpenAIMessageSenderTests: XCTestCase {
     func test_send_includePreviousMessages() async throws {
         let textInput = anyTextInput()
         let previousMessages: [Message] = [
-            Message(role: "system", content: "message 1"),
-            Message(role: "user", content: "message 2"),
-            Message(role: "assistant", content: "message 3")
+            Message(role: .user, content: "message 1"),
+            Message(role: .assistant, content: "message 2")
         ]
         let expectedBody = httpBody(messages: [
-            ["role": "system", "content": "message 1"],
-            ["role": "user", "content": "message 2"],
-            ["role": "assistant", "content": "message 3"],
+            ["role": "user", "content": "message 1"],
+            ["role": "assistant", "content": "message 2"],
             ["role": "user", "content": "\(textInput)"]
         ])
         let (sut, client) = makeSUT(previousMessages: previousMessages)
@@ -62,7 +60,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let textInput = "Adding this text exceeds character limit"
         let threeThousandCharactersString = String(repeating: "a", count: 3000)
         let previousMessages: [Message] = [
-            Message(role: "assistant", content: threeThousandCharactersString)
+            Message(role: .assistant, content: threeThousandCharactersString)
         ]
         let (sut, client) = makeSUT(previousMessages: previousMessages)
 

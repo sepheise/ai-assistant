@@ -6,10 +6,22 @@
 //
 
 public struct Message {
-    public let role: String
+    public enum Role: CustomStringConvertible {
+        case assistant
+        case user
+
+        public var description: String {
+            switch self {
+                case .assistant: return "assistant"
+                case .user: return "user"
+            }
+        }
+    }
+
+    public let role: Role
     public let content: String
 
-    public init(role: String, content: String) {
+    public init(role: Role, content: String) {
         self.role = role
         self.content = content
     }
