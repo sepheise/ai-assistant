@@ -69,12 +69,8 @@ public class OpenAIMessageSender: MessageSender {
                 var lastLine: String?
 
                 for await line in lines {
-                    guard line.hasPrefix("data: ") else {
-                        continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
-                        return
-                    }
-
-                    guard let lineData = line.dropFirst(6).data(using: .utf8) else {
+                    guard line.hasPrefix("data: "),
+                          let lineData = line.dropFirst(6).data(using: .utf8) else {
                         continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
                         return
                     }
