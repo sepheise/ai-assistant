@@ -12,6 +12,10 @@
 		5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3062A26F9CF00BA4D6B /* Message.swift */; };
 		5103D3092A279E3400BA4D6B /* MessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* MessageSender.swift */; };
 		5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */; };
+		5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */; };
+		5133BD192A33F27000B35668 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD182A33F27000B35668 /* ContentView.swift */; };
+		5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1A2A33F27100B35668 /* Assets.xcassets */; };
+		5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
@@ -33,6 +37,12 @@
 		5103D3062A26F9CF00BA4D6B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5103D3082A279E3400BA4D6B /* MessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSender.swift; sourceTree = "<group>"; };
 		5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
+		5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAssistantMacOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantMacOSApp.swift; sourceTree = "<group>"; };
+		5133BD182A33F27000B35668 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5133BD1A2A33F27100B35668 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AIAssistantMacOSApp.entitlements; sourceTree = "<group>"; };
 		515B91DC2A26306100599B59 /* AIAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AIAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91E42A26306100599B59 /* AIAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSenderTests.swift; sourceTree = "<group>"; };
@@ -42,6 +52,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5133BD112A33F27000B35668 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91D92A26306100599B59 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -60,11 +77,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5133BD152A33F27000B35668 /* AIAssistantMacOSApp */ = {
+			isa = PBXGroup;
+			children = (
+				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
+				5133BD182A33F27000B35668 /* ContentView.swift */,
+				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
+				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
+				5133BD1C2A33F27100B35668 /* Preview Content */,
+			);
+			path = AIAssistantMacOSApp;
+			sourceTree = "<group>";
+		};
+		5133BD1C2A33F27100B35668 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		515B91D22A26306100599B59 = {
 			isa = PBXGroup;
 			children = (
 				515B91DE2A26306100599B59 /* AIAssistant */,
 				515B91E82A26306100599B59 /* AIAssistantTests */,
+				5133BD152A33F27000B35668 /* AIAssistantMacOSApp */,
 				51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */,
 				51CAA0152A2A9DCE0074E577 /* CI.xctestplan */,
 				515B91DD2A26306100599B59 /* Products */,
@@ -76,6 +114,7 @@
 			children = (
 				515B91DC2A26306100599B59 /* AIAssistant.framework */,
 				515B91E42A26306100599B59 /* AIAssistantTests.xctest */,
+				5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -130,6 +169,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		5133BD132A33F27000B35668 /* AIAssistantMacOSApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5133BD222A33F27100B35668 /* Build configuration list for PBXNativeTarget "AIAssistantMacOSApp" */;
+			buildPhases = (
+				5133BD102A33F27000B35668 /* Sources */,
+				5133BD112A33F27000B35668 /* Frameworks */,
+				5133BD122A33F27000B35668 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AIAssistantMacOSApp;
+			productName = AIAssistantMacOSApp;
+			productReference = 5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		515B91DB2A26306100599B59 /* AIAssistant */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 515B91EE2A26306100599B59 /* Build configuration list for PBXNativeTarget "AIAssistant" */;
@@ -176,6 +232,9 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					5133BD132A33F27000B35668 = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
 					515B91DB2A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
@@ -201,11 +260,21 @@
 			targets = (
 				515B91DB2A26306100599B59 /* AIAssistant */,
 				515B91E32A26306100599B59 /* AIAssistantTests */,
+				5133BD132A33F27000B35668 /* AIAssistantMacOSApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5133BD122A33F27000B35668 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */,
+				5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91DA2A26306100599B59 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -223,6 +292,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5133BD102A33F27000B35668 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5133BD192A33F27000B35668 /* ContentView.swift in Sources */,
+				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91D82A26306100599B59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,6 +333,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5133BD202A33F27100B35668 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AIAssistantMacOSApp/AIAssistantMacOSApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AIAssistantMacOSApp/Preview Content\"";
+				DEVELOPMENT_TEAM = B8AGE2A2NW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sepheise.AIAssistantMacOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5133BD212A33F27100B35668 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AIAssistantMacOSApp/AIAssistantMacOSApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AIAssistantMacOSApp/Preview Content\"";
+				DEVELOPMENT_TEAM = B8AGE2A2NW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sepheise.AIAssistantMacOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		515B91EC2A26306100599B59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -477,6 +609,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5133BD222A33F27100B35668 /* Build configuration list for PBXNativeTarget "AIAssistantMacOSApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5133BD202A33F27100B35668 /* Debug */,
+				5133BD212A33F27100B35668 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		515B91D62A26306100599B59 /* Build configuration list for PBXProject "AIAssistant" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
