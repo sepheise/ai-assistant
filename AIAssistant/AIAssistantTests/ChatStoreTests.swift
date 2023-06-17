@@ -35,6 +35,7 @@ class ChatStore: ObservableObject {
         Task {
             await promptSender(inputText)
             isProcessing = false
+            inputText = ""
         }
     }
 }
@@ -103,5 +104,22 @@ class ChatStoreTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
 
         XCTAssertEqual(promptSenderCalls, ["non empty text"])
+    }
+
+    func test_submit_clearsInputTextAfterSuccessfulSubmit() {
+        let expectation = expectation(description: "Wait for sender to finish")
+
+        let promptSenderSpy: (String) async -> Void = { text in
+            expectation.fulfill()
+        }
+
+        let sut = ChatStore(promptSender: promptSenderSpy)
+
+        sut.inputText = "non empty text"
+        sut.submit()
+
+        wait(for: [expectation], timeout: 0.1)
+
+        XCTAssertTrue(sut.inputText.isEmpty)
     }
 }
