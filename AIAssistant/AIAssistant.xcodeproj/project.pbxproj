@@ -30,6 +30,13 @@
 			remoteGlobalIDString = 515B91DB2A26306100599B59;
 			remoteInfo = AIAssistant;
 		};
+		51C2429C2A3D61BA009F543F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 515B91D32A26306100599B59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5133BD132A33F27000B35668;
+			remoteInfo = AIAssistantMacOSApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -227,6 +234,7 @@
 			);
 			dependencies = (
 				515B91E72A26306100599B59 /* PBXTargetDependency */,
+				51C2429D2A3D61BA009F543F /* PBXTargetDependency */,
 			);
 			name = AIAssistantTests;
 			productName = AIAssistantTests;
@@ -341,6 +349,11 @@
 			isa = PBXTargetDependency;
 			target = 515B91DB2A26306100599B59 /* AIAssistant */;
 			targetProxy = 515B91E62A26306100599B59 /* PBXContainerItemProxy */;
+		};
+		51C2429D2A3D61BA009F543F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5133BD132A33F27000B35668 /* AIAssistantMacOSApp */;
+			targetProxy = 51C2429C2A3D61BA009F543F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

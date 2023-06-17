@@ -11,12 +11,18 @@ import SwiftUI
 class ChatStore: ObservableObject {
     @Published var inputText: String = "" {
         didSet {
-            canSubmit = !inputText.isEmpty
+            canSubmit = !inputText.isEmpty && !isProcessing
         }
     }
     @Published var canSubmit: Bool = false
 
-    let promptSender: (String) async -> Void
+    private var isProcessing: Bool = false {
+        didSet {
+            canSubmit = !inputText.isEmpty && !isProcessing
+        }
+    }
+
+    private let promptSender: (String) async -> Void
 
     init(promptSender: @escaping (String) async -> Void) {
         self.promptSender = promptSender
@@ -25,23 +31,38 @@ class ChatStore: ObservableObject {
     func submit() {
         guard canSubmit else { return }
 
+        isProcessing = true
         Task {
             await promptSender(inputText)
+            isProcessing = false
         }
     }
 }
 
 class ChatStoreTests: XCTestCase {
-    func test_canSubmit_whenInputTextIsNotEmpty() {
-        let sut = ChatStore(promptSender: { _ in })
+    func test_canSubmit_whenInputTextIsNotEmptyAndIsNoProcessing() {
+        let expectation = expectation(description: "Wait for sender to finish")
+        let promptSenderSpy: (String) async -> Void = { _ in
+            expectation.fulfill()
+        }
+        let sut = ChatStore(promptSender: promptSenderSpy)
 
-        sut.inputText = ""
-
+        // On init
+        XCTAssertTrue(sut.inputText.isEmpty)
         XCTAssertFalse(sut.canSubmit)
 
+        // Non empty text and no processing
         sut.inputText = "non empty text"
-
         XCTAssertTrue(sut.canSubmit)
+
+        // When submit starts
+        sut.submit()
+        XCTAssertFalse(sut.canSubmit)
+
+        // When submit finishes
+        wait(for: [expectation], timeout: 0.1)
+        sut.inputText = ""
+        XCTAssertFalse(sut.canSubmit)
     }
 
     func test_submit_doesNotNotifyPromptSenderWhenCantSubmit() {
