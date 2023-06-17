@@ -11,14 +11,14 @@ import SwiftUI
 class ChatStore: ObservableObject {
     @Published var inputText: String = "" {
         didSet {
-            canSubmit = !inputText.isEmpty && !isProcessing
+            checkCanSubmit()
         }
     }
     @Published var canSubmit: Bool = false
 
     private var isProcessing: Bool = false {
         didSet {
-            canSubmit = !inputText.isEmpty && !isProcessing
+            checkCanSubmit()
         }
     }
 
@@ -37,6 +37,10 @@ class ChatStore: ObservableObject {
             isProcessing = false
             inputText = ""
         }
+    }
+
+    private func checkCanSubmit() {
+        canSubmit = !inputText.isEmpty && !isProcessing
     }
 }
 
