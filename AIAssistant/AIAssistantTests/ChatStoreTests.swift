@@ -47,14 +47,8 @@ class ChatStore: ObservableObject {
 
 class ChatStoreTests: XCTestCase {
     func test_canSubmit_whenInputTextIsNotEmptyAndIsNoProcessing() {
-        let expectation = expectation(description: "Wait for sender to finish")
-
-        let sut = ChatStore(
-            promptSender: PromptSenderSpy(
-                result: .success(promptResponseStream(from: ["any", " successful", " response"])),
-                expectation: expectation
-            )
-        )
+        let promptSenderToFinish = expectation(description: "Wait for sender to finish")
+        let (sut, _) = makeSUT(expecting: promptSenderToFinish)
 
         // On init
         XCTAssertTrue(sut.inputText.isEmpty)
@@ -69,92 +63,92 @@ class ChatStoreTests: XCTestCase {
         XCTAssertFalse(sut.canSubmit)
 
         // When submit finishes
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [promptSenderToFinish], timeout: 0.1)
         XCTAssertFalse(sut.canSubmit)
     }
 
     func test_submit_doesNotNotifyPromptSenderWhenCantSubmit() {
-        let expectation = expectation(description: "Wait for sender to finish")
-        expectation.isInverted = true
-
-        let promptSenderSpy = PromptSenderSpy(
-            result: .success(promptResponseStream(from: ["any", " successful", " response"])),
-            expectation: expectation
-        )
-        let sut = ChatStore(promptSender: promptSenderSpy)
+        let promptSenderToNotFinish = expectation(description: "Wait for sender to finish")
+        promptSenderToNotFinish.isInverted = true
+        let (sut, promptSenderSpy) = makeSUT(expecting: promptSenderToNotFinish)
 
         sut.inputText = ""
         sut.submit()
 
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [promptSenderToNotFinish], timeout: 0.1)
         XCTAssertEqual(promptSenderSpy.sentPrompts, [])
     }
 
     func test_submit_notifyPromptSenderWithInputText() {
-        let expectation = expectation(description: "Wait for sender to finish")
+        let promptSenderToFinish = expectation(description: "Wait for sender to finish")
         let expectedText = anyNonEmptyText()
-
-        let promptSenderSpy = PromptSenderSpy(
-            result: .success(promptResponseStream(from: ["any", " successful", " response"])),
-            expectation: expectation
-        )
-        let sut = ChatStore(promptSender: promptSenderSpy)
+        let (sut, promptSenderSpy) = makeSUT(expecting: promptSenderToFinish)
 
         sut.inputText = anyNonEmptyText()
         sut.submit()
 
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [promptSenderToFinish], timeout: 0.1)
 
         XCTAssertEqual(promptSenderSpy.sentPrompts, [expectedText])
     }
 
     func test_submit_clearsInputTextAfterSuccessfulSubmit() {
-        let expectation = expectation(description: "Wait for sender to finish")
-
-        let sut = ChatStore(
-            promptSender: PromptSenderSpy(
-                result: .success(promptResponseStream(from: ["any", " successful", " response"])),
-                expectation: expectation
-            )
-        )
+        let promptSenderToFinish = expectation(description: "Wait for sender to finish")
+        let (sut, _) = makeSUT(expecting: promptSenderToFinish)
 
         sut.inputText = anyNonEmptyText()
         sut.submit()
 
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [promptSenderToFinish], timeout: 0.1)
 
         XCTAssertTrue(sut.inputText.isEmpty)
     }
+}
 
-    // MARK: - Helpers
+// MARK: - Helpers
 
-    private class PromptSenderSpy: PromptSender {
-        let result: Result<PromptResponseStream, Error>
-        let expectation: XCTestExpectation
-        var sentPrompts: [String] = []
+private func makeSUT(promptSenderResult: Result<PromptResponseStream, Error> = successfulResponse(), expecting expectation: XCTestExpectation) -> (sut: ChatStore, promptSenderSpy: PromptSenderSpy) {
+    let promptSenderSpy = PromptSenderSpy(
+        result: .success(promptResponseStream(from: ["any", " successful", " response"])),
+        expectation: expectation
+    )
+    let sut = ChatStore(promptSender: promptSenderSpy)
 
-        init(result: Result<PromptResponseStream, Error>, expectation: XCTestExpectation) {
-            self.result = result
-            self.expectation = expectation
+    return (sut, promptSenderSpy)
+}
+
+private func successfulResponse() -> Result<PromptResponseStream, Error> {
+    return .success(promptResponseStream(from: ["any", " successful", " response"]))
+}
+
+private func promptResponseStream(from textArray: [String]) -> PromptResponseStream {
+    return PromptResponseStream { continuation in
+        for text in textArray {
+            continuation.yield(with: .success(text))
         }
+        continuation.finish()
+    }
+}
 
-        func send(prompt: String) async throws -> PromptResponseStream {
-            sentPrompts.append(prompt)
-            expectation.fulfill()
-            return try result.get()
-        }
+private func anyNonEmptyText() -> String {
+    return "non empty text"
+}
+
+// MARK: - Test Doubles
+
+private class PromptSenderSpy: PromptSender {
+    let result: Result<PromptResponseStream, Error>
+    let expectation: XCTestExpectation
+    var sentPrompts: [String] = []
+
+    init(result: Result<PromptResponseStream, Error>, expectation: XCTestExpectation) {
+        self.result = result
+        self.expectation = expectation
     }
 
-    private func promptResponseStream(from textArray: [String]) -> PromptResponseStream {
-        return PromptResponseStream { continuation in
-            for text in textArray {
-                continuation.yield(with: .success(text))
-            }
-            continuation.finish()
-        }
-    }
-
-    private func anyNonEmptyText() -> String {
-        return "non empty text"
+    func send(prompt: String) async throws -> PromptResponseStream {
+        sentPrompts.append(prompt)
+        expectation.fulfill()
+        return try result.get()
     }
 }
