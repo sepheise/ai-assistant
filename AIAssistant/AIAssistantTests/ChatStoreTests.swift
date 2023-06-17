@@ -16,6 +16,7 @@ class ChatStore: ObservableObject {
         }
     }
     @Published var canSubmit: Bool = false
+    @Published var errorMessage: String = ""
 
     private var isProcessing: Bool = false {
         didSet {
@@ -34,7 +35,12 @@ class ChatStore: ObservableObject {
 
         isProcessing = true
         Task {
-            _ = try! await promptSender.send(prompt: inputText)
+            do {
+                _ = try await promptSender.send(prompt: inputText)
+            } catch {
+                errorMessage = "Could not load prompt response"
+            }
+
             isProcessing = false
             inputText = ""
         }
@@ -103,13 +109,25 @@ class ChatStoreTests: XCTestCase {
 
         XCTAssertTrue(sut.inputText.isEmpty)
     }
+
+    func test_submit_setsErrorMessageWhenPromptSenderFails() {
+        let promptSenderToFinish = expectation(description: "Wait for sender to finish")
+        let (sut, _) = makeSUT(promptSenderResult: failedPromptSenderResponse(), expecting: promptSenderToFinish)
+
+        sut.inputText = anyNonEmptyText()
+        sut.submit()
+
+        wait(for: [promptSenderToFinish], timeout: 0.1)
+
+        XCTAssertEqual(sut.errorMessage, "Could not load prompt response")
+    }
 }
 
 // MARK: - Helpers
 
-private func makeSUT(promptSenderResult: Result<PromptResponseStream, Error> = successfulResponse(), expecting expectation: XCTestExpectation) -> (sut: ChatStore, promptSenderSpy: PromptSenderSpy) {
+private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPromptError> = successfulPromptSenderResponse(), expecting expectation: XCTestExpectation) -> (sut: ChatStore, promptSenderSpy: PromptSenderSpy) {
     let promptSenderSpy = PromptSenderSpy(
-        result: .success(promptResponseStream(from: ["any", " successful", " response"])),
+        result: promptSenderResult,
         expectation: expectation
     )
     let sut = ChatStore(promptSender: promptSenderSpy)
@@ -117,8 +135,12 @@ private func makeSUT(promptSenderResult: Result<PromptResponseStream, Error> = s
     return (sut, promptSenderSpy)
 }
 
-private func successfulResponse() -> Result<PromptResponseStream, Error> {
+private func successfulPromptSenderResponse() -> Result<PromptResponseStream, SendPromptError> {
     return .success(promptResponseStream(from: ["any", " successful", " response"]))
+}
+
+private func failedPromptSenderResponse() -> Result<PromptResponseStream, SendPromptError> {
+    return .failure(.connectivity)
 }
 
 private func promptResponseStream(from textArray: [String]) -> PromptResponseStream {
@@ -137,11 +159,11 @@ private func anyNonEmptyText() -> String {
 // MARK: - Test Doubles
 
 private class PromptSenderSpy: PromptSender {
-    let result: Result<PromptResponseStream, Error>
+    let result: Result<PromptResponseStream, SendPromptError>
     let expectation: XCTestExpectation
     var sentPrompts: [String] = []
 
-    init(result: Result<PromptResponseStream, Error>, expectation: XCTestExpectation) {
+    init(result: Result<PromptResponseStream, SendPromptError>, expectation: XCTestExpectation) {
         self.result = result
         self.expectation = expectation
     }
