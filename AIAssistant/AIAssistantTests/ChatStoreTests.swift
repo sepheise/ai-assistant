@@ -57,7 +57,7 @@ class ChatStoreTests: XCTestCase {
         XCTAssertFalse(sut.canSubmit)
 
         // Non empty text and no processing
-        sut.inputText = "non empty text"
+        sut.inputText = anyNonEmptyText()
         XCTAssertTrue(sut.canSubmit)
 
         // When submit starts
@@ -99,15 +99,15 @@ class ChatStoreTests: XCTestCase {
             promptSenderCalls.append(text)
             expectation.fulfill()
         }
-
+        let expectedText = anyNonEmptyText()
         let sut = ChatStore(promptSender: promptSenderSpy)
 
-        sut.inputText = "non empty text"
+        sut.inputText = anyNonEmptyText()
         sut.submit()
 
         wait(for: [expectation], timeout: 0.1)
 
-        XCTAssertEqual(promptSenderCalls, ["non empty text"])
+        XCTAssertEqual(promptSenderCalls, [expectedText])
     }
 
     func test_submit_clearsInputTextAfterSuccessfulSubmit() {
@@ -119,11 +119,17 @@ class ChatStoreTests: XCTestCase {
 
         let sut = ChatStore(promptSender: promptSenderSpy)
 
-        sut.inputText = "non empty text"
+        sut.inputText = anyNonEmptyText()
         sut.submit()
 
         wait(for: [expectation], timeout: 0.1)
 
         XCTAssertTrue(sut.inputText.isEmpty)
+    }
+
+    // MARK: - Helpers
+
+    private func anyNonEmptyText() -> String {
+        return "non empty text"
     }
 }
