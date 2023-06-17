@@ -10,7 +10,7 @@
 		5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */; };
 		5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3042A26F9A400BA4D6B /* HTTPClient.swift */; };
 		5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3062A26F9CF00BA4D6B /* Message.swift */; };
-		5103D3092A279E3400BA4D6B /* MessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* MessageSender.swift */; };
+		5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* PromptSender.swift */; };
 		5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */; };
 		5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */; };
 		5133BD192A33F27000B35668 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD182A33F27000B35668 /* ContentView.swift */; };
@@ -43,7 +43,7 @@
 		5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSender.swift; sourceTree = "<group>"; };
 		5103D3042A26F9A400BA4D6B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		5103D3062A26F9CF00BA4D6B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		5103D3082A279E3400BA4D6B /* MessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSender.swift; sourceTree = "<group>"; };
+		5103D3082A279E3400BA4D6B /* PromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSender.swift; sourceTree = "<group>"; };
 		5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAssistantMacOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantMacOSApp.swift; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 				51CAA0122A2A7ED90074E577 /* Infrastructure */,
 				5197EECA2A3D40550017F32B /* Presentation */,
 				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
-				5103D3082A279E3400BA4D6B /* MessageSender.swift */,
+				5103D3082A279E3400BA4D6B /* PromptSender.swift */,
 			);
 			path = AIAssistant;
 			sourceTree = "<group>";
@@ -324,7 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5103D3092A279E3400BA4D6B /* MessageSender.swift in Sources */,
+				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
 				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,

@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol MessageSender {
-    func send(text: String) async throws -> ResponseTextStream
+public protocol PromptSender {
+    func send(prompt: String) async throws -> PromptResponseStream
 }
 
-public typealias ResponseTextStream = AsyncThrowingStream<String, Error>
+public typealias PromptResponseStream = AsyncThrowingStream<String, Error>
 
-public enum SendMessageError: Error {
+public enum SendPromptError: Error {
     case invalidInput
     case connectivity
     case unexpectedResponse

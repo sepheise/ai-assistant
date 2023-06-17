@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class OpenAIMessageSender: MessageSender {
+public class OpenAIMessageSender: PromptSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
         let model: String
@@ -48,30 +48,30 @@ public class OpenAIMessageSender: MessageSender {
         self.previousMessages = previousMessages
     }
 
-    public func send(text: String) async throws -> ResponseTextStream {
-        guard isRespectingCharactersLimit(text: text) else {
-            throw SendMessageError.invalidInput
+    public func send(prompt: String) async throws -> PromptResponseStream {
+        guard isRespectingCharactersLimit(text: prompt) else {
+            throw SendPromptError.invalidInput
         }
 
-        let urlRequest = urlRequest(text: text)
+        let urlRequest = urlRequest(text: prompt)
 
         guard let (lines, response) = try? await client.lines(from: urlRequest) else {
-            throw SendMessageError.connectivity
+            throw SendPromptError.connectivity
         }
 
         guard let resp = response as? HTTPURLResponse,
               resp.statusCode == 200 else {
-            throw SendMessageError.unexpectedResponse
+            throw SendPromptError.unexpectedResponse
         }
 
-        return ResponseTextStream { continuation in
+        return PromptResponseStream { continuation in
             Task {
                 var lastLine: String?
 
                 for await line in lines {
                     guard line.hasPrefix("data: "),
                           let lineData = line.dropFirst(6).data(using: .utf8) else {
-                        continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
+                        continuation.yield(with: .failure(SendPromptError.unexpectedResponse))
                         return
                     }
 
@@ -87,7 +87,7 @@ public class OpenAIMessageSender: MessageSender {
                    lastLine == "data: [DONE]" {
                     continuation.finish()
                 } else {
-                    continuation.finish(throwing: SendMessageError.incompleteResponse)
+                    continuation.finish(throwing: SendPromptError.incompleteResponse)
                 }
 
             }
