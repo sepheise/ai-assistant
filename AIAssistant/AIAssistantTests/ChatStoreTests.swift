@@ -22,7 +22,13 @@ class ChatStore: ObservableObject {
         self.promptSender = promptSender
     }
 
-    func submit() {}
+    func submit() {
+        guard canSubmit else { return }
+
+        Task {
+            await promptSender(inputText)
+        }
+    }
 }
 
 class ChatStoreTests: XCTestCase {
@@ -33,7 +39,7 @@ class ChatStoreTests: XCTestCase {
 
         XCTAssertFalse(sut.canSubmit)
 
-        sut.inputText = "not empty text"
+        sut.inputText = "non empty text"
 
         XCTAssertTrue(sut.canSubmit)
     }
@@ -57,5 +63,24 @@ class ChatStoreTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
 
         XCTAssertEqual(promptSenderCalls, [])
+    }
+
+    func test_submit_notifyPromptSenderWithInputText() {
+        let expectation = expectation(description: "Wait for sender to finish")
+
+        var promptSenderCalls: [String] = []
+        let promptSenderSpy: (String) async -> Void = { text in
+            promptSenderCalls.append(text)
+            expectation.fulfill()
+        }
+
+        let sut = ChatStore(promptSender: promptSenderSpy)
+
+        sut.inputText = "non empty text"
+        sut.submit()
+
+        wait(for: [expectation], timeout: 0.1)
+
+        XCTAssertEqual(promptSenderCalls, ["non empty text"])
     }
 }
