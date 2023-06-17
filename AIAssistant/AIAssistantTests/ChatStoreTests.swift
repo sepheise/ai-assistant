@@ -15,11 +15,19 @@ class ChatStore: ObservableObject {
         }
     }
     @Published var canSubmit: Bool = false
+
+    let promptSender: (String) async -> Void
+
+    init(promptSender: @escaping (String) async -> Void) {
+        self.promptSender = promptSender
+    }
+
+    func submit() {}
 }
 
 class ChatStoreTests: XCTestCase {
     func test_canSubmit_whenInputTextIsNotEmpty() {
-        let sut = ChatStore()
+        let sut = ChatStore(promptSender: { _ in })
 
         sut.inputText = ""
 
@@ -28,5 +36,26 @@ class ChatStoreTests: XCTestCase {
         sut.inputText = "not empty text"
 
         XCTAssertTrue(sut.canSubmit)
+    }
+
+    func test_submit_doesNotNotifyPromptSenderWhenCantSubmit() {
+        let expectation = expectation(description: "Wait for sender to finish")
+        expectation.isInverted = true
+
+        var promptSenderCalls: [String] = []
+        let promptSenderSpy: (String) async -> Void = { text in
+            promptSenderCalls.append(text)
+            expectation.fulfill()
+            XCTFail("Expected to not complete")
+        }
+
+        let sut = ChatStore(promptSender: promptSenderSpy)
+
+        sut.inputText = ""
+        sut.submit()
+
+        wait(for: [expectation], timeout: 0.1)
+
+        XCTAssertEqual(promptSenderCalls, [])
     }
 }
