@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import SwiftUI
 import AIAssistant
 
 class ChatStore: ObservableObject {
