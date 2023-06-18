@@ -15,6 +15,7 @@ class ChatStore: ObservableObject {
             checkCanSubmit()
         }
     }
+    @Published var responseText: String = ""
     @Published var canSubmit: Bool = false
     @Published var errorMessage: String = ""
 
@@ -36,7 +37,10 @@ class ChatStore: ObservableObject {
         isProcessing = true
         Task {
             do {
-                _ = try await promptSender.send(prompt: inputText)
+                let textStream = try await promptSender.send(prompt: inputText)
+                for try await text in textStream {
+                    responseText += text
+                }
             } catch {
                 errorMessage = "Could not load prompt response"
             }
@@ -121,6 +125,19 @@ class ChatStoreTests: XCTestCase {
 
         XCTAssertEqual(sut.errorMessage, "Could not load prompt response")
     }
+
+    func test_submit_setsResponseOnTextStream() {
+        let promptSenderToFinish = expectation(description: "Wait for sender to finish")
+        let successfulPromptSenderResponse = successfulPromptSenderResponse(from: ["This", " is", " a", " successful", " response", "!"])
+        let (sut, _) = makeSUT(promptSenderResult: successfulPromptSenderResponse, expecting: promptSenderToFinish)
+
+        sut.inputText = anyNonEmptyText()
+        sut.submit()
+
+        wait(for: [promptSenderToFinish], timeout: 0.1)
+
+        XCTAssertEqual(sut.responseText, "This is a successful response!")
+    }
 }
 
 // MARK: - Helpers
@@ -135,8 +152,8 @@ private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPrompt
     return (sut, promptSenderSpy)
 }
 
-private func successfulPromptSenderResponse() -> Result<PromptResponseStream, SendPromptError> {
-    return .success(promptResponseStream(from: ["any", " successful", " response"]))
+private func successfulPromptSenderResponse(from textArray: [String] = ["any", " successful", " response"]) -> Result<PromptResponseStream, SendPromptError> {
+    return .success(promptResponseStream(from: textArray))
 }
 
 private func failedPromptSenderResponse() -> Result<PromptResponseStream, SendPromptError> {
