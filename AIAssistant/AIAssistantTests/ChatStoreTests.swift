@@ -8,52 +8,6 @@
 import XCTest
 import AIAssistant
 
-class ChatStore: ObservableObject {
-    @Published var inputText: String = "" {
-        didSet {
-            checkCanSubmit()
-        }
-    }
-    @Published var responseText: String = ""
-    @Published var canSubmit: Bool = false
-    @Published var errorMessage: String = ""
-
-    private var isProcessing: Bool = false {
-        didSet {
-            checkCanSubmit()
-        }
-    }
-
-    private let promptSender: PromptSender
-
-    init(promptSender: PromptSender) {
-        self.promptSender = promptSender
-    }
-
-    func submit() {
-        guard canSubmit else { return }
-
-        isProcessing = true
-        Task {
-            do {
-                let textStream = try await promptSender.send(prompt: inputText)
-                for try await text in textStream {
-                    responseText += text
-                }
-            } catch {
-                errorMessage = "Could not load prompt response"
-            }
-
-            isProcessing = false
-            inputText = ""
-        }
-    }
-
-    private func checkCanSubmit() {
-        canSubmit = !inputText.isEmpty && !isProcessing
-    }
-}
-
 class ChatStoreTests: XCTestCase {
     func test_canSubmit_whenInputTextIsNotEmptyAndIsNoProcessing() {
         let promptSenderToFinish = expectation(description: "Wait for sender to finish")

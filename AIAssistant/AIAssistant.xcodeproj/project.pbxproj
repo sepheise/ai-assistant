@@ -20,6 +20,7 @@
 		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
 		5197EECC2A3D40990017F32B /* ChatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatStoreTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
+		51D29B502A3E81B10086EB0E /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
 		51CAA0152A2A9DCE0074E577 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
+		51D29B4F2A3E81B10086EB0E /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 		5197EECA2A3D40550017F32B /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				51D29B4F2A3E81B10086EB0E /* ChatStore.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
+				51D29B502A3E81B10086EB0E /* ChatStore.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
 				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,
