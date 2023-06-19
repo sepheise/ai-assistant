@@ -21,6 +21,10 @@
 		5197EECC2A3D40990017F32B /* ChatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatStoreTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
 		51D29B502A3E81B10086EB0E /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatStore.swift */; };
+		51D29B522A3E82100086EB0E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B512A3E82100086EB0E /* ChatView.swift */; };
+		51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
+		51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +42,28 @@
 			remoteGlobalIDString = 5133BD132A33F27000B35668;
 			remoteInfo = AIAssistantMacOSApp;
 		};
+		51D29B562A3E8A750086EB0E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 515B91D32A26306100599B59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 515B91DB2A26306100599B59;
+			remoteInfo = AIAssistant;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		51D29B582A3E8A750086EB0E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSender.swift; sourceTree = "<group>"; };
@@ -60,6 +85,8 @@
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
 		51CAA0152A2A9DCE0074E577 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
 		51D29B4F2A3E81B10086EB0E /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
+		51D29B512A3E82100086EB0E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePromptSender.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
+				51D29B512A3E82100086EB0E /* ChatView.swift */,
 				5133BD182A33F27000B35668 /* ContentView.swift */,
 				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
 				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
@@ -103,6 +132,7 @@
 		5133BD1C2A33F27100B35668 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */,
 				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -117,6 +147,7 @@
 				51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */,
 				51CAA0152A2A9DCE0074E577 /* CI.xctestplan */,
 				515B91DD2A26306100599B59 /* Products */,
+				51D29B532A3E8A750086EB0E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -177,6 +208,13 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
+		51D29B532A3E8A750086EB0E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -197,10 +235,12 @@
 				5133BD102A33F27000B35668 /* Sources */,
 				5133BD112A33F27000B35668 /* Frameworks */,
 				5133BD122A33F27000B35668 /* Resources */,
+				51D29B582A3E8A750086EB0E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				51D29B572A3E8A750086EB0E /* PBXTargetDependency */,
 			);
 			name = AIAssistantMacOSApp;
 			productName = AIAssistantMacOSApp;
@@ -319,7 +359,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5133BD192A33F27000B35668 /* ContentView.swift in Sources */,
+				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
 				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
+				51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +400,11 @@
 			isa = PBXTargetDependency;
 			target = 5133BD132A33F27000B35668 /* AIAssistantMacOSApp */;
 			targetProxy = 51C2429C2A3D61BA009F543F /* PBXContainerItemProxy */;
+		};
+		51D29B572A3E8A750086EB0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 515B91DB2A26306100599B59 /* AIAssistant */;
+			targetProxy = 51D29B562A3E8A750086EB0E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

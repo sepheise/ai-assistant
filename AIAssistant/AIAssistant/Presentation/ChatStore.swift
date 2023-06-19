@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public class ChatStore: ObservableObject {
     @Published public var inputText: String = "" {
         didSet {

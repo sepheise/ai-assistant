@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import AIAssistant
 
 @main
 struct AIAssistantMacOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ChatView(store: ChatStore(promptSender: FakePromptSender()))
         }
     }
 }
