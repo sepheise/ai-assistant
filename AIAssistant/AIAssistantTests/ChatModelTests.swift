@@ -72,14 +72,13 @@ class ChatModelTests: XCTestCase {
         XCTAssertTrue(sut.inputText.isEmpty)
     }
 
-    func test_submit_setsErrorMessageAndKeepsInputTextWhenPromptSenderFails() async {
+    func test_submit_setsErrorMessageWhenPromptSenderFails() async {
         let (sut, _) = makeSUT(promptSenderResult: failedPromptSenderResult())
 
         sut.inputText = anyNonEmptyText()
         await sut.submit()
 
         XCTAssertEqual(sut.errorMessage, "Could not load prompt response")
-        XCTAssertFalse(sut.inputText.isEmpty)
     }
 
     func test_submit_storesPromptResponsesWhenFetchedTextStreamSuccessfully() async {

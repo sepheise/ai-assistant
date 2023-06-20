@@ -41,18 +41,17 @@ public class ChatModel: ObservableObject {
         }
 
         do {
+            let prompt = inputText
+            inputText = ""
             let promptIndex = promptResponses.count
-            promptResponses.append(
-                PromptResponse(id: promptIndex, prompt: inputText, response: "")
-            )
+            promptResponses.append(PromptResponse(id: promptIndex, prompt: prompt, response: ""))
 
-            let textStream = try await promptSender.send(prompt: inputText)
+            let textStream = try await promptSender.send(prompt: prompt)
             for try await text in textStream {
                 currentResponseText += text
-                promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: inputText, response: currentResponseText)
+                promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: prompt, response: currentResponseText)
             }
 
-            inputText = ""
             currentResponseText = ""
         } catch {
             errorMessage = "Could not load prompt response"

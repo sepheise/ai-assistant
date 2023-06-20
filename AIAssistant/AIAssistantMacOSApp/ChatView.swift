@@ -18,17 +18,7 @@ struct ChatView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if !model.promptResponses.isEmpty {
-                ScrollView {
-                    ForEach(model.promptResponses) { promptResponse in
-                        Text(promptResponse.prompt)
-                            .padding(20)
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .background(Color("UserInputBackground"))
-                        Text(promptResponse.response)
-                            .padding(20)
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                    }
-                }
+                PromptAndResponsesView(promptResponses: $model.promptResponses)
             }
             Spacer()
             ZStack(alignment: .bottomTrailing) {
@@ -59,6 +49,24 @@ struct ChatView: View {
                 .padding(.trailing, 30)
             }
             .frame(maxHeight: 90)
+        }
+    }
+}
+
+struct PromptAndResponsesView: View {
+    @Binding var promptResponses: [PromptResponse]
+
+    var body: some View {
+        ScrollView {
+            ForEach(promptResponses) { promptResponse in
+                Text(promptResponse.prompt)
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .background(Color("UserInputBackground"))
+                Text(promptResponse.response)
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
         }
     }
 }
