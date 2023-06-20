@@ -14,7 +14,6 @@ public class ChatModel: ObservableObject {
             checkCanSubmit()
         }
     }
-    @Published public var promptResponse: PromptResponse? = nil
     @Published public var canSubmit: Bool = false
     @Published public var errorMessage: String = ""
     @Published public var promptResponses: [PromptResponse] = []
@@ -42,14 +41,16 @@ public class ChatModel: ObservableObject {
         }
 
         do {
-            let textStream = try await promptSender.send(prompt: inputText)
+            let promptIndex = promptResponses.count
+            promptResponses.append(
+                PromptResponse(id: promptIndex, prompt: inputText, response: "")
+            )
 
+            let textStream = try await promptSender.send(prompt: inputText)
             for try await text in textStream {
                 currentResponseText += text
-                promptResponse = PromptResponse(prompt: inputText, response: currentResponseText)
+                promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: inputText, response: currentResponseText)
             }
-
-            promptResponses.append(PromptResponse(prompt: inputText, response: currentResponseText))
 
             inputText = ""
             currentResponseText = ""

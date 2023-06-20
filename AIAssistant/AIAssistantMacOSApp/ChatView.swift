@@ -17,14 +17,18 @@ struct ChatView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            if let promptResponse = model.promptResponse {
-                Text(promptResponse.prompt)
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .background(Color("UserInputBackground"))
-                Text(promptResponse.response)
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            if !model.promptResponses.isEmpty {
+                ScrollView {
+                    ForEach(model.promptResponses) { promptResponse in
+                        Text(promptResponse.prompt)
+                            .padding(20)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .background(Color("UserInputBackground"))
+                        Text(promptResponse.response)
+                            .padding(20)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                    }
+                }
             }
             Spacer()
             ZStack(alignment: .bottomTrailing) {
