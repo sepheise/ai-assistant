@@ -26,6 +26,8 @@
 		51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */; };
 		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
+		51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */; };
+		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +91,8 @@
 		51D29B512A3E82100086EB0E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePromptSender.swift; sourceTree = "<group>"; };
 		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
+		51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndResponsesView.swift; sourceTree = "<group>"; };
+		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,8 +125,8 @@
 		5133BD152A33F27000B35668 /* AIAssistantMacOSApp */ = {
 			isa = PBXGroup;
 			children = (
+				51F07E4F2A415B5E0026F299 /* Views */,
 				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
-				51D29B512A3E82100086EB0E /* ChatView.swift */,
 				5133BD182A33F27000B35668 /* ContentView.swift */,
 				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
 				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
@@ -216,6 +220,16 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		51F07E4F2A415B5E0026F299 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				51D29B512A3E82100086EB0E /* ChatView.swift */,
+				51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */,
+				51F07E522A415BBC0026F299 /* PromptTextInputView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,8 +375,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */,
 				5133BD192A33F27000B35668 /* ContentView.swift in Sources */,
 				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
+				51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */,
 				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
 				51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */,
 			);
