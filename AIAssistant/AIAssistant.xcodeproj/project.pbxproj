@@ -13,7 +13,6 @@
 		5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* PromptSender.swift */; };
 		5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */; };
 		5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */; };
-		5133BD192A33F27000B35668 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD182A33F27000B35668 /* ContentView.swift */; };
 		5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1A2A33F27100B35668 /* Assets.xcassets */; };
 		5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
@@ -76,7 +75,6 @@
 		5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAssistantMacOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantMacOSApp.swift; sourceTree = "<group>"; };
-		5133BD182A33F27000B35668 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5133BD1A2A33F27100B35668 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AIAssistantMacOSApp.entitlements; sourceTree = "<group>"; };
@@ -127,7 +125,6 @@
 			children = (
 				51F07E4F2A415B5E0026F299 /* Views */,
 				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
-				5133BD182A33F27000B35668 /* ContentView.swift */,
 				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
 				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
 				5133BD1C2A33F27100B35668 /* Preview Content */,
@@ -376,7 +373,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */,
-				5133BD192A33F27000B35668 /* ContentView.swift in Sources */,
 				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
 				51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */,
 				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
