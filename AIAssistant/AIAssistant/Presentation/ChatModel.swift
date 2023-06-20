@@ -1,5 +1,5 @@
 //
-//  ChatStore.swift
+//  ChatModel.swift
 //  AIAssistant
 //
 //  Created by Patricio Sepúlveda Heise on 17-06-23.
@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-public class ChatStore: ObservableObject {
+public class ChatModel: ObservableObject {
     @Published public var inputText: String = "" {
         didSet {
             checkCanSubmit()
@@ -30,22 +30,22 @@ public class ChatStore: ObservableObject {
         self.promptSender = promptSender
     }
 
-    public func submit() {
+    public func submit() async {
         guard canSubmit else { return }
 
         isProcessing = true
-        Task {
-            do {
-                let textStream = try await promptSender.send(prompt: inputText)
-                for try await text in textStream {
-                    responseText += text
-                }
-            } catch {
-                errorMessage = "Could not load prompt response"
-            }
-
+        defer {
             isProcessing = false
+        }
+
+        do {
+            let textStream = try await promptSender.send(prompt: inputText)
+            for try await text in textStream {
+                responseText += text
+            }
             inputText = ""
+        } catch {
+            errorMessage = "Could not load prompt response"
         }
     }
 

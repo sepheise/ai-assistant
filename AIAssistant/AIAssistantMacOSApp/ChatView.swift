@@ -9,9 +9,9 @@ import SwiftUI
 import AIAssistant
 
 struct ChatView: View {
-    @ObservedObject private var store: ChatStore
+    @ObservedObject private var store: ChatModel
 
-    init(store: ChatStore) {
+    init(store: ChatModel) {
         self.store = store
     }
 
@@ -30,7 +30,11 @@ struct ChatView: View {
                 HStack {
                     Spacer()
                     Button(
-                        action: { store.submit() },
+                        action: {
+                            Task {
+                                await store.submit()
+                            }
+                        },
                         label: {
                             Image(systemName: "paperplane")
                         }
@@ -48,7 +52,7 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(store: ChatStore(promptSender: FakePromptSender()))
+        ChatView(store: ChatModel(promptSender: FakePromptSender()))
     }
 }
 
