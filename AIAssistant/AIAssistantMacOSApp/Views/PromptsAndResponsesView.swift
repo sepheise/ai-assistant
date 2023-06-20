@@ -12,15 +12,28 @@ struct PromptsAndResponsesView: View {
     @Binding var promptResponses: [PromptResponse]
 
     var body: some View {
-        ScrollView {
-            ForEach(promptResponses) { promptResponse in
-                Text(promptResponse.prompt)
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .background(Color("UserInputBackground"))
-                Text(promptResponse.response)
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
+        ScrollViewReader { proxy in
+            ScrollView {
+                ForEach(promptResponses, id: \.id) { promptResponse in
+                    Text(promptResponse.prompt)
+                        .padding(20)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                        .background(Color("UserInputBackground"))
+                    Text(promptResponse.response)
+                        .padding(20)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                        .id(promptResponse.id)
+                }
+            }
+            .onAppear {
+                withAnimation {
+                    proxy.scrollTo(promptResponses.last?.id, anchor: .bottom)
+                }
+            }
+            .onChange(of: promptResponses) { _ in
+                withAnimation {
+                    proxy.scrollTo(promptResponses.last?.id, anchor: .bottom)
+                }
             }
         }
     }
