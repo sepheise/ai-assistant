@@ -10,23 +10,38 @@ import AIAssistant
 
 @MainActor
 class ChatModelTests: XCTestCase {
-    func test_canSubmit_whenInputTextIsNotEmptyAndIsNoProcessing() async {
+    func test_cantSubmit_whenInputTextIsEmpty() async {
         let (sut, _) = makeSUT()
 
-        // On init
-        XCTAssertTrue(sut.inputText.isEmpty)
+        sut.inputText = ""
+
         XCTAssertFalse(sut.canSubmit)
+    }
 
-        // Non empty text and no processing
+    func test_submit_cantSubmitMoreThanOnceAtTheSameTime() async {
+        let (sut, promptSenderSpy) = makeSUT()
+
         sut.inputText = anyNonEmptyText()
-        XCTAssertTrue(sut.canSubmit)
 
+        async let firstExec: () = sut.submit()
+        async let secondExec: () = sut.submit()
+        async let thirdExec: () = sut.submit()
+
+        _ = await [firstExec, secondExec, thirdExec]
+
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 1)
+    }
+
+    func test_submit_canRunSequentially() async {
+        let (sut, promptSenderSpy) = makeSUT()
+
+        sut.inputText = anyNonEmptyText()
         await sut.submit()
-        // After submit (because empty text)
-        XCTAssertFalse(sut.canSubmit)
 
         sut.inputText = anyNonEmptyText()
-        XCTAssertTrue(sut.canSubmit)
+        await sut.submit()
+
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 2)
     }
 
     func test_submit_doesNotNotifyPromptSenderWhenCantSubmit() async {
