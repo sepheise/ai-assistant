@@ -17,9 +17,7 @@ struct ChatView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            if !model.promptResponses.isEmpty {
-                PromptsAndResponsesView(promptResponses: $model.promptResponses)
-            }
+            PromptsAndResponsesView(promptResponses: $model.promptResponses)
             Spacer()
             PromptTextInputView(
                 inputText: $model.inputText,
