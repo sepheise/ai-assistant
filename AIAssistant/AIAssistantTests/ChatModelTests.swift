@@ -82,14 +82,26 @@ class ChatModelTests: XCTestCase {
         XCTAssertFalse(sut.inputText.isEmpty)
     }
 
-    func test_submit_setsResponseOnTextStream() async {
-        let successfulPromptSenderResponse = successfulPromptSenderResponse(from: ["This", " is", " a", " successful", " response", "!"])
-        let (sut, _) = makeSUT(promptSenderResult: successfulPromptSenderResponse)
+    func test_submit_createsAPromptResponseWhileFetchingTextStream() async {
+        let firstPrompt = anyNonEmptyText()
+        let firstResult = successfulPromptSenderResponse(from: ["This", " is", " a", " successful", " response", "!"])
+        let (sut, promptSenderSpy) = makeSUT(promptSenderResult: firstResult)
 
-        sut.inputText = anyNonEmptyText()
+        sut.inputText = firstPrompt
         await sut.submit()
 
-        XCTAssertEqual(sut.responseText, "This is a successful response!")
+        XCTAssertEqual(sut.promptResponse?.prompt, firstPrompt)
+        XCTAssertEqual(sut.promptResponse?.response, "This is a successful response!")
+
+        let secondPrompt = "another prompt"
+        let secondResult = successfulPromptSenderResponse(from: ["This", " is", " another", " successful", " response", "!"])
+        promptSenderSpy.result = secondResult
+
+        sut.inputText = secondPrompt
+        await sut.submit()
+
+        XCTAssertEqual(sut.promptResponse?.prompt, secondPrompt)
+        XCTAssertEqual(sut.promptResponse?.response, "This is another successful response!")
     }
 }
 
@@ -129,7 +141,7 @@ private func anyNonEmptyText() -> String {
 // MARK: - Test Doubles
 
 private class PromptSenderSpy: PromptSender {
-    let result: Result<PromptResponseStream, SendPromptError>
+    var result: Result<PromptResponseStream, SendPromptError>
     var sentPrompts: [String] = []
 
     init(result: Result<PromptResponseStream, SendPromptError>) {

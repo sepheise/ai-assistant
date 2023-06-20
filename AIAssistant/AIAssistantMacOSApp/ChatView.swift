@@ -9,30 +9,39 @@ import SwiftUI
 import AIAssistant
 
 struct ChatView: View {
-    @ObservedObject private var store: ChatModel
+    @ObservedObject private var model: ChatModel
 
-    init(store: ChatModel) {
-        self.store = store
+    init(model: ChatModel) {
+        self.model = model
     }
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(store.responseText)
+            if let promptResponse = model.promptResponse {
+                Text(promptResponse.prompt)
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .background(Color("UserInputBackground"))
+                Text(promptResponse.response)
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
             Spacer()
             ZStack(alignment: .bottomTrailing) {
-                TextEditor(text: $store.inputText)
+                TextEditor(text: $model.inputText)
                     .font(.body)
                     .padding(EdgeInsets(top: 21, leading: 20, bottom: 19, trailing: 15))
-                    .background(                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("UserInputBackground"))
-                        .padding(15)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color("UserInputBackground"))
+                            .padding(15)
                     )
                 HStack {
                     Spacer()
                     Button(
                         action: {
                             Task {
-                                await store.submit()
+                                await model.submit()
                             }
                         },
                         label: {
@@ -40,7 +49,7 @@ struct ChatView: View {
                         }
                     )
                     .frame(width: 30, height: 30)
-                    .disabled(!store.canSubmit)
+                    .disabled(!model.canSubmit)
                 }
                 .padding(.bottom, 20)
                 .padding(.trailing, 30)
@@ -52,7 +61,7 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(store: ChatModel(promptSender: FakePromptSender()))
+        ChatView(model: ChatModel(promptSender: FakePromptSender()))
     }
 }
 

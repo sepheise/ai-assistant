@@ -7,6 +7,11 @@
 
 import Foundation
 
+public struct PromptResponse {
+    public var prompt: String
+    public var response: String
+}
+
 @MainActor
 public class ChatModel: ObservableObject {
     @Published public var inputText: String = "" {
@@ -14,7 +19,7 @@ public class ChatModel: ObservableObject {
             checkCanSubmit()
         }
     }
-    @Published public var responseText: String = ""
+    @Published public var promptResponse: PromptResponse? = nil
     @Published public var canSubmit: Bool = false
     @Published public var errorMessage: String = ""
 
@@ -23,6 +28,8 @@ public class ChatModel: ObservableObject {
             checkCanSubmit()
         }
     }
+
+    private var currentResponseText: String = ""
 
     private let promptSender: PromptSender
 
@@ -41,9 +48,11 @@ public class ChatModel: ObservableObject {
         do {
             let textStream = try await promptSender.send(prompt: inputText)
             for try await text in textStream {
-                responseText += text
+                currentResponseText += text
+                promptResponse = PromptResponse(prompt: inputText, response: currentResponseText)
             }
             inputText = ""
+            currentResponseText = ""
         } catch {
             errorMessage = "Could not load prompt response"
         }
