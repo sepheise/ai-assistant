@@ -25,6 +25,7 @@
 		51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */; };
+		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		51D29B4F2A3E81B10086EB0E /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		51D29B512A3E82100086EB0E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePromptSender.swift; sourceTree = "<group>"; };
+		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				51D29B4F2A3E81B10086EB0E /* ChatModel.swift */,
+				51F07E4D2A414FF70026F299 /* PromptResponse.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 			files = (
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */,
+				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
 				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,

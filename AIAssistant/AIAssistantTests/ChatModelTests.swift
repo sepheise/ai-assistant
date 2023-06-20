@@ -73,7 +73,7 @@ class ChatModelTests: XCTestCase {
     }
 
     func test_submit_setsErrorMessageAndKeepsInputTextWhenPromptSenderFails() async {
-        let (sut, _) = makeSUT(promptSenderResult: failedPromptSenderResponse())
+        let (sut, _) = makeSUT(promptSenderResult: failedPromptSenderResult())
 
         sut.inputText = anyNonEmptyText()
         await sut.submit()
@@ -84,7 +84,7 @@ class ChatModelTests: XCTestCase {
 
     func test_submit_createsAPromptResponseWhileFetchingTextStream() async {
         let firstPrompt = anyNonEmptyText()
-        let firstResult = successfulPromptSenderResponse(from: ["This", " is", " a", " successful", " response", "!"])
+        let firstResult = successfulPromptSenderResult(from: ["This", " is", " a", " successful", " response", "!"])
         let (sut, promptSenderSpy) = makeSUT(promptSenderResult: firstResult)
 
         sut.inputText = firstPrompt
@@ -94,7 +94,7 @@ class ChatModelTests: XCTestCase {
         XCTAssertEqual(sut.promptResponse?.response, "This is a successful response!")
 
         let secondPrompt = "another prompt"
-        let secondResult = successfulPromptSenderResponse(from: ["This", " is", " another", " successful", " response", "!"])
+        let secondResult = successfulPromptSenderResult(from: ["This", " is", " another", " successful", " response", "!"])
         promptSenderSpy.result = secondResult
 
         sut.inputText = secondPrompt
@@ -103,12 +103,24 @@ class ChatModelTests: XCTestCase {
         XCTAssertEqual(sut.promptResponse?.prompt, secondPrompt)
         XCTAssertEqual(sut.promptResponse?.response, "This is another successful response!")
     }
+
+    func test_submit_storesLastPromptResponse() async {
+        let prompt = anyNonEmptyText()
+        let promptSenderResult = successfulPromptSenderResult(from: ["This", " is", " a", " successful", " response", "!"])
+        let (sut, _) = makeSUT(promptSenderResult: promptSenderResult)
+
+        sut.inputText = prompt
+        await sut.submit()
+
+        let expectedPromptResponses = [PromptResponse(prompt: prompt, response: "This is a successful response!")]
+        XCTAssertEqual(sut.promptResponses, expectedPromptResponses)
+    }
 }
 
 // MARK: - Helpers
 
 @MainActor
-private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPromptError> = successfulPromptSenderResponse()) -> (sut: ChatModel, promptSenderSpy: PromptSenderSpy) {
+private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPromptError> = successfulPromptSenderResult()) -> (sut: ChatModel, promptSenderSpy: PromptSenderSpy) {
     let promptSenderSpy = PromptSenderSpy(
         result: promptSenderResult
     )
@@ -117,11 +129,11 @@ private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPrompt
     return (sut, promptSenderSpy)
 }
 
-private func successfulPromptSenderResponse(from textArray: [String] = ["any", " successful", " response"]) -> Result<PromptResponseStream, SendPromptError> {
+private func successfulPromptSenderResult(from textArray: [String] = ["any", " successful", " response"]) -> Result<PromptResponseStream, SendPromptError> {
     return .success(promptResponseStream(from: textArray))
 }
 
-private func failedPromptSenderResponse() -> Result<PromptResponseStream, SendPromptError> {
+private func failedPromptSenderResult() -> Result<PromptResponseStream, SendPromptError> {
     return .failure(.connectivity)
 }
 

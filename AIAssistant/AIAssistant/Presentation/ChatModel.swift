@@ -7,11 +7,6 @@
 
 import Foundation
 
-public struct PromptResponse {
-    public var prompt: String
-    public var response: String
-}
-
 @MainActor
 public class ChatModel: ObservableObject {
     @Published public var inputText: String = "" {
@@ -22,6 +17,7 @@ public class ChatModel: ObservableObject {
     @Published public var promptResponse: PromptResponse? = nil
     @Published public var canSubmit: Bool = false
     @Published public var errorMessage: String = ""
+    @Published public var promptResponses: [PromptResponse] = []
 
     private var isProcessing: Bool = false {
         didSet {
@@ -47,10 +43,14 @@ public class ChatModel: ObservableObject {
 
         do {
             let textStream = try await promptSender.send(prompt: inputText)
+
             for try await text in textStream {
                 currentResponseText += text
                 promptResponse = PromptResponse(prompt: inputText, response: currentResponseText)
             }
+
+            promptResponses.append(PromptResponse(prompt: inputText, response: currentResponseText))
+
             inputText = ""
             currentResponseText = ""
         } catch {
