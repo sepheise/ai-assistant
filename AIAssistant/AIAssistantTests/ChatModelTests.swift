@@ -148,7 +148,7 @@ private class PromptSenderSpy: PromptSender {
         self.result = result
     }
 
-    func send(prompt: String) async throws -> PromptResponseStream {
+    func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
         sentPrompts.append(prompt)
         return try result.get()
     }

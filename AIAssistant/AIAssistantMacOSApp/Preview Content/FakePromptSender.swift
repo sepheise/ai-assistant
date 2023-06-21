@@ -15,7 +15,7 @@ class FakePromptSender: PromptSender {
         self.textArray = textArray
     }
 
-    func send(prompt: String) async throws -> PromptResponseStream {
+    func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
         return PromptResponseStream { continuation in
             Task {
                 for text in textArray {

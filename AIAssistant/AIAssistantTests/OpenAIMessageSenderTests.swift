@@ -21,7 +21,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let textInput = anyTextInput()
         let (sut, client) = makeSUT(url: url, apiKey: apiKey)
 
-        _ = try await sut.send(prompt: textInput)
+        _ = try await sut.send(prompt: textInput, previousMessages: [])
 
         XCTAssertEqual(client.sentRequests.count, 1)
         XCTAssertEqual(client.sentRequests.first?.url, url)
@@ -49,9 +49,9 @@ class OpenAIMessageSenderTests: XCTestCase {
             ["role": "assistant", "content": "message 2"],
             ["role": "user", "content": "\(textInput)"]
         ])
-        let (sut, client) = makeSUT(previousMessages: previousMessages)
+        let (sut, client) = makeSUT()
 
-        _ = try await sut.send(prompt: textInput)
+        _ = try await sut.send(prompt: textInput, previousMessages: previousMessages)
 
         XCTAssertEqual(client.sentRequests.first?.httpBody, expectedBody)
     }
@@ -62,10 +62,10 @@ class OpenAIMessageSenderTests: XCTestCase {
         let previousMessages: [Message] = [
             Message(role: .assistant, content: threeThousandCharactersString)
         ]
-        let (sut, client) = makeSUT(previousMessages: previousMessages)
+        let (sut, client) = makeSUT()
 
         do {
-            _ = try await sut.send(prompt: textInput)
+            _ = try await sut.send(prompt: textInput, previousMessages: previousMessages)
             XCTFail("Expected error: \(SendPromptError.invalidInput)")
         } catch {
             XCTAssertEqual(error as? SendPromptError, .invalidInput)
@@ -79,7 +79,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let (sut, _) = makeSUT(clientResult: .failure(NSError(domain: "an error", code: 0)))
 
         do {
-            _ = try await sut.send(prompt: textInput)
+            _ = try await sut.send(prompt: textInput, previousMessages: [])
             XCTFail("Expected error: \(SendPromptError.connectivity)")
         } catch {
             XCTAssertEqual(error as? SendPromptError, .connectivity)
@@ -93,7 +93,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let (sut, _) = makeSUT(clientResult: .success((linesStream, response)))
 
         do {
-            _ = try await sut.send(prompt: textInput)
+            _ = try await sut.send(prompt: textInput, previousMessages: [])
             XCTFail("Expected error: \(SendPromptError.unexpectedResponse)")
         } catch {
             XCTAssertEqual(error as? SendPromptError, .unexpectedResponse)
@@ -106,7 +106,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let invalidLinesStream = linesStream(from: ["invalid line"])
         let (sut, _) = makeSUT(clientResult: .success((invalidLinesStream, anySuccessfulResponse)))
 
-        guard let textStream = try? await sut.send(prompt: textInput) else {
+        guard let textStream = try? await sut.send(prompt: textInput, previousMessages: []) else {
             XCTFail("Expected to get the text stream")
             return
         }
@@ -125,7 +125,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let validLinesStream = linesStream(from: validResponseLines())
         let (sut, _) = makeSUT(clientResult: .success((validLinesStream, anySuccessfulResponse)))
 
-        let textStream = try await sut.send(prompt: textInput)
+        let textStream = try await sut.send(prompt: textInput, previousMessages: [])
 
         var receivedText = ""
         for try await text in textStream {
@@ -141,7 +141,7 @@ class OpenAIMessageSenderTests: XCTestCase {
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let (sut, _) = makeSUT(clientResult: .success((incompleteLinesStream, anySuccessfulResponse)))
 
-        let textStream = try await sut.send(prompt: textInput)
+        let textStream = try await sut.send(prompt: textInput, previousMessages: [])
 
         do {
             for try await _ in textStream {}
@@ -157,11 +157,10 @@ class OpenAIMessageSenderTests: XCTestCase {
 private func makeSUT(
     url: URL = anyURL(),
     apiKey: String = anySecretKey(),
-    previousMessages: [Message] = [],
     clientResult: Result<(HTTPClient.LinesStream, URLResponse), Error> = .success((anyValidLinesStream(), successfulHTTPURLResponse()))
 ) -> (sut: PromptSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
-    let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey, previousMessages: previousMessages)
+    let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey)
 
     return (sut, client)
 }

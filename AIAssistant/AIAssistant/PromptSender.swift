@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol PromptSender {
-    func send(prompt: String) async throws -> PromptResponseStream
+    func send(prompt: String, previousMessages: [Message]) async throws -> PromptResponseStream
 }
 
 public typealias PromptResponseStream = AsyncThrowingStream<String, Error>

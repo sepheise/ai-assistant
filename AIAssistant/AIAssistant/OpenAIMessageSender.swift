@@ -39,21 +39,19 @@ public class OpenAIMessageSender: PromptSender {
     private let defaultModel = "gpt-3.5-turbo"
     private let defaultStreamOption = true
     private let charactersLimit = 3000
-    private let previousMessages: [Message]
 
-    public init(client: HTTPClient, url: URL, apiKey: String, previousMessages: [Message] = []) {
+    public init(client: HTTPClient, url: URL, apiKey: String) {
         self.client = client
         self.url = url
         self.apiKey = apiKey
-        self.previousMessages = previousMessages
     }
 
-    public func send(prompt: String) async throws -> PromptResponseStream {
-        guard isRespectingCharactersLimit(text: prompt) else {
+    public func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
+        guard isRespectingCharactersLimit(text: prompt, previousMessages: previousMessages) else {
             throw SendPromptError.invalidInput
         }
 
-        let urlRequest = urlRequest(text: prompt)
+        let urlRequest = urlRequest(text: prompt, previousMessages: previousMessages)
 
         guard let (lines, response) = try? await client.lines(from: urlRequest) else {
             throw SendPromptError.connectivity
@@ -94,7 +92,7 @@ public class OpenAIMessageSender: PromptSender {
         }
     }
 
-    private func isRespectingCharactersLimit(text: String) -> Bool {
+    private func isRespectingCharactersLimit(text: String, previousMessages: [Message]) -> Bool {
         let previousMessagesCharactersCount = previousMessages
             .reduce(into: 0) { partialResult, message in
                 partialResult += message.content.count
@@ -103,7 +101,7 @@ public class OpenAIMessageSender: PromptSender {
         return previousMessagesCharactersCount + text.count <= charactersLimit
     }
 
-    private func urlRequest(text: String) -> URLRequest {
+    private func urlRequest(text: String, previousMessages: [Message]) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [

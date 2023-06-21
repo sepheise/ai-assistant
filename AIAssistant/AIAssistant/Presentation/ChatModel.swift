@@ -46,7 +46,7 @@ public class ChatModel: ObservableObject {
             let promptIndex = promptResponses.count
             promptResponses.append(PromptResponse(id: promptIndex, prompt: prompt, response: ""))
 
-            let textStream = try await promptSender.send(prompt: prompt)
+            let textStream = try await promptSender.send(prompt: prompt, previousMessages: [])
             for try await text in textStream {
                 currentResponseText += text
                 promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: prompt, response: currentResponseText)
