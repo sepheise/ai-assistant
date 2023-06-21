@@ -41,12 +41,13 @@ public class ChatModel: ObservableObject {
         }
 
         do {
+            let previousMessages = messagesFromPromptResponses()
             let prompt = inputText
             inputText = ""
             let promptIndex = promptResponses.count
             promptResponses.append(PromptResponse(id: promptIndex, prompt: prompt, response: ""))
 
-            let textStream = try await promptSender.send(prompt: prompt, previousMessages: [])
+            let textStream = try await promptSender.send(prompt: prompt, previousMessages: previousMessages)
             for try await text in textStream {
                 currentResponseText += text
                 promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: prompt, response: currentResponseText)
@@ -60,5 +61,16 @@ public class ChatModel: ObservableObject {
 
     private func checkCanSubmit() {
         canSubmit = !inputText.isEmpty && !isProcessing
+    }
+
+    private func messagesFromPromptResponses() -> [Message] {
+        var messages: [Message] = []
+
+        promptResponses.forEach { prompResponse in
+            messages.append(Message(role: .user, content: prompResponse.prompt))
+            messages.append(Message(role: .assistant, content: prompResponse.response))
+        }
+
+        return messages
     }
 }
