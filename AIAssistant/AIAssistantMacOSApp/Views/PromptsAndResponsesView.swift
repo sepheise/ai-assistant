@@ -16,10 +16,12 @@ struct PromptsAndResponsesView: View {
             ScrollView {
                 ForEach(promptResponses, id: \.id) { promptResponse in
                     Text(promptResponse.prompt)
+                        .textSelection(.enabled)
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color("UserInputBackground"))
                     Text(promptResponse.response)
+                        .textSelection(.enabled)
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .id(promptResponse.id)
