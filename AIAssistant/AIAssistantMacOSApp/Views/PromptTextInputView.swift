@@ -34,6 +34,7 @@ struct PromptTextInputView: View {
                         Image(systemName: "paperplane")
                     }
                 )
+                .keyboardShortcut(.return, modifiers: .command)
                 .frame(width: 30, height: 30)
                 .disabled(!canSubmit)
             }
