@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class OpenAIMessageSender: MessageSender {
+public class OpenAIMessageSender: PromptSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
         let model: String
@@ -39,39 +39,37 @@ public class OpenAIMessageSender: MessageSender {
     private let defaultModel = "gpt-3.5-turbo"
     private let defaultStreamOption = true
     private let charactersLimit = 3000
-    private let previousMessages: [Message]
 
-    public init(client: HTTPClient, url: URL, apiKey: String, previousMessages: [Message] = []) {
+    public init(client: HTTPClient, url: URL, apiKey: String) {
         self.client = client
         self.url = url
         self.apiKey = apiKey
-        self.previousMessages = previousMessages
     }
 
-    public func send(text: String) async throws -> ResponseTextStream {
-        guard isRespectingCharactersLimit(text: text) else {
-            throw SendMessageError.invalidInput
+    public func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
+        guard isRespectingCharactersLimit(text: prompt, previousMessages: previousMessages) else {
+            throw SendPromptError.invalidInput
         }
 
-        let urlRequest = urlRequest(text: text)
+        let urlRequest = urlRequest(text: prompt, previousMessages: previousMessages)
 
         guard let (lines, response) = try? await client.lines(from: urlRequest) else {
-            throw SendMessageError.connectivity
+            throw SendPromptError.connectivity
         }
 
         guard let resp = response as? HTTPURLResponse,
               resp.statusCode == 200 else {
-            throw SendMessageError.unexpectedResponse
+            throw SendPromptError.unexpectedResponse
         }
 
-        return ResponseTextStream { continuation in
+        return PromptResponseStream { continuation in
             Task {
                 var lastLine: String?
 
                 for await line in lines {
                     guard line.hasPrefix("data: "),
                           let lineData = line.dropFirst(6).data(using: .utf8) else {
-                        continuation.yield(with: .failure(SendMessageError.unexpectedResponse))
+                        continuation.yield(with: .failure(SendPromptError.unexpectedResponse))
                         return
                     }
 
@@ -87,14 +85,14 @@ public class OpenAIMessageSender: MessageSender {
                    lastLine == "data: [DONE]" {
                     continuation.finish()
                 } else {
-                    continuation.finish(throwing: SendMessageError.incompleteResponse)
+                    continuation.finish(throwing: SendPromptError.incompleteResponse)
                 }
 
             }
         }
     }
 
-    private func isRespectingCharactersLimit(text: String) -> Bool {
+    private func isRespectingCharactersLimit(text: String, previousMessages: [Message]) -> Bool {
         let previousMessagesCharactersCount = previousMessages
             .reduce(into: 0) { partialResult, message in
                 partialResult += message.content.count
@@ -103,7 +101,7 @@ public class OpenAIMessageSender: MessageSender {
         return previousMessagesCharactersCount + text.count <= charactersLimit
     }
 
-    private func urlRequest(text: String) -> URLRequest {
+    private func urlRequest(text: String, previousMessages: [Message]) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [

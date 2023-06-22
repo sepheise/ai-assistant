@@ -10,11 +10,23 @@
 		5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */; };
 		5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3042A26F9A400BA4D6B /* HTTPClient.swift */; };
 		5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3062A26F9CF00BA4D6B /* Message.swift */; };
-		5103D3092A279E3400BA4D6B /* MessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* MessageSender.swift */; };
+		5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* PromptSender.swift */; };
 		5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */; };
+		5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */; };
+		5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1A2A33F27100B35668 /* Assets.xcassets */; };
+		5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
+		5197EECC2A3D40990017F32B /* ChatModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatModelTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
+		51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatModel.swift */; };
+		51D29B522A3E82100086EB0E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B512A3E82100086EB0E /* ChatView.swift */; };
+		51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
+		51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */; };
+		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
+		51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */; };
+		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,23 +37,71 @@
 			remoteGlobalIDString = 515B91DB2A26306100599B59;
 			remoteInfo = AIAssistant;
 		};
+		51C2429C2A3D61BA009F543F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 515B91D32A26306100599B59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5133BD132A33F27000B35668;
+			remoteInfo = AIAssistantMacOSApp;
+		};
+		51D29B562A3E8A750086EB0E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 515B91D32A26306100599B59 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 515B91DB2A26306100599B59;
+			remoteInfo = AIAssistant;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		51D29B582A3E8A750086EB0E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSender.swift; sourceTree = "<group>"; };
 		5103D3042A26F9A400BA4D6B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		5103D3062A26F9CF00BA4D6B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		5103D3082A279E3400BA4D6B /* MessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSender.swift; sourceTree = "<group>"; };
+		5103D3082A279E3400BA4D6B /* PromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSender.swift; sourceTree = "<group>"; };
 		5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
+		5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAssistantMacOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantMacOSApp.swift; sourceTree = "<group>"; };
+		5133BD1A2A33F27100B35668 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AIAssistantMacOSApp.entitlements; sourceTree = "<group>"; };
 		515B91DC2A26306100599B59 /* AIAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AIAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91E42A26306100599B59 /* AIAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSenderTests.swift; sourceTree = "<group>"; };
+		5197EECB2A3D40990017F32B /* ChatModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModelTests.swift; sourceTree = "<group>"; };
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
 		51CAA0152A2A9DCE0074E577 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
+		51D29B4F2A3E81B10086EB0E /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		51D29B512A3E82100086EB0E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePromptSender.swift; sourceTree = "<group>"; };
+		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
+		51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndResponsesView.swift; sourceTree = "<group>"; };
+		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5133BD112A33F27000B35668 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91D92A26306100599B59 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -60,14 +120,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5133BD152A33F27000B35668 /* AIAssistantMacOSApp */ = {
+			isa = PBXGroup;
+			children = (
+				51F07E4F2A415B5E0026F299 /* Views */,
+				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
+				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
+				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
+				5133BD1C2A33F27100B35668 /* Preview Content */,
+			);
+			path = AIAssistantMacOSApp;
+			sourceTree = "<group>";
+		};
+		5133BD1C2A33F27100B35668 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */,
+				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		515B91D22A26306100599B59 = {
 			isa = PBXGroup;
 			children = (
 				515B91DE2A26306100599B59 /* AIAssistant */,
 				515B91E82A26306100599B59 /* AIAssistantTests */,
+				5133BD152A33F27000B35668 /* AIAssistantMacOSApp */,
 				51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */,
 				51CAA0152A2A9DCE0074E577 /* CI.xctestplan */,
 				515B91DD2A26306100599B59 /* Products */,
+				51D29B532A3E8A750086EB0E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +159,7 @@
 			children = (
 				515B91DC2A26306100599B59 /* AIAssistant.framework */,
 				515B91E42A26306100599B59 /* AIAssistantTests.xctest */,
+				5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,8 +169,9 @@
 			children = (
 				51CAA0132A2A7EE10074E577 /* Domain */,
 				51CAA0122A2A7ED90074E577 /* Infrastructure */,
+				5197EECA2A3D40550017F32B /* Presentation */,
 				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
-				5103D3082A279E3400BA4D6B /* MessageSender.swift */,
+				5103D3082A279E3400BA4D6B /* PromptSender.swift */,
 			);
 			path = AIAssistant;
 			sourceTree = "<group>";
@@ -96,8 +181,18 @@
 			children = (
 				515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */,
 				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
+				5197EECB2A3D40990017F32B /* ChatModelTests.swift */,
 			);
 			path = AIAssistantTests;
+			sourceTree = "<group>";
+		};
+		5197EECA2A3D40550017F32B /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				51D29B4F2A3E81B10086EB0E /* ChatModel.swift */,
+				51F07E4D2A414FF70026F299 /* PromptResponse.swift */,
+			);
+			path = Presentation;
 			sourceTree = "<group>";
 		};
 		51CAA0122A2A7ED90074E577 /* Infrastructure */ = {
@@ -117,6 +212,23 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
+		51D29B532A3E8A750086EB0E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		51F07E4F2A415B5E0026F299 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				51D29B512A3E82100086EB0E /* ChatView.swift */,
+				51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */,
+				51F07E522A415BBC0026F299 /* PromptTextInputView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -130,6 +242,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		5133BD132A33F27000B35668 /* AIAssistantMacOSApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5133BD222A33F27100B35668 /* Build configuration list for PBXNativeTarget "AIAssistantMacOSApp" */;
+			buildPhases = (
+				5133BD102A33F27000B35668 /* Sources */,
+				5133BD112A33F27000B35668 /* Frameworks */,
+				5133BD122A33F27000B35668 /* Resources */,
+				51D29B582A3E8A750086EB0E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				51D29B572A3E8A750086EB0E /* PBXTargetDependency */,
+			);
+			name = AIAssistantMacOSApp;
+			productName = AIAssistantMacOSApp;
+			productReference = 5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		515B91DB2A26306100599B59 /* AIAssistant */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 515B91EE2A26306100599B59 /* Build configuration list for PBXNativeTarget "AIAssistant" */;
@@ -160,6 +291,7 @@
 			);
 			dependencies = (
 				515B91E72A26306100599B59 /* PBXTargetDependency */,
+				51C2429D2A3D61BA009F543F /* PBXTargetDependency */,
 			);
 			name = AIAssistantTests;
 			productName = AIAssistantTests;
@@ -176,6 +308,9 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					5133BD132A33F27000B35668 = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
 					515B91DB2A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
@@ -201,11 +336,21 @@
 			targets = (
 				515B91DB2A26306100599B59 /* AIAssistant */,
 				515B91E32A26306100599B59 /* AIAssistantTests */,
+				5133BD132A33F27000B35668 /* AIAssistantMacOSApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5133BD122A33F27000B35668 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */,
+				5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91DA2A26306100599B59 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -223,11 +368,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5133BD102A33F27000B35668 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */,
+				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
+				51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */,
+				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
+				51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515B91D82A26306100599B59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5103D3092A279E3400BA4D6B /* MessageSender.swift in Sources */,
+				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
+				51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */,
+				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
 				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,
@@ -241,6 +400,7 @@
 			files = (
 				515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */,
 				5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */,
+				5197EECC2A3D40990017F32B /* ChatModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,9 +412,73 @@
 			target = 515B91DB2A26306100599B59 /* AIAssistant */;
 			targetProxy = 515B91E62A26306100599B59 /* PBXContainerItemProxy */;
 		};
+		51C2429D2A3D61BA009F543F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5133BD132A33F27000B35668 /* AIAssistantMacOSApp */;
+			targetProxy = 51C2429C2A3D61BA009F543F /* PBXContainerItemProxy */;
+		};
+		51D29B572A3E8A750086EB0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 515B91DB2A26306100599B59 /* AIAssistant */;
+			targetProxy = 51D29B562A3E8A750086EB0E /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5133BD202A33F27100B35668 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AIAssistantMacOSApp/AIAssistantMacOSApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AIAssistantMacOSApp/Preview Content\"";
+				DEVELOPMENT_TEAM = B8AGE2A2NW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sepheise.AIAssistantMacOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5133BD212A33F27100B35668 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AIAssistantMacOSApp/AIAssistantMacOSApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AIAssistantMacOSApp/Preview Content\"";
+				DEVELOPMENT_TEAM = B8AGE2A2NW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sepheise.AIAssistantMacOSApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		515B91EC2A26306100599B59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -477,6 +701,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5133BD222A33F27100B35668 /* Build configuration list for PBXNativeTarget "AIAssistantMacOSApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5133BD202A33F27100B35668 /* Debug */,
+				5133BD212A33F27100B35668 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		515B91D62A26306100599B59 /* Build configuration list for PBXProject "AIAssistant" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

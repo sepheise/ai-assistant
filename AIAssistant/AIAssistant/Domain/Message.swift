@@ -5,7 +5,7 @@
 //  Created by Patricio Sepúlveda Heise on 31-05-23.
 //
 
-public struct Message {
+public struct Message: Equatable {
     public enum Role: CustomStringConvertible {
         case assistant
         case user
