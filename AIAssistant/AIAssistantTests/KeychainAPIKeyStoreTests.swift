@@ -67,7 +67,7 @@ class KeychainAPIKeyStore {
     }
 
     private func update(_ query: [String: Any], _ data: Data) throws {
-        var attributesToUpdate: [String: Any] = [
+        let attributesToUpdate: [String: Any] = [
             String(kSecValueData): data
         ]
 
@@ -87,12 +87,15 @@ class KeychainAPIKeyStoreTests: XCTestCase {
         XCTAssertNoThrow(try sut.save(anyValue))
     }
 
-    func test_load_returnsSavedValue() {
-        let value = "any value"
+    func test_load_returnsLastSavedValue() {
+        let value1 = "first value"
+        let value2 = "last value"
         let sut = KeychainAPIKeyStore()
 
-        XCTAssertNoThrow(try sut.save(value))
+        XCTAssertNoThrow(try sut.save(value1))
+        XCTAssertEqual(try sut.load(), value1)
 
-        XCTAssertEqual(try sut.load(), value)
+        XCTAssertNoThrow(try sut.save(value2))
+        XCTAssertEqual(try sut.load(), value2)
     }
 }
