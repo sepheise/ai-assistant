@@ -9,6 +9,10 @@ import XCTest
 import AIAssistant
 
 class KeychainAPIKeyStoreTests: XCTestCase {
+    override func tearDown() {
+        clean()
+    }
+
     func test_save_doesNotThrowErrorOnValidInput() {
         let anyValue = "any value"
         let sut = makeSUT()
@@ -42,5 +46,11 @@ class KeychainAPIKeyStoreTests: XCTestCase {
     private func makeSUT() -> KeychainAPIKeyStore {
         let sut = KeychainAPIKeyStore()
         return sut
+    }
+
+    private func clean() {
+        do {
+            try KeychainAPIKeyStore().delete()
+        } catch {}
     }
 }
