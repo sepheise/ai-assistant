@@ -11,7 +11,7 @@ import AIAssistant
 class KeychainAPIKeyStoreTests: XCTestCase {
     func test_save_doesNotThrowErrorOnValidInput() {
         let anyValue = "any value"
-        let sut = KeychainAPIKeyStore()
+        let sut = makeSUT()
 
         XCTAssertNoThrow(try sut.save(anyValue))
     }
@@ -19,7 +19,7 @@ class KeychainAPIKeyStoreTests: XCTestCase {
     func test_load_returnsLastSavedValue() {
         let value1 = "first value"
         let value2 = "last value"
-        let sut = KeychainAPIKeyStore()
+        let sut = makeSUT()
 
         XCTAssertNoThrow(try sut.save(value1))
         XCTAssertEqual(try sut.load(), value1)
@@ -29,11 +29,18 @@ class KeychainAPIKeyStoreTests: XCTestCase {
     }
 
     func test_delete_removesSavedValue() throws {
-        let sut = KeychainAPIKeyStore()
+        let sut = makeSUT()
 
         try sut.save("any value")
 
         XCTAssertNoThrow(try sut.delete())
         XCTAssertThrowsError(try sut.load())
+    }
+
+    // MARK: - Helpers
+
+    private func makeSUT() -> KeychainAPIKeyStore {
+        let sut = KeychainAPIKeyStore()
+        return sut
     }
 }
