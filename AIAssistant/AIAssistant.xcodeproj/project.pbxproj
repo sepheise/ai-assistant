@@ -24,6 +24,7 @@
 		51D29B542A3E8A750086EB0E /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		51D29B552A3E8A750086EB0E /* AIAssistant.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */; };
+		51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */; };
 		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
 		51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */; };
 		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
@@ -89,6 +90,7 @@
 		51D29B4F2A3E81B10086EB0E /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		51D29B512A3E82100086EB0E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePromptSender.swift; sourceTree = "<group>"; };
+		51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAPIKeyStore.swift; sourceTree = "<group>"; };
 		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
 		51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndResponsesView.swift; sourceTree = "<group>"; };
 		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
@@ -169,11 +171,8 @@
 		515B91DE2A26306100599B59 /* AIAssistant */ = {
 			isa = PBXGroup;
 			children = (
-				51CAA0132A2A7EE10074E577 /* Domain */,
-				51CAA0122A2A7ED90074E577 /* Infrastructure */,
-				5197EECA2A3D40550017F32B /* Presentation */,
-				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
-				5103D3082A279E3400BA4D6B /* PromptSender.swift */,
+				51D9D39E2A4563E80062CE05 /* Chat */,
+				51D9D39F2A4563F90062CE05 /* Settings */,
 			);
 			path = AIAssistant;
 			sourceTree = "<group>";
@@ -220,6 +219,34 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		51D9D39E2A4563E80062CE05 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				51CAA0132A2A7EE10074E577 /* Domain */,
+				51CAA0122A2A7ED90074E577 /* Infrastructure */,
+				5197EECA2A3D40550017F32B /* Presentation */,
+				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
+				5103D3082A279E3400BA4D6B /* PromptSender.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		51D9D39F2A4563F90062CE05 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				51D9D3A02A4564130062CE05 /* Infrastructure */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		51D9D3A02A4564130062CE05 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */,
+			);
+			path = Infrastructure;
 			sourceTree = "<group>";
 		};
 		51F07E4F2A415B5E0026F299 /* Views */ = {
@@ -387,6 +414,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */,
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */,
 				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
