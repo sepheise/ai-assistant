@@ -1,5 +1,5 @@
 //
-//  OpenAIApiKeyStoreTests.swift
+//  KeychainAPIKeyStoreTests.swift
 //  AIAssistantTests
 //
 //  Created by Patricio Sepúlveda Heise on 22-06-23.

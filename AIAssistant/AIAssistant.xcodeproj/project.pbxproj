@@ -180,10 +180,8 @@
 		515B91E82A26306100599B59 /* AIAssistantTests */ = {
 			isa = PBXGroup;
 			children = (
-				515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */,
-				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
-				5197EECB2A3D40990017F32B /* ChatModelTests.swift */,
-				51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */,
+				51D9D3A32A4566750062CE05 /* Chat */,
+				51D9D3A42A45667A0062CE05 /* Settings */,
 			);
 			path = AIAssistantTests;
 			sourceTree = "<group>";
@@ -247,6 +245,24 @@
 				51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */,
 			);
 			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		51D9D3A32A4566750062CE05 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */,
+				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
+				5197EECB2A3D40990017F32B /* ChatModelTests.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		51D9D3A42A45667A0062CE05 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		51F07E4F2A415B5E0026F299 /* Views */ = {
