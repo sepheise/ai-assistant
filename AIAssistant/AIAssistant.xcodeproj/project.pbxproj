@@ -27,6 +27,7 @@
 		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
 		51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */; };
 		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
+		51FFECBC2A452C27008274FD /* KeychainStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51FFECBB2A452C27008274FD /* KeychainStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
 		51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndResponsesView.swift; sourceTree = "<group>"; };
 		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
+		51FFECBB2A452C27008274FD /* KeychainStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */,
 				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
 				5197EECB2A3D40990017F32B /* ChatModelTests.swift */,
+				51FFECBB2A452C27008274FD /* KeychainStoreTests.swift */,
 			);
 			path = AIAssistantTests;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */,
 				5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */,
 				5197EECC2A3D40990017F32B /* ChatModelTests.swift in Sources */,
+				51FFECBC2A452C27008274FD /* KeychainStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
