@@ -18,9 +18,11 @@ public class KeychainAPIKeyStore {
         case unknownError
     }
 
-    private let key = "com.sepheise.AIAssistant.apiKey"
+    private let key: String
 
-    public init() {}
+    public init(key: String = "com.sepheise.AIAssistant.apiKey") {
+        self.key = key
+    }
 
     public func save(_ value: String) throws {
         guard let data = value.data(using: .utf8) else {

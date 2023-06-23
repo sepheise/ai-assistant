@@ -44,7 +44,7 @@ class KeychainAPIKeyStoreTests: XCTestCase {
     // MARK: - Helpers
 
     private func makeSUT() -> KeychainAPIKeyStore {
-        let sut = KeychainAPIKeyStore()
+        let sut = KeychainAPIKeyStore(key: "com.sepheise.AIAssistant.tests")
         return sut
     }
 
