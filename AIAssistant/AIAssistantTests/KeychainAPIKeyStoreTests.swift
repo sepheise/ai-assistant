@@ -14,6 +14,7 @@ class KeychainAPIKeyStore {
         case saveFailure
         case loadFailure
         case updateFailure
+        case deleteFailure
         case unknownError
     }
 
@@ -59,9 +60,22 @@ class KeychainAPIKeyStore {
         return String(decoding: data, as: UTF8.self)
     }
 
+    func delete() throws {
+        let query: [String: Any] = [
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrAccount): key
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+
+        guard status == noErr else {
+            throw Error.deleteFailure
+        }
+    }
+
     private func add(_ query: [String: Any], _ data: Data) throws {
         let status = SecItemAdd(query as CFDictionary, nil)
-        if status != errSecSuccess {
+        guard status == noErr else {
             throw Error.saveFailure
         }
     }
@@ -72,7 +86,7 @@ class KeychainAPIKeyStore {
         ]
 
         let status = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
-        if status != errSecSuccess {
+        guard status == noErr else {
             throw Error.updateFailure
         }
     }
@@ -97,5 +111,14 @@ class KeychainAPIKeyStoreTests: XCTestCase {
 
         XCTAssertNoThrow(try sut.save(value2))
         XCTAssertEqual(try sut.load(), value2)
+    }
+
+    func test_delete_removesSavedValue() throws {
+        let sut = KeychainAPIKeyStore()
+
+        try sut.save("any value")
+
+        XCTAssertNoThrow(try sut.delete())
+        XCTAssertThrowsError(try sut.load())
     }
 }
