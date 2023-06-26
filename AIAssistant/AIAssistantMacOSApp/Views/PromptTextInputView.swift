@@ -37,6 +37,7 @@ struct PromptTextInputView: View {
                 .keyboardShortcut(.return, modifiers: .command)
                 .frame(width: 30, height: 30)
                 .disabled(!canSubmit)
+                .help("Submit prompt")
             }
             .padding(.bottom, 20)
             .padding(.trailing, 30)

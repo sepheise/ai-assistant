@@ -12,9 +12,6 @@ struct SettingsView: View {
 
     var body: some View {
         VStack {
-            Text("Settings")
-                .font(.title)
-            Spacer()
             HStack {
                 TextField("OpenAI API key", text: $openAIApiKey)
                 Button(action: {}) {
@@ -24,7 +21,7 @@ struct SettingsView: View {
             }
             Spacer()
         }
-        .frame(height: 100)
+        .frame(alignment: .top)
         .padding(20)
     }
 }
