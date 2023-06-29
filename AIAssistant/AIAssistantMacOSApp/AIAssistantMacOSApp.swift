@@ -12,7 +12,10 @@ import AIAssistant
 struct AIAssistantMacOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(
+                chatView: ChatView(model: ChatModel(promptSender: FakePromptSender())),
+                settingsView: SettingsView()
+            )
         }
     }
 }

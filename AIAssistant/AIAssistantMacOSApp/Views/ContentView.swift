@@ -9,35 +9,35 @@ import SwiftUI
 import AIAssistant
 
 struct ContentView: View {
-
-    @MainActor
-    struct Views {
-        static var chatView: some View = ChatView(model: ChatModel(promptSender: FakePromptSender()))
-            .navigationTitle("Chat")
-        static var settingsView: some View = SettingsView()
-            .navigationTitle("Settings")
-    }
+    let chatView: ChatView
+    let settingsView: SettingsView
 
     var body: some View {
         NavigationSplitView(
             sidebar: {
                 List {
                     NavigationLink("Chat") {
-                        Views.chatView
+                        chatView
+                            .navigationTitle("Chat")
                     }
                     NavigationLink("Settings") {
-                        Views.settingsView
+                        settingsView
+                            .navigationTitle("Settings")
                     }
                 }
             },
             detail: {
-                Views.chatView
+                chatView
+                    .navigationTitle("Chat")
             })
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(
+            chatView: ChatView(model: ChatModel(promptSender: FakePromptSender())),
+            settingsView: SettingsView()
+        )
     }
 }
