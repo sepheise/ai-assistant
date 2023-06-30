@@ -17,6 +17,9 @@
 		5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
 		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
+		517ECCC42A4D3B030084DE5C /* APIKeyLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */; };
+		517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */; };
+		517ECCC82A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */; };
 		5197EECC2A3D40990017F32B /* ChatModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatModelTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
 		51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatModel.swift */; };
@@ -85,6 +88,9 @@
 		515B91DC2A26306100599B59 /* AIAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AIAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91E42A26306100599B59 /* AIAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSenderTests.swift; sourceTree = "<group>"; };
+		517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyLoader.swift; sourceTree = "<group>"; };
+		517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySaver.swift; sourceTree = "<group>"; };
+		517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryAPIKeyStore.swift; sourceTree = "<group>"; };
 		5197EECB2A3D40990017F32B /* ChatModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModelTests.swift; sourceTree = "<group>"; };
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
@@ -145,6 +151,7 @@
 			children = (
 				51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */,
 				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
+				517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -239,6 +246,8 @@
 			isa = PBXGroup;
 			children = (
 				51D9D3A02A4564130062CE05 /* Infrastructure */,
+				517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */,
+				517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -428,6 +437,7 @@
 				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
 				51D9D3AB2A474EBA0062CE05 /* ContentView.swift in Sources */,
 				51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */,
+				517ECCC82A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift in Sources */,
 				51D9D3A92A45E1670062CE05 /* SettingsView.swift in Sources */,
 				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
 				51D29B5A2A3E8BD00086EB0E /* FakePromptSender.swift in Sources */,
@@ -438,9 +448,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				517ECCC42A4D3B030084DE5C /* APIKeyLoader.swift in Sources */,
 				51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */,
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatModel.swift in Sources */,
+				517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */,
 				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,

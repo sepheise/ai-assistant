@@ -34,10 +34,12 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    private static let inMemoryAPIKeyStore = InMemoryAPIKeyStore()
+
     static var previews: some View {
         ContentView(
             chatView: ChatView(model: ChatModel(promptSender: FakePromptSender())),
-            settingsView: SettingsView()
+            settingsView: SettingsView(apiKeyLoader: inMemoryAPIKeyStore, apiKeySaver: inMemoryAPIKeyStore)
         )
     }
 }

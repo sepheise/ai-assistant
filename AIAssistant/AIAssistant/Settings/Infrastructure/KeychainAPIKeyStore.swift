@@ -24,46 +24,6 @@ public class KeychainAPIKeyStore {
         self.key = key
     }
 
-    public func save(_ value: String) throws {
-        guard let data = value.data(using: .utf8) else {
-            throw Error.invalidValue
-        }
-
-        let query: [String: Any] = [
-            String(kSecClass): kSecClassGenericPassword,
-            String(kSecAttrAccount): key,
-            String(kSecValueData): data
-        ]
-        let status = SecItemCopyMatching(query as CFDictionary, nil)
-
-        switch status {
-        case errSecSuccess:
-            try update(query, data)
-        case errSecItemNotFound:
-            try add(query, data)
-        default:
-            throw Error.unknownError
-        }
-    }
-
-    public func load() throws -> String {
-        let query = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: key,
-            kSecReturnData: kCFBooleanTrue as Any,
-            kSecMatchLimit: kSecMatchLimitOne
-        ] as CFDictionary
-
-        var queryResult: AnyObject?
-        let status = SecItemCopyMatching(query, &queryResult)
-
-        guard status == noErr, let data = queryResult as? Data else {
-            throw Error.loadFailure
-        }
-
-        return String(decoding: data, as: UTF8.self)
-    }
-
     public func delete() throws {
         let query: [String: Any] = [
             String(kSecClass): kSecClassGenericPassword,
@@ -93,5 +53,49 @@ public class KeychainAPIKeyStore {
         guard status == noErr else {
             throw Error.updateFailure
         }
+    }
+}
+
+extension KeychainAPIKeyStore: APIKeySaver {
+    public func save(_ value: String) throws {
+        guard let data = value.data(using: .utf8) else {
+            throw Error.invalidValue
+        }
+
+        let query: [String: Any] = [
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrAccount): key,
+            String(kSecValueData): data
+        ]
+        let status = SecItemCopyMatching(query as CFDictionary, nil)
+
+        switch status {
+        case errSecSuccess:
+            try update(query, data)
+        case errSecItemNotFound:
+            try add(query, data)
+        default:
+            throw Error.unknownError
+        }
+    }
+}
+
+extension KeychainAPIKeyStore: APIKeyLoader {
+    public func load() throws -> String {
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: key,
+            kSecReturnData: kCFBooleanTrue as Any,
+            kSecMatchLimit: kSecMatchLimitOne
+        ] as CFDictionary
+
+        var queryResult: AnyObject?
+        let status = SecItemCopyMatching(query, &queryResult)
+
+        guard status == noErr, let data = queryResult as? Data else {
+            throw Error.loadFailure
+        }
+
+        return String(decoding: data, as: UTF8.self)
     }
 }
