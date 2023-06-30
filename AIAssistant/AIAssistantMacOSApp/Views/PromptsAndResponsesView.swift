@@ -20,7 +20,7 @@ struct PromptsAndResponsesView: View {
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color("UserInputBackground"))
-                    Text(promptResponse.response)
+                    Text(LocalizedStringKey(promptResponse.response))
                         .textSelection(.enabled)
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
