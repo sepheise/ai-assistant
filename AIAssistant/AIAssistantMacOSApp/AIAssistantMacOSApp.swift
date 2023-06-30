@@ -19,7 +19,7 @@ struct AIAssistantMacOSApp: App {
                     model: ChatModel(
                         promptSender: OpenAIMessageSender(
                             client: URLSessionHTTPClient(),
-                            url: URL(string: "https://api.openai.com/v1/completions")!,
+                            url: URL(string: "https://api.openai.com/v1/chat/completions")!,
                             apiKey: loadAPIKey()
                         )
                     )
