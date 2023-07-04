@@ -12,23 +12,26 @@ struct ContentView: View {
     let chatView: ChatView
     let settingsView: SettingsView
 
+    private let chatViewTitle = "Chat"
+    private let settingsViewTitle = "Settings"
+
     var body: some View {
         NavigationSplitView(
             sidebar: {
                 List {
-                    NavigationLink("Chat") {
+                    NavigationLink(chatViewTitle) {
                         chatView
-                            .navigationTitle("Chat")
+                            .navigationTitle(chatViewTitle)
                     }
-                    NavigationLink("Settings") {
+                    NavigationLink(settingsViewTitle) {
                         settingsView
-                            .navigationTitle("Settings")
+                            .navigationTitle(settingsViewTitle)
                     }
                 }
             },
             detail: {
                 chatView
-                    .navigationTitle("Chat")
+                    .navigationTitle(chatViewTitle)
             })
     }
 }
