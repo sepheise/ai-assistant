@@ -20,6 +20,7 @@
 		517ECCC42A4D3B030084DE5C /* APIKeyLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */; };
 		517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */; };
 		517ECCC82A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */; };
+		517ECCD22A539BA40084DE5C /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCD12A539BA40084DE5C /* SettingsViewModelTests.swift */; };
 		5197EECC2A3D40990017F32B /* ChatViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatViewModelTests.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
 		51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatViewModel.swift */; };
@@ -91,6 +92,7 @@
 		517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyLoader.swift; sourceTree = "<group>"; };
 		517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySaver.swift; sourceTree = "<group>"; };
 		517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryAPIKeyStore.swift; sourceTree = "<group>"; };
+		517ECCD12A539BA40084DE5C /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
 		5197EECB2A3D40990017F32B /* ChatViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModelTests.swift; sourceTree = "<group>"; };
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */,
+				517ECCD12A539BA40084DE5C /* SettingsViewModelTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -475,6 +478,7 @@
 			files = (
 				515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */,
 				5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */,
+				517ECCD22A539BA40084DE5C /* SettingsViewModelTests.swift in Sources */,
 				5197EECC2A3D40990017F32B /* ChatViewModelTests.swift in Sources */,
 				51FFECBC2A452C27008274FD /* KeychainAPIKeyStoreTests.swift in Sources */,
 			);
