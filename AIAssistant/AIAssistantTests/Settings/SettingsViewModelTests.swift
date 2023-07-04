@@ -11,6 +11,9 @@ import AIAssistant
 class SettingsViewModel {
     var openAIApiKey: String = ""
     var errorMessage: String = ""
+    var canSave: Bool {
+        !openAIApiKey.isEmpty
+    }
     private let apiKeyLoader: APIKeyLoader
 
     init(apiKeyLoader: APIKeyLoader) {
@@ -46,6 +49,19 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(apiKeyLoaderSpy.loadCallsCount, 1)
         XCTAssertEqual(sut.openAIApiKey, "")
         XCTAssertEqual(sut.errorMessage, "Couldn't load API Key")
+    }
+
+    func test_cantSave_whenOpenAIKeyValueIsEmpty() {
+        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: .success("testKey"))
+        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+
+        sut.openAIApiKey = ""
+
+        XCTAssertFalse(sut.canSave)
+
+        sut.openAIApiKey = "any key"
+
+        XCTAssertTrue(sut.canSave)
     }
 }
 
