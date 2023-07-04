@@ -8,41 +8,6 @@
 import XCTest
 import AIAssistant
 
-class SettingsViewModel {
-    var openAIApiKey: String = ""
-    var errorMessage: String = ""
-    var canSave: Bool {
-        !openAIApiKey.isEmpty
-    }
-    private let apiKeyLoader: APIKeyLoader
-    private let apiKeySaver: APIKeySaver
-
-    init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver) {
-        self.apiKeyLoader = apiKeyLoader
-        self.apiKeySaver = apiKeySaver
-    }
-
-    func onAppear() {
-        do {
-            openAIApiKey = try apiKeyLoader.load()
-        } catch {
-            errorMessage = "Couldn't load API Key"
-        }
-    }
-
-    func saveAPIKey() {
-        guard !openAIApiKey.isEmpty else {
-            return
-        }
-
-        do {
-            try apiKeySaver.save(openAIApiKey)
-        } catch {
-            errorMessage = "Couldn't save API Key"
-        }
-    }
-}
-
 class SettingsViewModelTests: XCTestCase {
     func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
         let (sut, loaderSpy, _) = makeSUT(loaderResult: .success("testKey"))
