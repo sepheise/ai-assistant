@@ -39,7 +39,12 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(
             chatView: ChatView(chatViewModel: ChatViewModel(promptSender: FakePromptSender())),
-            settingsView: SettingsView(apiKeyLoader: inMemoryAPIKeyStore, apiKeySaver: inMemoryAPIKeyStore)
+            settingsView: SettingsView(
+                viewModel: SettingsViewModel(
+                    apiKeyLoader: inMemoryAPIKeyStore,
+                    apiKeySaver: inMemoryAPIKeyStore
+                )
+            )
         )
     }
 }
