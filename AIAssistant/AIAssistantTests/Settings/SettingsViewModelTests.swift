@@ -15,9 +15,11 @@ class SettingsViewModel {
         !openAIApiKey.isEmpty
     }
     private let apiKeyLoader: APIKeyLoader
+    private let apiKeySaver: APIKeySaver
 
-    init(apiKeyLoader: APIKeyLoader) {
+    init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver) {
         self.apiKeyLoader = apiKeyLoader
+        self.apiKeySaver = apiKeySaver
     }
 
     func onAppear() {
@@ -29,7 +31,15 @@ class SettingsViewModel {
     }
 
     func saveAPIKey() {
+        guard !openAIApiKey.isEmpty else {
+            return
+        }
 
+        do {
+            try apiKeySaver.save(openAIApiKey)
+        } catch {
+            errorMessage = "Couldn't save API Key"
+        }
     }
 }
 
@@ -70,7 +80,27 @@ class SettingsViewModelTests: XCTestCase {
 
         sut.saveAPIKey()
 
-        XCTAssertEqual(saverSpy.saveCallsCount, 0)
+        XCTAssertEqual(saverSpy.saveCalls.count, 0)
+    }
+
+    func test_save_saveOpenAIKeyOnNonEmptyValue() {
+        let (sut, _, saverSpy) = makeSUT()
+
+        sut.openAIApiKey = "any key"
+        sut.saveAPIKey()
+
+        XCTAssertEqual(saverSpy.saveCalls.count, 1)
+        XCTAssertEqual(saverSpy.saveCalls, ["any key"])
+    }
+
+    func test_save_setsErrorMessageOnSaveFailure() {
+        let (sut, _, saverSpy) = makeSUT(saverResult: .failure(anyError()))
+
+        sut.openAIApiKey = "any key"
+        sut.saveAPIKey()
+
+        XCTAssertEqual(saverSpy.saveCalls, ["any key"])
+        XCTAssertEqual(sut.errorMessage, "Couldn't save API Key")
     }
 
     // MARK: - Helpers
@@ -79,7 +109,7 @@ class SettingsViewModelTests: XCTestCase {
         
         let apiKeyLoaderSpy = APIKeyLoaderSpy(result: loaderResult)
         let apiKeySaverSpy = APIKeySaverSpy(result: saverResult)
-        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy, apiKeySaver: apiKeySaverSpy)
 
         return (sut, apiKeyLoaderSpy, apiKeySaverSpy)
     }
@@ -105,13 +135,20 @@ class APIKeyLoaderSpy: APIKeyLoader {
 
 class APIKeySaverSpy: APIKeySaver {
     var result: Result<Void, Error>
-    var saveCallsCount: Int = 0
+    var saveCalls: [String] = []
 
     init(result: Result<Void, Error>) {
         self.result = result
     }
 
     func save(_ value: String) throws {
-        saveCallsCount += 1
+        saveCalls.append(value)
+
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
     }
 }
