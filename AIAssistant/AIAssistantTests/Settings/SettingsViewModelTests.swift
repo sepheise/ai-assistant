@@ -31,29 +31,26 @@ class SettingsViewModel {
 
 class SettingsViewModelTests: XCTestCase {
     func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
-        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: .success("testKey"))
-        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+        let (sut, loaderSpy) = makeSUT(loaderResult: .success("testKey"))
 
         sut.onAppear()
 
-        XCTAssertEqual(apiKeyLoaderSpy.loadCallsCount, 1)
+        XCTAssertEqual(loaderSpy.loadCallsCount, 1)
         XCTAssertEqual(sut.openAIApiKey, "testKey")
     }
 
     func test_onAppear_setsErrorMessageOnLoadFailure() {
-        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: .failure(NSError(domain: "any error", code: 0)))
-        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+        let (sut, loaderSpy) = makeSUT(loaderResult: .failure(anyError()))
 
         sut.onAppear()
 
-        XCTAssertEqual(apiKeyLoaderSpy.loadCallsCount, 1)
+        XCTAssertEqual(loaderSpy.loadCallsCount, 1)
         XCTAssertEqual(sut.openAIApiKey, "")
         XCTAssertEqual(sut.errorMessage, "Couldn't load API Key")
     }
 
     func test_cantSave_whenOpenAIKeyValueIsEmpty() {
-        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: .success("testKey"))
-        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+        let (sut, _) = makeSUT()
 
         sut.openAIApiKey = ""
 
@@ -62,6 +59,20 @@ class SettingsViewModelTests: XCTestCase {
         sut.openAIApiKey = "any key"
 
         XCTAssertTrue(sut.canSave)
+    }
+
+    // MARK: - Helpers
+
+    func makeSUT(loaderResult: Result<String, Error> = .success("testKey")) -> (sut: SettingsViewModel, loaderSpy: APIKeyLoaderSpy) {
+        
+        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: loaderResult)
+        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
+
+        return (sut, apiKeyLoaderSpy)
+    }
+
+    func anyError() -> Error {
+        return NSError(domain: "any error", code: 0)
     }
 }
 
