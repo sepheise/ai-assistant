@@ -9,49 +9,28 @@ import SwiftUI
 import AIAssistant
 
 struct SettingsView: View {
-    @State var openAIApiKey: String = ""
-    @State var errorMessage: String = ""
+    @ObservedObject private var viewModel: SettingsViewModel
 
-    private let apiKeyLoader: APIKeyLoader
-    private let apiKeySaver: APIKeySaver
-
-    init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver) {
-        self.apiKeyLoader = apiKeyLoader
-        self.apiKeySaver = apiKeySaver
-    }
-
-    func saveAPIKey() {
-        do {
-            try apiKeySaver.save(openAIApiKey)
-        } catch {
-            errorMessage = "Couldn't save API Key"
-        }
-    }
-
-    func onAppear() {
-        do {
-            openAIApiKey = try apiKeyLoader.load()
-        } catch {
-            errorMessage = "Couldn't load API Key"
-        }
+    init(viewModel: SettingsViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
         VStack {
             HStack {
-                TextField("OpenAI API key", text: $openAIApiKey)
-                    .onAppear(perform: onAppear)
+                TextField("OpenAI API key", text: $viewModel.openAIApiKey)
+                    .onAppear(perform: viewModel.onAppear)
 
                 Button(
                     action: {
-                        saveAPIKey()
+                        viewModel.saveAPIKey()
                     },
                     label: {
                         Image(systemName: "checkmark")
                             .accessibilityHint("Save")
                     }
                 )
-                .disabled(openAIApiKey.isEmpty)
+                .disabled(!viewModel.canSave)
 
                 Button(action: {}) {
                     Image(systemName: "trash.fill")
@@ -70,8 +49,10 @@ struct SettingsView_Previews: PreviewProvider {
 
     static var previews: some View {
         SettingsView(
-            apiKeyLoader: inMemoryAPIKeyStore,
-            apiKeySaver: inMemoryAPIKeyStore
+            viewModel: SettingsViewModel(
+                apiKeyLoader: inMemoryAPIKeyStore,
+                apiKeySaver: inMemoryAPIKeyStore
+            )
         )
     }
 }

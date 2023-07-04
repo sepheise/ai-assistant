@@ -7,9 +7,9 @@
 
 import Foundation
 
-public class SettingsViewModel {
-    public var openAIApiKey: String = ""
-    public var errorMessage: String = ""
+public class SettingsViewModel: ObservableObject {
+    @Published public var openAIApiKey: String = ""
+    @Published public var errorMessage: String = ""
     public var canSave: Bool {
         !openAIApiKey.isEmpty
     }

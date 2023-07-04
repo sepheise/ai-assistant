@@ -8,6 +8,7 @@
 import XCTest
 import AIAssistant
 
+@MainActor
 class SettingsViewModelTests: XCTestCase {
     func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
         let (sut, loaderSpy, _) = makeSUT(loaderResult: .success("testKey"))

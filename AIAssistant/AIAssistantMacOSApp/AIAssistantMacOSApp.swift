@@ -25,8 +25,10 @@ struct AIAssistantMacOSApp: App {
                     )
                 ),
                 settingsView: SettingsView(
-                    apiKeyLoader: apiKeyStore,
-                    apiKeySaver: apiKeyStore
+                    viewModel: SettingsViewModel(
+                        apiKeyLoader: apiKeyStore,
+                        apiKeySaver: apiKeyStore
+                    )
                 )
             )
         }
