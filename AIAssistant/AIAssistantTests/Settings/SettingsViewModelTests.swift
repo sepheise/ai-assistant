@@ -27,11 +27,15 @@ class SettingsViewModel {
             errorMessage = "Couldn't load API Key"
         }
     }
+
+    func saveAPIKey() {
+
+    }
 }
 
 class SettingsViewModelTests: XCTestCase {
     func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
-        let (sut, loaderSpy) = makeSUT(loaderResult: .success("testKey"))
+        let (sut, loaderSpy, _) = makeSUT(loaderResult: .success("testKey"))
 
         sut.onAppear()
 
@@ -40,7 +44,7 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_onAppear_setsErrorMessageOnLoadFailure() {
-        let (sut, loaderSpy) = makeSUT(loaderResult: .failure(anyError()))
+        let (sut, loaderSpy, _) = makeSUT(loaderResult: .failure(anyError()))
 
         sut.onAppear()
 
@@ -50,7 +54,7 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_cantSave_whenOpenAIKeyValueIsEmpty() {
-        let (sut, _) = makeSUT()
+        let (sut, _, _) = makeSUT()
 
         sut.openAIApiKey = ""
 
@@ -61,14 +65,23 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(sut.canSave)
     }
 
+    func test_save_doesNotSaveWhenOpenAIKeyValueIsEmpty() {
+        let (sut, _, saverSpy) = makeSUT()
+
+        sut.saveAPIKey()
+
+        XCTAssertEqual(saverSpy.saveCallsCount, 0)
+    }
+
     // MARK: - Helpers
 
-    func makeSUT(loaderResult: Result<String, Error> = .success("testKey")) -> (sut: SettingsViewModel, loaderSpy: APIKeyLoaderSpy) {
+    func makeSUT(loaderResult: Result<String, Error> = .success("testKey"), saverResult: Result<Void, Error> = .success(())) -> (sut: SettingsViewModel, loaderSpy: APIKeyLoaderSpy, saverSpy: APIKeySaverSpy) {
         
         let apiKeyLoaderSpy = APIKeyLoaderSpy(result: loaderResult)
+        let apiKeySaverSpy = APIKeySaverSpy(result: saverResult)
         let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy)
 
-        return (sut, apiKeyLoaderSpy)
+        return (sut, apiKeyLoaderSpy, apiKeySaverSpy)
     }
 
     func anyError() -> Error {
@@ -87,5 +100,18 @@ class APIKeyLoaderSpy: APIKeyLoader {
     func load() throws -> String {
         loadCallsCount += 1
         return try result.get()
+    }
+}
+
+class APIKeySaverSpy: APIKeySaver {
+    var result: Result<Void, Error>
+    var saveCallsCount: Int = 0
+
+    init(result: Result<Void, Error>) {
+        self.result = result
+    }
+
+    func save(_ value: String) throws {
+        saveCallsCount += 1
     }
 }
