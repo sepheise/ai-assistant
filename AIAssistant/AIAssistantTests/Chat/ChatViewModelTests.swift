@@ -1,5 +1,5 @@
 //
-//  ChatModelTests.swift
+//  ChatViewModelTests.swift
 //  AIAssistantTests
 //
 //  Created by Patricio Sepúlveda Heise on 16-06-23.
@@ -9,7 +9,7 @@ import XCTest
 import AIAssistant
 
 @MainActor
-class ChatModelTests: XCTestCase {
+class ChatViewModelTests: XCTestCase {
     func test_cantSubmit_whenInputTextIsEmpty() async {
         let (sut, _) = makeSUT()
 
@@ -120,11 +120,11 @@ class ChatModelTests: XCTestCase {
 // MARK: - Helpers
 
 @MainActor
-private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPromptError> = successfulPromptSenderResult()) -> (sut: ChatModel, promptSenderSpy: PromptSenderSpy) {
+private func makeSUT(promptSenderResult: Result<PromptResponseStream, SendPromptError> = successfulPromptSenderResult()) -> (sut: ChatViewModel, promptSenderSpy: PromptSenderSpy) {
     let promptSenderSpy = PromptSenderSpy(
         result: promptSenderResult
     )
-    let sut = ChatModel(promptSender: promptSenderSpy)
+    let sut = ChatViewModel(promptSender: promptSenderSpy)
 
     return (sut, promptSenderSpy)
 }

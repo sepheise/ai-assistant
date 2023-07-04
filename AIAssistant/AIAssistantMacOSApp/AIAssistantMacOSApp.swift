@@ -16,7 +16,7 @@ struct AIAssistantMacOSApp: App {
         WindowGroup {
             ContentView(
                 chatView: ChatView(
-                    model: ChatModel(
+                    chatViewModel: ChatViewModel(
                         promptSender: OpenAIMessageSender(
                             client: URLSessionHTTPClient(),
                             url: URL(string: "https://api.openai.com/v1/chat/completions")!,

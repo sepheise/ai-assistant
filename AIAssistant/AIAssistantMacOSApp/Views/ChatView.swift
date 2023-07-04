@@ -9,20 +9,20 @@ import SwiftUI
 import AIAssistant
 
 struct ChatView: View {
-    @ObservedObject private var model: ChatModel
+    @ObservedObject private var chatViewModel: ChatViewModel
 
-    init(model: ChatModel) {
-        self.model = model
+    init(chatViewModel: ChatViewModel) {
+        self.chatViewModel = chatViewModel
     }
 
     var body: some View {
         VStack(alignment: .leading) {
-            PromptsAndResponsesView(promptResponses: $model.promptResponses)
+            PromptsAndResponsesView(promptResponses: $chatViewModel.promptResponses)
             Spacer()
             PromptTextInputView(
-                inputText: $model.inputText,
-                canSubmit: $model.canSubmit,
-                submit: model.submit
+                inputText: $chatViewModel.inputText,
+                canSubmit: $chatViewModel.canSubmit,
+                submit: chatViewModel.submit
             )
         }
     }
@@ -30,6 +30,6 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(model: ChatModel(promptSender: FakePromptSender()))
+        ChatView(chatViewModel: ChatViewModel(promptSender: FakePromptSender()))
     }
 }

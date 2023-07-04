@@ -1,5 +1,5 @@
 //
-//  ChatModel.swift
+//  ChatViewModel.swift
 //  AIAssistant
 //
 //  Created by Patricio Sepúlveda Heise on 17-06-23.
@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-public class ChatModel: ObservableObject {
+public class ChatViewModel: ObservableObject {
     @Published public var inputText: String = "" {
         didSet {
             checkCanSubmit()
