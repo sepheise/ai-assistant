@@ -154,8 +154,8 @@
 			isa = PBXGroup;
 			children = (
 				51D29B592A3E8BD00086EB0E /* FakePromptSender.swift */,
-				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
 				517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */,
+				5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";

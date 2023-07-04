@@ -12,16 +12,20 @@ import AIAssistant
 struct AIAssistantMacOSApp: App {
     private let apiKeyStore = KeychainAPIKeyStore()
 
+    private func makePromptSender() -> PromptSender {
+        return OpenAIMessageSenderWithKeyLoader(
+            client: URLSessionHTTPClient(),
+            url: URL(string: "https://api.openai.com/v1/chat/completions")!,
+            apiKeyLoader: apiKeyStore
+        )
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView(
                 chatView: ChatView(
                     chatViewModel: ChatViewModel(
-                        promptSender: OpenAIMessageSender(
-                            client: URLSessionHTTPClient(),
-                            url: URL(string: "https://api.openai.com/v1/chat/completions")!,
-                            apiKey: loadAPIKey()
-                        )
+                        promptSender: makePromptSender()
                     )
                 ),
                 settingsView: SettingsView(
@@ -35,10 +39,27 @@ struct AIAssistantMacOSApp: App {
     }
 }
 
-func loadAPIKey() -> String {
-    do {
-        return try KeychainAPIKeyStore().load()
-    } catch {
-        return ""
+private class OpenAIMessageSenderWithKeyLoader: PromptSender {
+    enum Error: Swift.Error {
+        case cantLoadAPIKey
+    }
+
+    private let client: HTTPClient
+    private let url: URL
+    private let apiKeyLoader: APIKeyLoader
+
+    init(client: HTTPClient, url: URL, apiKeyLoader: APIKeyLoader) {
+        self.client = client
+        self.url = url
+        self.apiKeyLoader = apiKeyLoader
+    }
+
+    func send(prompt: String, previousMessages: [Message]) async throws -> PromptResponseStream {
+        guard let apiKey = try? apiKeyLoader.load() else {
+            throw Error.cantLoadAPIKey
+        }
+
+        let openAIMessageSender = OpenAIMessageSender(client: client, url: url, apiKey: apiKey)
+        return try await openAIMessageSender.send(prompt: prompt)
     }
 }
