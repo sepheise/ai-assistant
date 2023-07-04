@@ -1,5 +1,5 @@
 //
-//  OpenAIMessageSenderTests.swift
+//  OpenAIPromptSenderTests.swift
 //  AIAssistantTests
 //
 //  Created by Patricio Sepúlveda Heise on 30-05-23.
@@ -8,7 +8,7 @@
 import XCTest
 import AIAssistant
 
-class OpenAIMessageSenderTests: XCTestCase {
+class OpenAIPromptSenderTests: XCTestCase {
     func test_init_doesNotSendAnyRequest() {
         let (_, client) = makeSUT()
 
@@ -160,7 +160,7 @@ private func makeSUT(
     clientResult: Result<(HTTPClient.LinesStream, URLResponse), Error> = .success((anyValidLinesStream(), successfulHTTPURLResponse()))
 ) -> (sut: PromptSender, client: HTTPClientSpy) {
     let client = HTTPClientSpy(result: clientResult)
-    let sut = OpenAIMessageSender(client: client, url: url, apiKey: apiKey)
+    let sut = OpenAIPromptSender(client: client, url: url, apiKey: apiKey)
 
     return (sut, client)
 }

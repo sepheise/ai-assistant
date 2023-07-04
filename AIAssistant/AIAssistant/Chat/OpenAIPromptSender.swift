@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class OpenAIMessageSender: PromptSender {
+public class OpenAIPromptSender: PromptSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
         let model: String

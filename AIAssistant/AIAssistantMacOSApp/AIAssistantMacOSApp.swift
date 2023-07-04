@@ -59,7 +59,7 @@ private class OpenAIMessageSenderWithKeyLoader: PromptSender {
             throw Error.cantLoadAPIKey
         }
 
-        let openAIMessageSender = OpenAIMessageSender(client: client, url: url, apiKey: apiKey)
+        let openAIMessageSender = OpenAIPromptSender(client: client, url: url, apiKey: apiKey)
         return try await openAIMessageSender.send(prompt: prompt)
     }
 }
