@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class OpenAIMessageSender: PromptSender {
+public class OpenAIPromptSender: PromptSender {
     private struct RequestBody: Encodable {
         let messages: [RequestMessage]
         let model: String
@@ -46,12 +46,12 @@ public class OpenAIMessageSender: PromptSender {
         self.apiKey = apiKey
     }
 
-    public func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
-        guard isRespectingCharactersLimit(text: prompt, previousMessages: previousMessages) else {
+    public func send(prompt: Prompt) async throws -> PromptResponseStream {
+        guard isRespectingCharactersLimit(prompt: prompt) else {
             throw SendPromptError.invalidInput
         }
 
-        let urlRequest = urlRequest(text: prompt, previousMessages: previousMessages)
+        let urlRequest = urlRequest(from: prompt)
 
         guard let (lines, response) = try? await client.lines(from: urlRequest) else {
             throw SendPromptError.connectivity
@@ -87,21 +87,20 @@ public class OpenAIMessageSender: PromptSender {
                 } else {
                     continuation.finish(throwing: SendPromptError.incompleteResponse)
                 }
-
             }
         }
     }
 
-    private func isRespectingCharactersLimit(text: String, previousMessages: [Message]) -> Bool {
-        let previousMessagesCharactersCount = previousMessages
-            .reduce(into: 0) { partialResult, message in
-                partialResult += message.content.count
+    private func isRespectingCharactersLimit(prompt: Prompt) -> Bool {
+        let previousMessagesCharactersCount = prompt.previousPrompts
+            .reduce(into: 0) { partialResult, prompt in
+                partialResult += prompt.content.count + (prompt.completion?.content.count ?? 0)
             }
 
-        return previousMessagesCharactersCount + text.count <= charactersLimit
+        return previousMessagesCharactersCount + prompt.content.count <= charactersLimit
     }
 
-    private func urlRequest(text: String, previousMessages: [Message]) -> URLRequest {
+    private func urlRequest(from prompt: Prompt) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = [
@@ -109,9 +108,17 @@ public class OpenAIMessageSender: PromptSender {
             "Authorization": "Bearer \(apiKey)"
         ]
 
-        let messages = previousMessages
-            .appending(Message(role: .user, content: text))
-            .map({ RequestMessage(content: $0.content, role: $0.role.description) })
+        var messages: [RequestMessage] = []
+
+        prompt.previousPrompts.forEach { prompt in
+            messages.append(RequestMessage(content: prompt.content, role: "user"))
+
+            if let completion = prompt.completion {
+                messages.append(RequestMessage(content: completion.content, role: "assistant"))
+            }
+        }
+
+        messages.append(RequestMessage(content: prompt.content, role: "user"))
 
         let requestBody = RequestBody(
             messages: messages,
@@ -127,14 +134,5 @@ public class OpenAIMessageSender: PromptSender {
         urlRequest.httpBody = encodedBody
 
         return urlRequest
-    }
-}
-
-private extension Array {
-    // Generates a copy of the Array including given element
-    func appending(_ element: Element) -> Array {
-        var newArray = self
-        newArray.append(element)
-        return newArray
     }
 }

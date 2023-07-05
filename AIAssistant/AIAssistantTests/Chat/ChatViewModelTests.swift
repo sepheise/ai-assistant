@@ -29,7 +29,7 @@ class ChatViewModelTests: XCTestCase {
 
         _ = await [firstExec, secondExec, thirdExec]
 
-        XCTAssertEqual(promptSenderSpy.sentParameters.count, 1)
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 1)
     }
 
     func test_submit_canRunSequentially() async {
@@ -41,7 +41,7 @@ class ChatViewModelTests: XCTestCase {
         sut.inputText = anyNonEmptyText()
         await sut.submit()
 
-        XCTAssertEqual(promptSenderSpy.sentParameters.count, 2)
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 2)
     }
 
     func test_submit_doesNotNotifyPromptSenderWhenCantSubmit() async {
@@ -50,29 +50,29 @@ class ChatViewModelTests: XCTestCase {
         sut.inputText = ""
         await sut.submit()
 
-        XCTAssertEqual(promptSenderSpy.sentParameters, [])
+        XCTAssertEqual(promptSenderSpy.sentPrompts, [])
     }
 
     func test_submit_notifyPromptSenderWithInputTextAndPreviousMessages() async {
-        let firstPrompt = anyNonEmptyText()
+        let firstPromptText = anyNonEmptyText()
         let (sut, promptSenderSpy) = makeSUT()
 
-        sut.inputText = firstPrompt
+        sut.inputText = firstPromptText
         await sut.submit()
 
-        XCTAssertEqual(promptSenderSpy.sentParameters, [SentParameters(prompt: firstPrompt, previousMessages: [])])
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 1)
+        XCTAssertEqual(promptSenderSpy.sentPrompts.first?.content, firstPromptText)
 
-        let secondPrompt = "another prompt"
-        sut.inputText = secondPrompt
+        let secondPromptText = "another prompt text"
+        sut.inputText = secondPromptText
         await sut.submit()
 
-        XCTAssertEqual(promptSenderSpy.sentParameters, [
-            SentParameters(prompt: firstPrompt, previousMessages: []),
-            SentParameters(prompt: secondPrompt, previousMessages: [
-                Message(role: .user, content: firstPrompt),
-                Message(role: .assistant, content: "any successful response")
-            ])
-        ])
+        XCTAssertEqual(promptSenderSpy.sentPrompts.count, 2)
+        XCTAssertEqual(promptSenderSpy.sentPrompts[0].content, firstPromptText)
+        XCTAssertEqual(promptSenderSpy.sentPrompts[0].previousPrompts, [])
+        XCTAssertEqual(promptSenderSpy.sentPrompts[1].content, secondPromptText)
+        XCTAssertEqual(promptSenderSpy.sentPrompts[1].previousPrompts.count, 1)
+        XCTAssertEqual(promptSenderSpy.sentPrompts[1].previousPrompts[0].content, firstPromptText)
     }
 
     func test_submit_clearsInputTextAfterSuccessfulSubmit() async {
@@ -94,26 +94,25 @@ class ChatViewModelTests: XCTestCase {
     }
 
     func test_submit_storesPromptResponsesWhenFetchedTextStreamSuccessfully() async {
-        let firstPrompt = anyNonEmptyText()
+        let firstPromptText = anyNonEmptyText()
         let firstResult = successfulPromptSenderResult(from: ["This", " is", " a", " successful", " response", "!"])
         let (sut, promptSenderSpy) = makeSUT(promptSenderResult: firstResult)
 
-        sut.inputText = firstPrompt
+        sut.inputText = firstPromptText
         await sut.submit()
 
-        let secondPrompt = "another prompt"
+        let secondPromptText = "another prompt"
         let secondResult = successfulPromptSenderResult(from: ["This", " is", " another", " successful", " response", "!"])
         promptSenderSpy.result = secondResult
 
-        sut.inputText = secondPrompt
+        sut.inputText = secondPromptText
         await sut.submit()
 
-        let expectedPromptResponses = [
-            PromptResponse(id: 0, prompt: firstPrompt, response: "This is a successful response!"),
-            PromptResponse(id: 1, prompt: secondPrompt, response: "This is another successful response!")
-        ]
-
-        XCTAssertEqual(sut.promptResponses, expectedPromptResponses)
+        XCTAssertEqual(sut.prompts.count, 2)
+        XCTAssertEqual(sut.prompts[0].content, firstPromptText)
+        XCTAssertEqual(sut.prompts[0].completion?.content, "This is a successful response!")
+        XCTAssertEqual(sut.prompts[1].content, secondPromptText)
+        XCTAssertEqual(sut.prompts[1].completion?.content, "This is another successful response!")
     }
 }
 
@@ -154,23 +153,14 @@ private func anyNonEmptyText() -> String {
 
 private class PromptSenderSpy: PromptSender {
     var result: Result<PromptResponseStream, SendPromptError>
-    var sentParameters: [SentParameters] = []
+    var sentPrompts: [Prompt] = []
 
     init(result: Result<PromptResponseStream, SendPromptError>) {
         self.result = result
     }
 
-    func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
-        sentParameters.append(SentParameters(prompt: prompt, previousMessages: previousMessages))
+    func send(prompt: AIAssistant.Prompt) async throws -> AIAssistant.PromptResponseStream {
+        sentPrompts.append(prompt)
         return try result.get()
-    }
-}
-
-private struct SentParameters: Equatable {
-    let prompt: String
-    let previousMessages: [Message]
-
-    static func == (lhs: SentParameters, rhs: SentParameters) -> Bool {
-        lhs.prompt == rhs.prompt && lhs.previousMessages == rhs.previousMessages
     }
 }

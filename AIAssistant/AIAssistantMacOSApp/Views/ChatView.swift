@@ -17,7 +17,7 @@ struct ChatView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            PromptsAndResponsesView(promptResponses: $chatViewModel.promptResponses)
+            PromptsAndCompletionsView(prompts: $chatViewModel.prompts)
             Spacer()
             PromptTextInputView(
                 inputText: $chatViewModel.inputText,

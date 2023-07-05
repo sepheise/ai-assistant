@@ -7,22 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */; };
+		5103D3032A26F97C00BA4D6B /* OpenAIPromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3022A26F97C00BA4D6B /* OpenAIPromptSender.swift */; };
 		5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3042A26F9A400BA4D6B /* HTTPClient.swift */; };
-		5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3062A26F9CF00BA4D6B /* Message.swift */; };
 		5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D3082A279E3400BA4D6B /* PromptSender.swift */; };
 		5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */; };
 		5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */; };
 		5133BD1B2A33F27100B35668 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1A2A33F27100B35668 /* Assets.xcassets */; };
 		5133BD1E2A33F27100B35668 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5133BD1D2A33F27100B35668 /* Preview Assets.xcassets */; };
 		515B91E52A26306100599B59 /* AIAssistant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515B91DC2A26306100599B59 /* AIAssistant.framework */; };
-		515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */; };
+		515B91F52A26319600599B59 /* OpenAIPromptSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515B91F42A26319600599B59 /* OpenAIPromptSenderTests.swift */; };
 		517ECCC42A4D3B030084DE5C /* APIKeyLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */; };
 		517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */; };
 		517ECCC82A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */; };
 		517ECCD22A539BA40084DE5C /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517ECCD12A539BA40084DE5C /* SettingsViewModelTests.swift */; };
 		5197EECC2A3D40990017F32B /* ChatViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5197EECB2A3D40990017F32B /* ChatViewModelTests.swift */; };
 		51B43FCD2A53BE10007E4013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */; };
+		51B43FDF2A55117A007E4013 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FDE2A55117A007E4013 /* Prompt.swift */; };
+		51B43FE12A5511EA007E4013 /* Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FE02A5511EA007E4013 /* Completion.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
 		51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatViewModel.swift */; };
 		51D29B522A3E82100086EB0E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B512A3E82100086EB0E /* ChatView.swift */; };
@@ -32,8 +33,7 @@
 		51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */; };
 		51D9D3A92A45E1670062CE05 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3A82A45E1670062CE05 /* SettingsView.swift */; };
 		51D9D3AB2A474EBA0062CE05 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3AA2A474EBA0062CE05 /* ContentView.swift */; };
-		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
-		51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */; };
+		51F07E512A415B790026F299 /* PromptsAndCompletionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndCompletionsView.swift */; };
 		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
 		51FFECBC2A452C27008274FD /* KeychainAPIKeyStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */; };
 /* End PBXBuildFile section */
@@ -77,9 +77,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSender.swift; sourceTree = "<group>"; };
+		5103D3022A26F97C00BA4D6B /* OpenAIPromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIPromptSender.swift; sourceTree = "<group>"; };
 		5103D3042A26F9A400BA4D6B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
-		5103D3062A26F9CF00BA4D6B /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5103D3082A279E3400BA4D6B /* PromptSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSender.swift; sourceTree = "<group>"; };
 		5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		5133BD142A33F27000B35668 /* AIAssistantMacOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AIAssistantMacOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,13 +88,15 @@
 		5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AIAssistantMacOSApp.entitlements; sourceTree = "<group>"; };
 		515B91DC2A26306100599B59 /* AIAssistant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AIAssistant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515B91E42A26306100599B59 /* AIAssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AIAssistantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIMessageSenderTests.swift; sourceTree = "<group>"; };
+		515B91F42A26319600599B59 /* OpenAIPromptSenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIPromptSenderTests.swift; sourceTree = "<group>"; };
 		517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyLoader.swift; sourceTree = "<group>"; };
 		517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySaver.swift; sourceTree = "<group>"; };
 		517ECCC72A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryAPIKeyStore.swift; sourceTree = "<group>"; };
 		517ECCD12A539BA40084DE5C /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
 		5197EECB2A3D40990017F32B /* ChatViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModelTests.swift; sourceTree = "<group>"; };
 		51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		51B43FDE2A55117A007E4013 /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
+		51B43FE02A5511EA007E4013 /* Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completion.swift; sourceTree = "<group>"; };
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
 		51CAA0152A2A9DCE0074E577 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
@@ -105,8 +106,7 @@
 		51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAPIKeyStore.swift; sourceTree = "<group>"; };
 		51D9D3A82A45E1670062CE05 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		51D9D3AA2A474EBA0062CE05 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
-		51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndResponsesView.swift; sourceTree = "<group>"; };
+		51F07E502A415B790026F299 /* PromptsAndCompletionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndCompletionsView.swift; sourceTree = "<group>"; };
 		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
 		51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAPIKeyStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -201,18 +201,9 @@
 			path = AIAssistantTests;
 			sourceTree = "<group>";
 		};
-		517ECCD02A539AC80084DE5C /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				51F07E4D2A414FF70026F299 /* PromptResponse.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		5197EECA2A3D40550017F32B /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				517ECCD02A539AC80084DE5C /* Model */,
 				51D29B4F2A3E81B10086EB0E /* ChatViewModel.swift */,
 				51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */,
 			);
@@ -231,7 +222,8 @@
 		51CAA0132A2A7EE10074E577 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				5103D3062A26F9CF00BA4D6B /* Message.swift */,
+				51B43FDE2A55117A007E4013 /* Prompt.swift */,
+				51B43FE02A5511EA007E4013 /* Completion.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -249,7 +241,7 @@
 				51CAA0132A2A7EE10074E577 /* Domain */,
 				51CAA0122A2A7ED90074E577 /* Infrastructure */,
 				5197EECA2A3D40550017F32B /* Presentation */,
-				5103D3022A26F97C00BA4D6B /* OpenAIMessageSender.swift */,
+				5103D3022A26F97C00BA4D6B /* OpenAIPromptSender.swift */,
 				5103D3082A279E3400BA4D6B /* PromptSender.swift */,
 			);
 			path = Chat;
@@ -276,7 +268,7 @@
 		51D9D3A32A4566750062CE05 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				515B91F42A26319600599B59 /* OpenAIMessageSenderTests.swift */,
+				515B91F42A26319600599B59 /* OpenAIPromptSenderTests.swift */,
 				5103D30A2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift */,
 				5197EECB2A3D40990017F32B /* ChatViewModelTests.swift */,
 			);
@@ -296,7 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				51D29B512A3E82100086EB0E /* ChatView.swift */,
-				51F07E502A415B790026F299 /* PromptsAndResponsesView.swift */,
+				51F07E502A415B790026F299 /* PromptsAndCompletionsView.swift */,
 				51F07E522A415BBC0026F299 /* PromptTextInputView.swift */,
 				51D9D3A82A45E1670062CE05 /* SettingsView.swift */,
 				51D9D3AA2A474EBA0062CE05 /* ContentView.swift */,
@@ -450,7 +442,7 @@
 				51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */,
 				51D29B522A3E82100086EB0E /* ChatView.swift in Sources */,
 				51D9D3AB2A474EBA0062CE05 /* ContentView.swift in Sources */,
-				51F07E512A415B790026F299 /* PromptsAndResponsesView.swift in Sources */,
+				51F07E512A415B790026F299 /* PromptsAndCompletionsView.swift in Sources */,
 				517ECCC82A4D3EDD0084DE5C /* InMemoryAPIKeyStore.swift in Sources */,
 				51D9D3A92A45E1670062CE05 /* SettingsView.swift in Sources */,
 				5133BD172A33F27000B35668 /* AIAssistantMacOSApp.swift in Sources */,
@@ -463,16 +455,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				517ECCC42A4D3B030084DE5C /* APIKeyLoader.swift in Sources */,
+				51B43FDF2A55117A007E4013 /* Prompt.swift in Sources */,
 				51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */,
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */,
 				517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */,
-				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
-				5103D3072A26F9CF00BA4D6B /* Message.swift in Sources */,
+				51B43FE12A5511EA007E4013 /* Completion.swift in Sources */,
 				51B43FCD2A53BE10007E4013 /* SettingsViewModel.swift in Sources */,
 				5103D3052A26F9A400BA4D6B /* HTTPClient.swift in Sources */,
-				5103D3032A26F97C00BA4D6B /* OpenAIMessageSender.swift in Sources */,
+				5103D3032A26F97C00BA4D6B /* OpenAIPromptSender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,7 +472,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				515B91F52A26319600599B59 /* OpenAIMessageSenderTests.swift in Sources */,
+				515B91F52A26319600599B59 /* OpenAIPromptSenderTests.swift in Sources */,
 				5103D30B2A27A17500BA4D6B /* URLSessionHTTPClientTests.swift in Sources */,
 				517ECCD22A539BA40084DE5C /* SettingsViewModelTests.swift in Sources */,
 				5197EECC2A3D40990017F32B /* ChatViewModelTests.swift in Sources */,
