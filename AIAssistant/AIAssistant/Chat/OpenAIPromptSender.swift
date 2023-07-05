@@ -46,6 +46,24 @@ public class OpenAIPromptSender: PromptSender {
         self.apiKey = apiKey
     }
 
+    public func send(prompt: Prompt) async throws -> PromptResponseStream {
+        guard isRespectingCharactersLimit(prompt: prompt) else {
+            throw SendPromptError.invalidInput
+        }
+
+        let urlRequest = urlRequest(from: prompt)
+
+        guard let (lines, response) = try? await client.lines(from: urlRequest) else {
+            throw SendPromptError.connectivity
+        }
+
+        return PromptResponseStream { continuation in
+            Task {
+            }
+        }
+    }
+
+    @available(*, deprecated)
     public func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
         guard isRespectingCharactersLimit(text: prompt, previousMessages: previousMessages) else {
             throw SendPromptError.invalidInput
@@ -92,6 +110,7 @@ public class OpenAIPromptSender: PromptSender {
         }
     }
 
+    @available(*, deprecated)
     private func isRespectingCharactersLimit(text: String, previousMessages: [Message]) -> Bool {
         let previousMessagesCharactersCount = previousMessages
             .reduce(into: 0) { partialResult, message in
@@ -101,6 +120,16 @@ public class OpenAIPromptSender: PromptSender {
         return previousMessagesCharactersCount + text.count <= charactersLimit
     }
 
+    private func isRespectingCharactersLimit(prompt: Prompt) -> Bool {
+        let previousMessagesCharactersCount = prompt.previousPrompts
+            .reduce(into: 0) { partialResult, prompt in
+                partialResult += prompt.content.count + (prompt.completion?.content.count ?? 0)
+            }
+
+        return previousMessagesCharactersCount + prompt.content.count <= charactersLimit
+    }
+
+    @available(*, deprecated)
     private func urlRequest(text: String, previousMessages: [Message]) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
@@ -128,8 +157,45 @@ public class OpenAIPromptSender: PromptSender {
 
         return urlRequest
     }
+
+    private func urlRequest(from prompt: Prompt) -> URLRequest {
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.allHTTPHeaderFields = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(apiKey)"
+        ]
+
+        var messages: [RequestMessage] = []
+
+        prompt.previousPrompts.forEach { prompt in
+            messages.append(RequestMessage(content: prompt.content, role: "user"))
+
+            if let completion = prompt.completion {
+                messages.append(RequestMessage(content: completion.content, role: "assistant"))
+            }
+        }
+
+        messages.append(RequestMessage(content: prompt.content, role: "user"))
+
+        let requestBody = RequestBody(
+            messages: messages,
+            model: defaultModel,
+            stream: defaultStreamOption
+        )
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+
+        let encodedBody = try! encoder.encode(requestBody)
+
+        urlRequest.httpBody = encodedBody
+
+        return urlRequest
+    }
 }
 
+@available(*, deprecated)
 private extension Array {
     // Generates a copy of the Array including given element
     func appending(_ element: Element) -> Array {

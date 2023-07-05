@@ -155,9 +155,15 @@ private func anyNonEmptyText() -> String {
 private class PromptSenderSpy: PromptSender {
     var result: Result<PromptResponseStream, SendPromptError>
     var sentParameters: [SentParameters] = []
+    var sentPrompts: [Prompt] = []
 
     init(result: Result<PromptResponseStream, SendPromptError>) {
         self.result = result
+    }
+
+    func send(prompt: AIAssistant.Prompt) async throws -> AIAssistant.PromptResponseStream {
+        sentPrompts.append(prompt)
+        return try result.get()
     }
 
     func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {

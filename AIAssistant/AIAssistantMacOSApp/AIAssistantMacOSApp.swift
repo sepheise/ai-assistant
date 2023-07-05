@@ -60,6 +60,15 @@ private class OpenAIMessageSenderWithKeyLoader: PromptSender {
         }
 
         let openAIMessageSender = OpenAIPromptSender(client: client, url: url, apiKey: apiKey)
+        return try await openAIMessageSender.send(prompt: prompt, previousMessages: previousMessages)
+    }
+
+    func send(prompt: AIAssistant.Prompt) async throws -> AIAssistant.PromptResponseStream {
+        guard let apiKey = try? apiKeyLoader.load() else {
+            throw Error.cantLoadAPIKey
+        }
+
+        let openAIMessageSender = OpenAIPromptSender(client: client, url: url, apiKey: apiKey)
         return try await openAIMessageSender.send(prompt: prompt)
     }
 }
