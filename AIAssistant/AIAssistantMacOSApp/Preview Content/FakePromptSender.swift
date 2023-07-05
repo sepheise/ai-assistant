@@ -25,17 +25,5 @@ class FakePromptSender: PromptSender {
                 continuation.finish()
             }
         }
-    }
-
-    func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
-        return PromptResponseStream { continuation in
-            Task {
-                for text in textArray {
-                    try await Task.sleep(for: .seconds(0.2))
-                    continuation.yield(with: .success(text))
-                }
-                continuation.finish()
-            }
-        }
-    }
+    }    
 }

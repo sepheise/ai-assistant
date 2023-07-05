@@ -91,62 +91,6 @@ public class OpenAIPromptSender: PromptSender {
         }
     }
 
-    @available(*, deprecated)
-    public func send(prompt: String, previousMessages: [Message] = []) async throws -> PromptResponseStream {
-        guard isRespectingCharactersLimit(text: prompt, previousMessages: previousMessages) else {
-            throw SendPromptError.invalidInput
-        }
-
-        let urlRequest = urlRequest(text: prompt, previousMessages: previousMessages)
-
-        guard let (lines, response) = try? await client.lines(from: urlRequest) else {
-            throw SendPromptError.connectivity
-        }
-
-        guard let resp = response as? HTTPURLResponse,
-              resp.statusCode == 200 else {
-            throw SendPromptError.unexpectedResponse
-        }
-
-        return PromptResponseStream { continuation in
-            Task {
-                var lastLine: String?
-
-                for await line in lines {
-                    guard line.hasPrefix("data: "),
-                          let lineData = line.dropFirst(6).data(using: .utf8) else {
-                        continuation.yield(with: .failure(SendPromptError.unexpectedResponse))
-                        return
-                    }
-
-                    if let decoded = try? JSONDecoder().decode(StreamCompletionResponse.self, from: lineData),
-                       let content = decoded.choices.first?.delta.content {
-                        continuation.yield(with: .success(content))
-                    }
-
-                    lastLine = line
-                }
-
-                if let lastLine = lastLine,
-                   lastLine == "data: [DONE]" {
-                    continuation.finish()
-                } else {
-                    continuation.finish(throwing: SendPromptError.incompleteResponse)
-                }
-            }
-        }
-    }
-
-    @available(*, deprecated)
-    private func isRespectingCharactersLimit(text: String, previousMessages: [Message]) -> Bool {
-        let previousMessagesCharactersCount = previousMessages
-            .reduce(into: 0) { partialResult, message in
-                partialResult += message.content.count
-            }
-
-        return previousMessagesCharactersCount + text.count <= charactersLimit
-    }
-
     private func isRespectingCharactersLimit(prompt: Prompt) -> Bool {
         let previousMessagesCharactersCount = prompt.previousPrompts
             .reduce(into: 0) { partialResult, prompt in
@@ -154,35 +98,6 @@ public class OpenAIPromptSender: PromptSender {
             }
 
         return previousMessagesCharactersCount + prompt.content.count <= charactersLimit
-    }
-
-    @available(*, deprecated)
-    private func urlRequest(text: String, previousMessages: [Message]) -> URLRequest {
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.allHTTPHeaderFields = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer \(apiKey)"
-        ]
-
-        let messages = previousMessages
-            .appending(Message(role: .user, content: text))
-            .map({ RequestMessage(content: $0.content, role: $0.role.description) })
-
-        let requestBody = RequestBody(
-            messages: messages,
-            model: defaultModel,
-            stream: defaultStreamOption
-        )
-
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
-
-        let encodedBody = try! encoder.encode(requestBody)
-
-        urlRequest.httpBody = encodedBody
-
-        return urlRequest
     }
 
     private func urlRequest(from prompt: Prompt) -> URLRequest {
@@ -219,15 +134,5 @@ public class OpenAIPromptSender: PromptSender {
         urlRequest.httpBody = encodedBody
 
         return urlRequest
-    }
-}
-
-@available(*, deprecated)
-private extension Array {
-    // Generates a copy of the Array including given element
-    func appending(_ element: Element) -> Array {
-        var newArray = self
-        newArray.append(element)
-        return newArray
     }
 }

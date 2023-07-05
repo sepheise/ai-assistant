@@ -7,12 +7,10 @@
 
 import Foundation
 
-public struct Completion {
-    public let id: UUID
+public struct Completion: Equatable {
     public let content: String
 
-    public init(id: UUID = UUID(), _ content: String) {
-        self.id = id
+    public init(_ content: String) {
         self.content = content
     }
 }

@@ -16,7 +16,7 @@ public class ChatViewModel: ObservableObject {
     }
     @Published public var canSubmit: Bool = false
     @Published public var errorMessage: String = ""
-    @Published public var promptResponses: [PromptResponse] = []
+    @Published public var prompts: [Prompt] = []
 
     private var isProcessing: Bool = false {
         didSet {
@@ -41,16 +41,22 @@ public class ChatViewModel: ObservableObject {
         }
 
         do {
-            let previousMessages = messagesFromPromptResponses()
-            let prompt = inputText
+            let promptId = UUID()
+            let prompt = Prompt(id: promptId, inputText, previousPrompts: prompts)
             inputText = ""
-            let promptIndex = promptResponses.count
-            promptResponses.append(PromptResponse(id: promptIndex, prompt: prompt, response: ""))
+            let promptIndex = prompts.count
+            prompts.append(prompt)
 
-            let textStream = try await promptSender.send(prompt: prompt, previousMessages: previousMessages)
+            let textStream = try await promptSender.send(prompt: prompt)
             for try await text in textStream {
                 currentResponseText += text
-                promptResponses[promptIndex] = PromptResponse(id: promptIndex, prompt: prompt, response: currentResponseText)
+                let partialCompletion = Completion(currentResponseText)
+                let updatedPrompt = Prompt(
+                    id: promptId,
+                    prompt.content,
+                    completion: partialCompletion
+                )
+                prompts[promptIndex] = updatedPrompt
             }
 
             currentResponseText = ""
@@ -61,16 +67,5 @@ public class ChatViewModel: ObservableObject {
 
     private func checkCanSubmit() {
         canSubmit = !inputText.isEmpty && !isProcessing
-    }
-
-    private func messagesFromPromptResponses() -> [Message] {
-        var messages: [Message] = []
-
-        promptResponses.forEach { prompResponse in
-            messages.append(Message(role: .user, content: prompResponse.prompt))
-            messages.append(Message(role: .assistant, content: prompResponse.response))
-        }
-
-        return messages
     }
 }

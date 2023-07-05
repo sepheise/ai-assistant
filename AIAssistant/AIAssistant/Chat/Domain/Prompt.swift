@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Prompt {
+public struct Prompt: Equatable {
     public let id: UUID
     public let content: String
     public let previousPrompts: [Prompt]
