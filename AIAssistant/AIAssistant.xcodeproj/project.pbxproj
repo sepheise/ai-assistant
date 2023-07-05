@@ -33,7 +33,6 @@
 		51D9D3A22A4564230062CE05 /* KeychainAPIKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */; };
 		51D9D3A92A45E1670062CE05 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3A82A45E1670062CE05 /* SettingsView.swift */; };
 		51D9D3AB2A474EBA0062CE05 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9D3AA2A474EBA0062CE05 /* ContentView.swift */; };
-		51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E4D2A414FF70026F299 /* PromptResponse.swift */; };
 		51F07E512A415B790026F299 /* PromptsAndCompletionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E502A415B790026F299 /* PromptsAndCompletionsView.swift */; };
 		51F07E532A415BBC0026F299 /* PromptTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F07E522A415BBC0026F299 /* PromptTextInputView.swift */; };
 		51FFECBC2A452C27008274FD /* KeychainAPIKeyStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */; };
@@ -107,7 +106,6 @@
 		51D9D3A12A4564230062CE05 /* KeychainAPIKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAPIKeyStore.swift; sourceTree = "<group>"; };
 		51D9D3A82A45E1670062CE05 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		51D9D3AA2A474EBA0062CE05 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		51F07E4D2A414FF70026F299 /* PromptResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptResponse.swift; sourceTree = "<group>"; };
 		51F07E502A415B790026F299 /* PromptsAndCompletionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsAndCompletionsView.swift; sourceTree = "<group>"; };
 		51F07E522A415BBC0026F299 /* PromptTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptTextInputView.swift; sourceTree = "<group>"; };
 		51FFECBB2A452C27008274FD /* KeychainAPIKeyStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAPIKeyStoreTests.swift; sourceTree = "<group>"; };
@@ -203,18 +201,9 @@
 			path = AIAssistantTests;
 			sourceTree = "<group>";
 		};
-		517ECCD02A539AC80084DE5C /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				51F07E4D2A414FF70026F299 /* PromptResponse.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		5197EECA2A3D40550017F32B /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				517ECCD02A539AC80084DE5C /* Model */,
 				51D29B4F2A3E81B10086EB0E /* ChatViewModel.swift */,
 				51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */,
 			);
@@ -471,7 +460,6 @@
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */,
 				517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */,
-				51F07E4E2A414FF70026F299 /* PromptResponse.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				51B43FE12A5511EA007E4013 /* Completion.swift in Sources */,
 				51B43FCD2A53BE10007E4013 /* SettingsViewModel.swift in Sources */,
