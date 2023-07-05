@@ -78,11 +78,11 @@ class OpenAIPromptSenderTests: XCTestCase {
     }
 
     func test_send_deliversConnectivityErrorOnRequestError() async {
-        let textInput = anyTextInput()
+        let prompt = anyPrompt()
         let (sut, _) = makeSUT(clientResult: .failure(NSError(domain: "an error", code: 0)))
 
         do {
-            _ = try await sut.send(prompt: textInput, previousMessages: [])
+            _ = try await sut.send(prompt: prompt)
             XCTFail("Expected error: \(SendPromptError.connectivity)")
         } catch {
             XCTAssertEqual(error as? SendPromptError, .connectivity)
@@ -90,13 +90,13 @@ class OpenAIPromptSenderTests: XCTestCase {
     }
 
     func test_send_deliversUnexpectedResponseErrorWhenStatusIsDifferentThan200() async {
-        let textInput = anyTextInput()
+        let prompt = anyPrompt()
         let linesStream = anyValidLinesStream()
         let response = HTTPURLResponse(url: anyURL(), statusCode: 404, httpVersion: nil, headerFields: nil)!
         let (sut, _) = makeSUT(clientResult: .success((linesStream, response)))
 
         do {
-            _ = try await sut.send(prompt: textInput, previousMessages: [])
+            _ = try await sut.send(prompt: prompt)
             XCTFail("Expected error: \(SendPromptError.unexpectedResponse)")
         } catch {
             XCTAssertEqual(error as? SendPromptError, .unexpectedResponse)
@@ -104,12 +104,12 @@ class OpenAIPromptSenderTests: XCTestCase {
     }
 
     func test_send_deliversUnexpectedResponseErrorWhenLineDontStartWithData() async {
-        let textInput = anyTextInput()
+        let prompt = anyPrompt()
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let invalidLinesStream = linesStream(from: ["invalid line"])
         let (sut, _) = makeSUT(clientResult: .success((invalidLinesStream, anySuccessfulResponse)))
 
-        guard let textStream = try? await sut.send(prompt: textInput, previousMessages: []) else {
+        guard let textStream = try? await sut.send(prompt: prompt) else {
             XCTFail("Expected to get the text stream")
             return
         }
@@ -122,13 +122,13 @@ class OpenAIPromptSenderTests: XCTestCase {
     }
 
     func test_send_deliversTextOnSuccessfullyParsedText() async throws {
-        let textInput = anyTextInput()
+        let prompt = anyPrompt()
         let expectedText = "Hello there!"
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let validLinesStream = linesStream(from: validResponseLines())
         let (sut, _) = makeSUT(clientResult: .success((validLinesStream, anySuccessfulResponse)))
 
-        let textStream = try await sut.send(prompt: textInput, previousMessages: [])
+        let textStream = try await sut.send(prompt: prompt)
 
         var receivedText = ""
         for try await text in textStream {
@@ -139,12 +139,12 @@ class OpenAIPromptSenderTests: XCTestCase {
     }
 
     func test_send_deliversIncompleteResponseErrorWhenTerminationIsNotReceived() async throws {
-        let textInput = anyTextInput()
+        let prompt = anyPrompt()
         let incompleteLinesStream = incompleteLinesStream()
         let anySuccessfulResponse = successfulHTTPURLResponse()
         let (sut, _) = makeSUT(clientResult: .success((incompleteLinesStream, anySuccessfulResponse)))
 
-        let textStream = try await sut.send(prompt: textInput, previousMessages: [])
+        let textStream = try await sut.send(prompt: prompt)
 
         do {
             for try await _ in textStream {}

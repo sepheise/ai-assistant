@@ -57,8 +57,36 @@ public class OpenAIPromptSender: PromptSender {
             throw SendPromptError.connectivity
         }
 
+        guard let resp = response as? HTTPURLResponse,
+              resp.statusCode == 200 else {
+            throw SendPromptError.unexpectedResponse
+        }
+
         return PromptResponseStream { continuation in
             Task {
+                var lastLine: String?
+
+                for await line in lines {
+                    guard line.hasPrefix("data: "),
+                          let lineData = line.dropFirst(6).data(using: .utf8) else {
+                        continuation.yield(with: .failure(SendPromptError.unexpectedResponse))
+                        return
+                    }
+
+                    if let decoded = try? JSONDecoder().decode(StreamCompletionResponse.self, from: lineData),
+                       let content = decoded.choices.first?.delta.content {
+                        continuation.yield(with: .success(content))
+                    }
+
+                    lastLine = line
+                }
+
+                if let lastLine = lastLine,
+                   lastLine == "data: [DONE]" {
+                    continuation.finish()
+                } else {
+                    continuation.finish(throwing: SendPromptError.incompleteResponse)
+                }
             }
         }
     }
@@ -105,7 +133,6 @@ public class OpenAIPromptSender: PromptSender {
                 } else {
                     continuation.finish(throwing: SendPromptError.incompleteResponse)
                 }
-
             }
         }
     }
