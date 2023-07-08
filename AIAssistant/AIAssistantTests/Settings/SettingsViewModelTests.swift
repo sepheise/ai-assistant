@@ -11,7 +11,8 @@ import AIAssistant
 @MainActor
 class SettingsViewModelTests: XCTestCase {
     func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
-        let (sut, loaderSpy, _) = makeSUT(loaderResult: .success("testKey"))
+        let loaderSpy = APIKeyLoaderSpy(result: .success("testKey"))
+        let sut = makeSUT(apiKeyLoaderSpy: loaderSpy)
 
         sut.onAppear()
 
@@ -20,7 +21,8 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_onAppear_setsErrorMessageOnLoadFailure() {
-        let (sut, loaderSpy, _) = makeSUT(loaderResult: .failure(anyError()))
+        let loaderSpy = APIKeyLoaderSpy(result: .failure(anyError()))
+        let sut = makeSUT(apiKeyLoaderSpy: loaderSpy)
 
         sut.onAppear()
 
@@ -30,7 +32,7 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_cantSave_whenOpenAIKeyValueIsEmpty() {
-        let (sut, _, _) = makeSUT()
+        let sut = makeSUT()
 
         sut.openAIApiKey = ""
 
@@ -42,7 +44,8 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_save_doesNotSaveWhenOpenAIKeyValueIsEmpty() {
-        let (sut, _, saverSpy) = makeSUT()
+        let saverSpy = APIKeySaverSpy()
+        let sut = makeSUT(apiKeySaverSpy: saverSpy)
 
         sut.saveAPIKey()
 
@@ -50,17 +53,19 @@ class SettingsViewModelTests: XCTestCase {
     }
 
     func test_save_saveOpenAIKeyOnNonEmptyValue() {
-        let (sut, _, saverSpy) = makeSUT()
+        let saverSpy = APIKeySaverSpy(result: .success(()))
+        let sut = makeSUT()
 
-        sut.openAIApiKey = "any key"
+        sut.openAIApiKey = "testKey"
         sut.saveAPIKey()
 
         XCTAssertEqual(saverSpy.saveCalls.count, 1)
-        XCTAssertEqual(saverSpy.saveCalls, ["any key"])
+        XCTAssertEqual(saverSpy.saveCalls, ["testKey"])
     }
 
     func test_save_setsErrorMessageOnSaveFailure() {
-        let (sut, _, saverSpy) = makeSUT(saverResult: .failure(anyError()))
+        let saverSpy = APIKeySaverSpy(result: .failure(anyError()))
+        let sut = makeSUT(apiKeySaverSpy: saverSpy)
 
         sut.openAIApiKey = "any key"
         sut.saveAPIKey()
@@ -71,13 +76,12 @@ class SettingsViewModelTests: XCTestCase {
 
     // MARK: - Helpers
 
-    func makeSUT(loaderResult: Result<String, Error> = .success("testKey"), saverResult: Result<Void, Error> = .success(())) -> (sut: SettingsViewModel, loaderSpy: APIKeyLoaderSpy, saverSpy: APIKeySaverSpy) {
-        
-        let apiKeyLoaderSpy = APIKeyLoaderSpy(result: loaderResult)
-        let apiKeySaverSpy = APIKeySaverSpy(result: saverResult)
-        let sut = SettingsViewModel(apiKeyLoader: apiKeyLoaderSpy, apiKeySaver: apiKeySaverSpy)
-
-        return (sut, apiKeyLoaderSpy, apiKeySaverSpy)
+    func makeSUT(
+        apiKeyLoaderSpy loaderSpy: APIKeyLoaderSpy = APIKeyLoaderSpy(),
+        apiKeySaverSpy saverSpy: APIKeySaverSpy = APIKeySaverSpy()
+    ) -> SettingsViewModel {
+        let sut = SettingsViewModel(apiKeyLoader: loaderSpy, apiKeySaver: saverSpy)
+        return sut
     }
 
     func anyError() -> Error {
@@ -89,7 +93,7 @@ class APIKeyLoaderSpy: APIKeyLoader {
     var result: Result<String, Error>
     var loadCallsCount: Int = 0
 
-    init(result: Result<String, Error>) {
+    init(result: Result<String, Error> = .success("any key")) {
         self.result = result
     }
 
@@ -103,7 +107,7 @@ class APIKeySaverSpy: APIKeySaver {
     var result: Result<Void, Error>
     var saveCalls: [String] = []
 
-    init(result: Result<Void, Error>) {
+    init(result: Result<Void, Error> = .success(())) {
         self.result = result
     }
 
