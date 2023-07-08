@@ -8,7 +8,11 @@
 import AIAssistant
 
 class InMemoryAPIKeyStore: APIKeyLoader, APIKeySaver {
-    var apiKey: String = ""
+    private var apiKey: String
+
+    init(apiKey: String = "") {
+        self.apiKey = apiKey
+    }
 
     func load() throws -> String {
         return apiKey

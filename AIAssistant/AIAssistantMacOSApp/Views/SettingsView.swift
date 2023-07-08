@@ -17,9 +17,13 @@ struct SettingsView: View {
 
     var body: some View {
         VStack {
-            HStack {
+            HStack(alignment: .center, spacing: 10) {
+                Text("OpenAI API Key")
+
                 TextField("OpenAI API key", text: $viewModel.openAIApiKey)
+                    .submitLabel(.done)
                     .onAppear(perform: viewModel.onAppear)
+                    .textFieldStyle(.roundedBorder)
 
                 Button(
                     action: {
@@ -37,6 +41,7 @@ struct SettingsView: View {
                         .accessibilityHint("Clears api key")
                 }
             }
+            .padding(10)
             Spacer()
         }
         .frame(alignment: .top)
@@ -45,7 +50,7 @@ struct SettingsView: View {
 }
 
 struct SettingsView_Previews: PreviewProvider {
-    private static let inMemoryAPIKeyStore = InMemoryAPIKeyStore()
+    private static let inMemoryAPIKeyStore = InMemoryAPIKeyStore(apiKey: "test key")
 
     static var previews: some View {
         SettingsView(
