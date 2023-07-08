@@ -15,10 +15,12 @@ public class SettingsViewModel: ObservableObject {
     }
     private let apiKeyLoader: APIKeyLoader
     private let apiKeySaver: APIKeySaver
+    private let apiKeyDeleter: APIKeyDeleter
 
-    public init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver) {
+    public init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver, apiKeyDeleter: APIKeyDeleter) {
         self.apiKeyLoader = apiKeyLoader
         self.apiKeySaver = apiKeySaver
+        self.apiKeyDeleter = apiKeyDeleter
     }
 
     public func onAppear() {
@@ -38,6 +40,14 @@ public class SettingsViewModel: ObservableObject {
             try apiKeySaver.save(openAIApiKey)
         } catch {
             errorMessage = "Couldn't save API Key"
+        }
+    }
+
+    public func deleteAPIKey() {
+        do {
+            try apiKeyDeleter.delete()
+        } catch {
+            
         }
     }
 }

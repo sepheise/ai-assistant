@@ -45,7 +45,8 @@ struct ContentView_Previews: PreviewProvider {
             settingsView: SettingsView(
                 viewModel: SettingsViewModel(
                     apiKeyLoader: inMemoryAPIKeyStore,
-                    apiKeySaver: inMemoryAPIKeyStore
+                    apiKeySaver: inMemoryAPIKeyStore,
+                    apiKeyDeleter: inMemoryAPIKeyStore
                 )
             )
         )

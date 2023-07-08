@@ -24,19 +24,6 @@ public class KeychainAPIKeyStore {
         self.key = key
     }
 
-    public func delete() throws {
-        let query: [String: Any] = [
-            String(kSecClass): kSecClassGenericPassword,
-            String(kSecAttrAccount): key
-        ]
-
-        let status = SecItemDelete(query as CFDictionary)
-
-        guard status == noErr else {
-            throw Error.deleteFailure
-        }
-    }
-
     private func add(_ query: [String: Any], _ data: Data) throws {
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == noErr else {
@@ -97,5 +84,20 @@ extension KeychainAPIKeyStore: APIKeyLoader {
         }
 
         return String(decoding: data, as: UTF8.self)
+    }
+}
+
+extension KeychainAPIKeyStore: APIKeyDeleter {
+    public func delete() throws {
+        let query: [String: Any] = [
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrAccount): key
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+
+        guard status == noErr else {
+            throw Error.deleteFailure
+        }
     }
 }

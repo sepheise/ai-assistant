@@ -56,7 +56,8 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView(
             viewModel: SettingsViewModel(
                 apiKeyLoader: inMemoryAPIKeyStore,
-                apiKeySaver: inMemoryAPIKeyStore
+                apiKeySaver: inMemoryAPIKeyStore,
+                apiKeyDeleter: inMemoryAPIKeyStore
             )
         )
     }

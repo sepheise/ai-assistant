@@ -54,7 +54,7 @@ class SettingsViewModelTests: XCTestCase {
 
     func test_save_saveOpenAIKeyOnNonEmptyValue() {
         let saverSpy = APIKeySaverSpy(result: .success(()))
-        let sut = makeSUT()
+        let sut = makeSUT(apiKeySaverSpy: saverSpy)
 
         sut.openAIApiKey = "testKey"
         sut.saveAPIKey()
@@ -74,13 +74,24 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(sut.errorMessage, "Couldn't save API Key")
     }
 
+    func test_delete_deletesOpenAIAPIKey() {
+        let deleterSpy = APIKeyDeleterSpy(result: .success(()))
+        let sut = makeSUT(apiKeyDeleterSpy: deleterSpy)
+
+        sut.openAIApiKey = ""
+        sut.deleteAPIKey()
+
+        XCTAssertEqual(deleterSpy.deleteCallsCount, 1)
+    }
+
     // MARK: - Helpers
 
     func makeSUT(
         apiKeyLoaderSpy loaderSpy: APIKeyLoaderSpy = APIKeyLoaderSpy(),
-        apiKeySaverSpy saverSpy: APIKeySaverSpy = APIKeySaverSpy()
+        apiKeySaverSpy saverSpy: APIKeySaverSpy = APIKeySaverSpy(),
+        apiKeyDeleterSpy deleterSpy: APIKeyDeleterSpy = APIKeyDeleterSpy()
     ) -> SettingsViewModel {
-        let sut = SettingsViewModel(apiKeyLoader: loaderSpy, apiKeySaver: saverSpy)
+        let sut = SettingsViewModel(apiKeyLoader: loaderSpy, apiKeySaver: saverSpy, apiKeyDeleter: deleterSpy)
         return sut
     }
 
@@ -113,6 +124,26 @@ class APIKeySaverSpy: APIKeySaver {
 
     func save(_ value: String) throws {
         saveCalls.append(value)
+
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+}
+
+class APIKeyDeleterSpy: APIKeyDeleter {
+    var result: Result<Void, Error>
+    var deleteCallsCount: Int = 0
+
+    init(result: Result<Void, Error> = .success(())) {
+        self.result = result
+    }
+
+    func delete() throws {
+        deleteCallsCount += 1
 
         switch result {
         case .success:
