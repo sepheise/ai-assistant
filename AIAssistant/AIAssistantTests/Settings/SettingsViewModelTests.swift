@@ -84,6 +84,17 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertEqual(deleterSpy.deleteCallsCount, 1)
     }
 
+    func test_delete_setsErrorMessageOnDeleteFailure() {
+        let deleterSpy = APIKeyDeleterSpy(result: .failure(anyError()))
+        let sut = makeSUT(apiKeyDeleterSpy: deleterSpy)
+
+        sut.openAIApiKey = "any key"
+        sut.deleteAPIKey()
+
+        XCTAssertEqual(deleterSpy.deleteCallsCount, 1)
+        XCTAssertEqual(sut.errorMessage, "Couldn't delete API Key")
+    }
+
     // MARK: - Helpers
 
     func makeSUT(

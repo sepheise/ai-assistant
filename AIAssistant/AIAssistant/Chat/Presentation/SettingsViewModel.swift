@@ -47,7 +47,7 @@ public class SettingsViewModel: ObservableObject {
         do {
             try apiKeyDeleter.delete()
         } catch {
-            
+            errorMessage = "Couldn't delete API Key"
         }
     }
 }
