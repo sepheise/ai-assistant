@@ -22,12 +22,18 @@ struct SettingsView: View {
 
                 TextField("OpenAI API key", text: $viewModel.openAIApiKey)
                     .submitLabel(.done)
-                    .onAppear(perform: viewModel.onAppear)
                     .textFieldStyle(.roundedBorder)
+                    .onAppear {
+                        Task {
+                            await viewModel.onAppear()
+                        }
+                    }
 
                 Button(
                     action: {
-                        viewModel.saveAPIKey()
+                        Task {
+                            await viewModel.saveAPIKey()
+                        }
                     },
                     label: {
                         Image(systemName: "checkmark")
@@ -36,10 +42,16 @@ struct SettingsView: View {
                 )
                 .disabled(!viewModel.canSave)
 
-                Button(action: {}) {
-                    Image(systemName: "trash.fill")
-                        .accessibilityHint("Clears api key")
-                }
+                Button(
+                    action: {
+                        Task {
+                            await viewModel.deleteAPIKey()
+                        }
+                    },
+                    label: {
+                        Image(systemName: "trash.fill")
+                            .accessibilityHint("Clears api key")
+                    })
             }
             .padding(10)
             Spacer()

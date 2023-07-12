@@ -7,24 +7,26 @@
 
 import XCTest
 import AIAssistant
+import Combine
 
 @MainActor
 class SettingsViewModelTests: XCTestCase {
-    func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() {
+    func test_onAppear_loadsAndSetOpenAIKeyOnSuccessfulLoad() async {
         let loaderSpy = APIKeyLoaderSpy(result: .success("testKey"))
         let sut = makeSUT(apiKeyLoaderSpy: loaderSpy)
 
-        sut.onAppear()
+        // when
+        await sut.onAppear()
 
         XCTAssertEqual(loaderSpy.loadCallsCount, 1)
         XCTAssertEqual(sut.openAIApiKey, "testKey")
     }
 
-    func test_onAppear_setsErrorMessageOnLoadFailure() {
+    func test_onAppear_setsErrorMessageOnLoadFailure() async {
         let loaderSpy = APIKeyLoaderSpy(result: .failure(anyError()))
         let sut = makeSUT(apiKeyLoaderSpy: loaderSpy)
 
-        sut.onAppear()
+        await sut.onAppear()
 
         XCTAssertEqual(loaderSpy.loadCallsCount, 1)
         XCTAssertEqual(sut.openAIApiKey, "")
@@ -43,53 +45,54 @@ class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(sut.canSave)
     }
 
-    func test_save_doesNotSaveWhenOpenAIKeyValueIsEmpty() {
+    func test_save_doesNotSaveWhenOpenAIKeyValueIsEmpty() async {
         let saverSpy = APIKeySaverSpy()
         let sut = makeSUT(apiKeySaverSpy: saverSpy)
 
-        sut.saveAPIKey()
+        await sut.saveAPIKey()
 
         XCTAssertEqual(saverSpy.saveCalls.count, 0)
     }
 
-    func test_save_saveOpenAIKeyOnNonEmptyValue() {
+    func test_save_saveOpenAIKeyOnNonEmptyValue() async {
         let saverSpy = APIKeySaverSpy(result: .success(()))
         let sut = makeSUT(apiKeySaverSpy: saverSpy)
-
         sut.openAIApiKey = "testKey"
-        sut.saveAPIKey()
+
+        await sut.saveAPIKey()
 
         XCTAssertEqual(saverSpy.saveCalls.count, 1)
         XCTAssertEqual(saverSpy.saveCalls, ["testKey"])
     }
 
-    func test_save_setsErrorMessageOnSaveFailure() {
+    func test_save_setsErrorMessageOnSaveFailure() async {
         let saverSpy = APIKeySaverSpy(result: .failure(anyError()))
         let sut = makeSUT(apiKeySaverSpy: saverSpy)
-
         sut.openAIApiKey = "any key"
-        sut.saveAPIKey()
+
+        await sut.saveAPIKey()
 
         XCTAssertEqual(saverSpy.saveCalls, ["any key"])
         XCTAssertEqual(sut.errorMessage, "Couldn't save API Key")
     }
 
-    func test_delete_deletesOpenAIAPIKey() {
+    func test_delete_deletesOpenAIAPIKeyAndResetState() async {
         let deleterSpy = APIKeyDeleterSpy(result: .success(()))
         let sut = makeSUT(apiKeyDeleterSpy: deleterSpy)
+        sut.openAIApiKey = "any key"
 
-        sut.openAIApiKey = ""
-        sut.deleteAPIKey()
+        await sut.deleteAPIKey()
 
         XCTAssertEqual(deleterSpy.deleteCallsCount, 1)
+        XCTAssertTrue(sut.openAIApiKey.isEmpty)
     }
 
-    func test_delete_setsErrorMessageOnDeleteFailure() {
+    func test_delete_setsErrorMessageOnDeleteFailure() async {
         let deleterSpy = APIKeyDeleterSpy(result: .failure(anyError()))
         let sut = makeSUT(apiKeyDeleterSpy: deleterSpy)
-
         sut.openAIApiKey = "any key"
-        sut.deleteAPIKey()
+
+        await sut.deleteAPIKey()
 
         XCTAssertEqual(deleterSpy.deleteCallsCount, 1)
         XCTAssertEqual(sut.errorMessage, "Couldn't delete API Key")

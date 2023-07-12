@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-public class KeychainAPIKeyStore {
+public actor KeychainAPIKeyStore {
     public enum Error: Swift.Error {
         case invalidValue
         case saveFailure
@@ -44,7 +44,7 @@ public class KeychainAPIKeyStore {
 }
 
 extension KeychainAPIKeyStore: APIKeySaver {
-    public func save(_ value: String) throws {
+    public func save(_ value: String) async throws {
         guard let data = value.data(using: .utf8) else {
             throw Error.invalidValue
         }
@@ -68,7 +68,7 @@ extension KeychainAPIKeyStore: APIKeySaver {
 }
 
 extension KeychainAPIKeyStore: APIKeyLoader {
-    public func load() throws -> String {
+    public func load() async throws -> String {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
@@ -88,7 +88,7 @@ extension KeychainAPIKeyStore: APIKeyLoader {
 }
 
 extension KeychainAPIKeyStore: APIKeyDeleter {
-    public func delete() throws {
+    public func delete() async throws {
         let query: [String: Any] = [
             String(kSecClass): kSecClassGenericPassword,
             String(kSecAttrAccount): key

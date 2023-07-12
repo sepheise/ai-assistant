@@ -6,5 +6,5 @@
 //
 
 public protocol APIKeyDeleter {
-    func delete() throws
+    func delete() async throws
 }

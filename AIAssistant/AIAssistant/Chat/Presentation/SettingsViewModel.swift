@@ -23,31 +23,45 @@ public class SettingsViewModel: ObservableObject {
         self.apiKeyDeleter = apiKeyDeleter
     }
 
-    public func onAppear() {
+    public func onAppear() async {
         do {
-            openAIApiKey = try apiKeyLoader.load()
+            let loaded = try await apiKeyLoader.load()
+
+            await MainActor.run {
+                openAIApiKey = loaded
+            }
         } catch {
-            errorMessage = "Couldn't load API Key"
+            await MainActor.run {
+                errorMessage = "Couldn't load API Key"
+            }
         }
     }
 
-    public func saveAPIKey() {
+    public func saveAPIKey() async {
         guard !openAIApiKey.isEmpty else {
             return
         }
 
         do {
-            try apiKeySaver.save(openAIApiKey)
+            try await apiKeySaver.save(openAIApiKey)
         } catch {
-            errorMessage = "Couldn't save API Key"
+            await MainActor.run {
+                errorMessage = "Couldn't save API Key"
+            }
         }
     }
 
-    public func deleteAPIKey() {
+    public func deleteAPIKey() async {
         do {
-            try apiKeyDeleter.delete()
+            try await apiKeyDeleter.delete()
+
+            await MainActor.run {
+                openAIApiKey = ""
+            }
         } catch {
-            errorMessage = "Couldn't delete API Key"
+            await MainActor.run {
+                errorMessage = "Couldn't delete API Key"
+            }
         }
     }
 }

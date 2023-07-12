@@ -6,5 +6,5 @@
 //
 
 public protocol APIKeySaver {
-    func save(_ value: String) throws
+    func save(_ value: String) async throws
 }
