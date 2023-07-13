@@ -12,7 +12,7 @@ class KeychainAPIKeyStoreTests: XCTestCase {
     private let keychainKey = "com.sepheise.AIAssistant.tests"
 
     override func tearDown() async throws {
-        //try await clean()
+        try await clean()
     }
 
     func test_save_doesNotThrowErrorOnValidInput() async {

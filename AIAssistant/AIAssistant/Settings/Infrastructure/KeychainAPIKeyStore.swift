@@ -103,7 +103,7 @@ extension KeychainAPIKeyStore: APIKeyDeleter {
 
         let status = SecItemDelete(query as CFDictionary)
 
-        guard status == noErr else {
+        guard status == errSecItemNotFound || status == noErr else {
             throw Error.deleteFailure
         }
     }
