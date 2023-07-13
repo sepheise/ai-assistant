@@ -9,8 +9,10 @@ import XCTest
 import AIAssistant
 
 class KeychainAPIKeyStoreTests: XCTestCase {
+    private let keychainKey = "com.sepheise.AIAssistant.tests"
+
     override func tearDown() async throws {
-        try await clean()
+        //try await clean()
     }
 
     func test_save_doesNotThrowErrorOnValidInput() async {
@@ -58,21 +60,20 @@ class KeychainAPIKeyStoreTests: XCTestCase {
         }
 
         await shouldThrow("on load") {
-            _ = try await sut.load()
+            let loaded = try await sut.load()
+            XCTAssertEqual(loaded, "")
         }
     }
 
     // MARK: - Helpers
 
     private func makeSUT() -> KeychainAPIKeyStore {
-        let sut = KeychainAPIKeyStore(key: "com.sepheise.AIAssistant.tests")
+        let sut = KeychainAPIKeyStore(key: keychainKey)
         return sut
     }
 
     private func clean() async throws {
-        do {
-            try await KeychainAPIKeyStore().delete()
-        } catch {}
+        try await makeSUT().delete()
     }
 
     private func shouldNotThrow(_ message: String, action: () async throws -> Void) async {

@@ -19,6 +19,7 @@ public actor KeychainAPIKeyStore {
     }
 
     private let key: String
+    private let keychainAccessGroup: String = "B8AGE2A2NW.AIAssistant"
 
     public init(key: String = "com.sepheise.AIAssistant.apiKey") {
         self.key = key
@@ -52,6 +53,8 @@ extension KeychainAPIKeyStore: APIKeySaver {
         let query: [String: Any] = [
             String(kSecClass): kSecClassGenericPassword,
             String(kSecAttrAccount): key,
+            String(kSecAttrAccessGroup): keychainAccessGroup,
+            String(kSecUseDataProtectionKeychain): kCFBooleanTrue as Any,
             String(kSecValueData): data
         ]
         let status = SecItemCopyMatching(query as CFDictionary, nil)
@@ -72,6 +75,8 @@ extension KeychainAPIKeyStore: APIKeyLoader {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
+            kSecAttrAccessGroup: keychainAccessGroup,
+            kSecUseDataProtectionKeychain: kCFBooleanTrue as Any,
             kSecReturnData: kCFBooleanTrue as Any,
             kSecMatchLimit: kSecMatchLimitOne
         ] as CFDictionary
@@ -91,7 +96,9 @@ extension KeychainAPIKeyStore: APIKeyDeleter {
     public func delete() async throws {
         let query: [String: Any] = [
             String(kSecClass): kSecClassGenericPassword,
-            String(kSecAttrAccount): key
+            String(kSecAttrAccount): key,
+            String(kSecAttrAccessGroup): keychainAccessGroup,
+            String(kSecUseDataProtectionKeychain): kCFBooleanTrue as Any
         ]
 
         let status = SecItemDelete(query as CFDictionary)

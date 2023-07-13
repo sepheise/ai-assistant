@@ -388,6 +388,7 @@
 					515B91E32A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
+						TestTargetID = 5133BD132A33F27000B35668;
 					};
 				};
 			};
@@ -750,6 +751,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B8AGE2A2NW;
@@ -760,6 +762,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIAssistantMacOSApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIAssistantMacOSApp";
 			};
 			name = Debug;
 		};
@@ -768,6 +771,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B8AGE2A2NW;
@@ -777,6 +781,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIAssistantMacOSApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIAssistantMacOSApp";
 			};
 			name = Release;
 		};
