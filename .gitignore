@@ -91,3 +91,6 @@ iOSInjectionProject/
 
 # misc
 .DS_Store
+
+# CI - Test results
+results
