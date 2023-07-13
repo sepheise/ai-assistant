@@ -24,6 +24,7 @@
 		51B43FCD2A53BE10007E4013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */; };
 		51B43FDF2A55117A007E4013 /* Prompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FDE2A55117A007E4013 /* Prompt.swift */; };
 		51B43FE12A5511EA007E4013 /* Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FE02A5511EA007E4013 /* Completion.swift */; };
+		51B43FE32A590133007E4013 /* APIKeyDeleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B43FE22A590133007E4013 /* APIKeyDeleter.swift */; };
 		51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */; };
 		51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B4F2A3E81B10086EB0E /* ChatViewModel.swift */; };
 		51D29B522A3E82100086EB0E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D29B512A3E82100086EB0E /* ChatView.swift */; };
@@ -97,6 +98,7 @@
 		51B43FCC2A53BE10007E4013 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		51B43FDE2A55117A007E4013 /* Prompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prompt.swift; sourceTree = "<group>"; };
 		51B43FE02A5511EA007E4013 /* Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completion.swift; sourceTree = "<group>"; };
+		51B43FE22A590133007E4013 /* APIKeyDeleter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyDeleter.swift; sourceTree = "<group>"; };
 		51CAA0102A2A7EA70074E577 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		51CAA0142A2A7F5E0074E577 /* AIAssistant.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AIAssistant.xctestplan; sourceTree = "<group>"; };
 		51CAA0152A2A9DCE0074E577 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				51D9D3A02A4564130062CE05 /* Infrastructure */,
 				517ECCC32A4D3B030084DE5C /* APIKeyLoader.swift */,
 				517ECCC52A4D3B7B0084DE5C /* APIKeySaver.swift */,
+				51B43FE22A590133007E4013 /* APIKeyDeleter.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 					515B91E32A26306100599B59 = {
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
+						TestTargetID = 5133BD132A33F27000B35668;
 					};
 				};
 			};
@@ -460,6 +464,7 @@
 				5103D3092A279E3400BA4D6B /* PromptSender.swift in Sources */,
 				51D29B502A3E81B10086EB0E /* ChatViewModel.swift in Sources */,
 				517ECCC62A4D3B7B0084DE5C /* APIKeySaver.swift in Sources */,
+				51B43FE32A590133007E4013 /* APIKeyDeleter.swift in Sources */,
 				51CAA0112A2A7EA70074E577 /* URLSessionHTTPClient.swift in Sources */,
 				51B43FE12A5511EA007E4013 /* Completion.swift in Sources */,
 				51B43FCD2A53BE10007E4013 /* SettingsViewModel.swift in Sources */,
@@ -746,6 +751,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B8AGE2A2NW;
@@ -756,6 +762,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIAssistantMacOSApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIAssistantMacOSApp";
 			};
 			name = Debug;
 		};
@@ -764,6 +771,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = B8AGE2A2NW;
@@ -773,6 +781,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AIAssistantMacOSApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AIAssistantMacOSApp";
 			};
 			name = Release;
 		};

@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-public class KeychainAPIKeyStore {
+public actor KeychainAPIKeyStore {
     public enum Error: Swift.Error {
         case invalidValue
         case saveFailure
@@ -19,22 +19,10 @@ public class KeychainAPIKeyStore {
     }
 
     private let key: String
+    private let keychainAccessGroup: String = "B8AGE2A2NW.AIAssistant"
 
     public init(key: String = "com.sepheise.AIAssistant.apiKey") {
         self.key = key
-    }
-
-    public func delete() throws {
-        let query: [String: Any] = [
-            String(kSecClass): kSecClassGenericPassword,
-            String(kSecAttrAccount): key
-        ]
-
-        let status = SecItemDelete(query as CFDictionary)
-
-        guard status == noErr else {
-            throw Error.deleteFailure
-        }
     }
 
     private func add(_ query: [String: Any], _ data: Data) throws {
@@ -57,7 +45,7 @@ public class KeychainAPIKeyStore {
 }
 
 extension KeychainAPIKeyStore: APIKeySaver {
-    public func save(_ value: String) throws {
+    public func save(_ value: String) async throws {
         guard let data = value.data(using: .utf8) else {
             throw Error.invalidValue
         }
@@ -65,6 +53,8 @@ extension KeychainAPIKeyStore: APIKeySaver {
         let query: [String: Any] = [
             String(kSecClass): kSecClassGenericPassword,
             String(kSecAttrAccount): key,
+            String(kSecAttrAccessGroup): keychainAccessGroup,
+            String(kSecUseDataProtectionKeychain): kCFBooleanTrue as Any,
             String(kSecValueData): data
         ]
         let status = SecItemCopyMatching(query as CFDictionary, nil)
@@ -81,10 +71,12 @@ extension KeychainAPIKeyStore: APIKeySaver {
 }
 
 extension KeychainAPIKeyStore: APIKeyLoader {
-    public func load() throws -> String {
+    public func load() async throws -> String {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
+            kSecAttrAccessGroup: keychainAccessGroup,
+            kSecUseDataProtectionKeychain: kCFBooleanTrue as Any,
             kSecReturnData: kCFBooleanTrue as Any,
             kSecMatchLimit: kSecMatchLimitOne
         ] as CFDictionary
@@ -97,5 +89,22 @@ extension KeychainAPIKeyStore: APIKeyLoader {
         }
 
         return String(decoding: data, as: UTF8.self)
+    }
+}
+
+extension KeychainAPIKeyStore: APIKeyDeleter {
+    public func delete() async throws {
+        let query: [String: Any] = [
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrAccount): key,
+            String(kSecAttrAccessGroup): keychainAccessGroup,
+            String(kSecUseDataProtectionKeychain): kCFBooleanTrue as Any
+        ]
+
+        let status = SecItemDelete(query as CFDictionary)
+
+        guard status == errSecItemNotFound || status == noErr else {
+            throw Error.deleteFailure
+        }
     }
 }

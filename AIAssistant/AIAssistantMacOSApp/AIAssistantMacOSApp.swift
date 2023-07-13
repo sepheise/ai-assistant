@@ -31,7 +31,8 @@ struct AIAssistantMacOSApp: App {
                 settingsView: SettingsView(
                     viewModel: SettingsViewModel(
                         apiKeyLoader: apiKeyStore,
-                        apiKeySaver: apiKeyStore
+                        apiKeySaver: apiKeyStore,
+                        apiKeyDeleter: apiKeyStore
                     )
                 )
             )
@@ -55,7 +56,7 @@ private class OpenAIMessageSenderWithKeyLoader: PromptSender {
     }
 
     func send(prompt: AIAssistant.Prompt) async throws -> AIAssistant.PromptResponseStream {
-        guard let apiKey = try? apiKeyLoader.load() else {
+        guard let apiKey = try? await apiKeyLoader.load() else {
             throw Error.cantLoadAPIKey
         }
 

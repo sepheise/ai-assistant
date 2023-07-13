@@ -7,8 +7,12 @@
 
 import AIAssistant
 
-class InMemoryAPIKeyStore: APIKeyLoader, APIKeySaver {
-    var apiKey: String = ""
+class InMemoryAPIKeyStore: APIKeyLoader, APIKeySaver, APIKeyDeleter {
+    private var apiKey: String
+
+    init(apiKey: String = "") {
+        self.apiKey = apiKey
+    }
 
     func load() throws -> String {
         return apiKey
@@ -16,5 +20,9 @@ class InMemoryAPIKeyStore: APIKeyLoader, APIKeySaver {
 
     func save(_ value: String) throws {
         apiKey = value
+    }
+
+    func delete() throws {
+        apiKey = ""
     }
 }

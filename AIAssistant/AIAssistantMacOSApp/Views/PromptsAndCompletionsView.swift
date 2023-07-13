@@ -20,7 +20,9 @@ struct PromptsAndCompletionsView: View {
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color("UserInputBackground"))
-                    Text(LocalizedStringKey(prompt.completion?.content ?? ""))
+
+                    //Text(LocalizedStringKey(prompt.completion?.content ?? ""))
+                    MarkdownTest(text: prompt.completion?.content ?? "")
                         .textSelection(.enabled)
                         .padding(20)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -38,6 +40,14 @@ struct PromptsAndCompletionsView: View {
                 }
             }
         }
+    }
+}
+
+struct MarkdownTest: View {
+    let text: String
+
+    var body: some View {
+        Text(try! AttributedString(markdown: text))
     }
 }
 

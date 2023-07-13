@@ -6,5 +6,5 @@
 //
 
 public protocol APIKeyLoader {
-    func load() throws -> String
+    func load() async throws -> String
 }
