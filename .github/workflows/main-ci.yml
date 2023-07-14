@@ -45,7 +45,6 @@ jobs:
       - name: Build for testing
         env:
           CODE_SIGN_IDENTITY: ${{ secrets.CODE_SIGN_IDENTITY }}
-          PROVISIONING_PROFILE_ID: ${{ secrets.PROVISIONING_PROFILE_ID }}
         run: |
           xcodebuild build-for-testing \
             -configuration Release \
@@ -59,7 +58,6 @@ jobs:
       - name: Run CI scheme Tests
         run: |
           xcodebuild test-without-building \
-            -configuration Release \
             -project AIAssistant/AIAssistant.xcodeproj \
             -scheme CI \
             -resultBundlePath results/ResultBundle.xcresult
