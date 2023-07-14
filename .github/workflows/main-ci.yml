@@ -48,18 +48,19 @@ jobs:
           xcodebuild build-for-testing \
             -configuration Release \
             -project AIAssistant/AIAssistant.xcodeproj \
-            -scheme CI CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" CODE_SIGNING_REQUIRED=YES
+            -scheme CI \
+            CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
+            CODE_SIGNING_REQUIRED=YES \
+            PROVISIONING_PROFILE="build_pp"
       - name: Save build status
         id: build-status
         run: echo "::set-output name=status::${{ job.status }}"
       - name: Run CI scheme Tests
-        env:
-            CODE_SIGN_IDENTITY: ${{ secrets.CODE_SIGN_IDENTITY }}
         run: |
-          xcodebuild test \
+          xcodebuild test-without-building \
             -configuration Release \
             -project AIAssistant/AIAssistant.xcodeproj \
-            -scheme CI CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" CODE_SIGNING_REQUIRED=YES \
+            -scheme CI \
             -resultBundlePath results/ResultBundle.xcresult
       - name: Save tests status
         id: tests-status
