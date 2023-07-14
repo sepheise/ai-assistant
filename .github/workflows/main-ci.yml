@@ -52,8 +52,7 @@ jobs:
             -project AIAssistant/AIAssistant.xcodeproj \
             -scheme CI \
             CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-            CODE_SIGNING_REQUIRED=YES \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_ID"
+            CODE_SIGNING_REQUIRED=YES
       - name: Save build status
         id: build-status
         run: echo "::set-output name=status::${{ job.status }}"
