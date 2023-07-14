@@ -15,7 +15,7 @@ public class ChatViewModel: ObservableObject {
         }
     }
     @Published public var canSubmit: Bool = false
-    @Published public var errorMessage: String = ""
+    @Published public var errorMessage: String
     @Published public var prompts: [Prompt] = []
 
     private var isProcessing: Bool = false {
@@ -28,8 +28,9 @@ public class ChatViewModel: ObservableObject {
 
     private let promptSender: PromptSender
 
-    public init(promptSender: PromptSender) {
+    public init(promptSender: PromptSender, errorMessage: String = "") {
         self.promptSender = promptSender
+        self.errorMessage = errorMessage
     }
 
     public func submit() async {

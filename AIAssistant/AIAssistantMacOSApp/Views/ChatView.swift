@@ -16,20 +16,49 @@ struct ChatView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            PromptsAndCompletionsView(prompts: $chatViewModel.prompts)
-            Spacer()
-            PromptTextInputView(
-                inputText: $chatViewModel.inputText,
-                canSubmit: $chatViewModel.canSubmit,
-                submit: chatViewModel.submit
-            )
+        ZStack(alignment: .top) {
+            VStack(alignment: .leading) {
+                PromptsAndCompletionsView(prompts: $chatViewModel.prompts)
+                Spacer()
+                PromptTextInputView(
+                    inputText: $chatViewModel.inputText,
+                    canSubmit: $chatViewModel.canSubmit,
+                    submit: chatViewModel.submit
+                )
+            }
+            if !chatViewModel.errorMessage.isEmpty {
+                ErrorView(errorMessage: chatViewModel.errorMessage)
+            }
         }
     }
 }
 
+struct ErrorView: View {
+    let errorMessage: String
+
+    var body: some View {
+        HStack(alignment: .top) {
+            Text(errorMessage)
+                .frame(width: .infinity, alignment: .topLeading)
+                .font(.caption)
+                .multilineTextAlignment(.leading)
+                .padding(10)
+                .foregroundColor(.black)
+            Spacer()
+        }
+        .background(.yellow)
+    }
+}
+
 struct ChatView_Previews: PreviewProvider {
+    static let viewModel = ChatViewModel(promptSender: FakePromptSender())
+
+    static let viewModelWithError = ChatViewModel(promptSender: FakePromptSender(), errorMessage: "Error")
+
     static var previews: some View {
-        ChatView(chatViewModel: ChatViewModel(promptSender: FakePromptSender()))
+        ChatView(chatViewModel: viewModel)
+
+        ChatView(chatViewModel: viewModelWithError)
+            .previewDisplayName("Chat View with Error")
     }
 }
