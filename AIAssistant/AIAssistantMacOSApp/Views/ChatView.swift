@@ -33,23 +33,6 @@ struct ChatView: View {
     }
 }
 
-struct ErrorView: View {
-    let errorMessage: String
-
-    var body: some View {
-        HStack(alignment: .top) {
-            Text(errorMessage)
-                .frame(width: .infinity, alignment: .topLeading)
-                .font(.caption)
-                .multilineTextAlignment(.leading)
-                .padding(10)
-                .foregroundColor(.black)
-            Spacer()
-        }
-        .background(.yellow)
-    }
-}
-
 struct ChatView_Previews: PreviewProvider {
     static let viewModel = ChatViewModel(promptSender: FakePromptSender())
 
