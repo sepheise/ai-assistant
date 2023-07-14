@@ -42,15 +42,14 @@ jobs:
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          open $PP_PATH
+          sleep 5
+          osascript -e "tell application \"Xcode\" to quit"
       - name: Build for testing
         env:
           CODE_SIGN_IDENTITY: ${{ secrets.CODE_SIGN_IDENTITY }}
           PROVISIONING_PROFILE_ID: ${{ secrets.PROVISIONING_PROFILE_ID }}
         run: |
-          open "~/Library/MobileDevice/Provisioning\ Profiles/${PROVISIONING_PROFILE_ID}.provisionprofile"
-          sleep 5
-          osascript -e "tell application \"Xcode\" to quit"
-
           xcodebuild build-for-testing \
             -configuration Release \
             -project AIAssistant/AIAssistant.xcodeproj \
