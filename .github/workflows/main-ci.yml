@@ -44,14 +44,17 @@ jobs:
       - name: Build for testing
         env:
           CODE_SIGN_IDENTITY: ${{ secrets.CODE_SIGN_IDENTITY }}
+          PROVISIONING_PROFILE_ID: ${{ secrets.PROVISIONING_PROFILE_ID }}
         run: |
+          ls ~/Library/MobileDevice/Provisioning\ Profiles
+
           xcodebuild build-for-testing \
             -configuration Release \
             -project AIAssistant/AIAssistant.xcodeproj \
             -scheme CI \
             CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
             CODE_SIGNING_REQUIRED=YES \
-            PROVISIONING_PROFILE="build_pp"
+            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_ID"
       - name: Save build status
         id: build-status
         run: echo "::set-output name=status::${{ job.status }}"
