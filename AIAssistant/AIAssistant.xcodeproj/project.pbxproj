@@ -145,7 +145,7 @@
 		5133BD152A33F27000B35668 /* AIAssistantMacOSApp */ = {
 			isa = PBXGroup;
 			children = (
-				51F07E4F2A415B5E0026F299 /* Views */,
+				51F07E4F2A415B5E0026F299 /* Chat */,
 				5133BD162A33F27000B35668 /* AIAssistantMacOSApp.swift */,
 				5133BD1A2A33F27100B35668 /* Assets.xcassets */,
 				5133BD1F2A33F27100B35668 /* AIAssistantMacOSApp.entitlements */,
@@ -289,7 +289,7 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		51F07E4F2A415B5E0026F299 /* Views */ = {
+		51F07E4F2A415B5E0026F299 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
 				51D29B512A3E82100086EB0E /* ChatView.swift */,
@@ -299,7 +299,7 @@
 				51D9D3AA2A474EBA0062CE05 /* ContentView.swift */,
 				51E41EF22A61991B001F2372 /* ErrorView.swift */,
 			);
-			path = Views;
+			path = Chat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

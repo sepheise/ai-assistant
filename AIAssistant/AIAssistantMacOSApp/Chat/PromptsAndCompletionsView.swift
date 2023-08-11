@@ -21,7 +21,6 @@ struct PromptsAndCompletionsView: View {
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                         .background(Color("UserInputBackground"))
 
-                    //Text(LocalizedStringKey(prompt.completion?.content ?? ""))
                     MarkdownTest(text: prompt.completion?.content ?? "")
                         .textSelection(.enabled)
                         .padding(20)
