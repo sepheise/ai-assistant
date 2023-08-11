@@ -9,7 +9,7 @@ import Foundation
 
 public class SettingsViewModel: ObservableObject {
     @Published public var openAIApiKey: String = ""
-    @Published public var errorMessage: String = ""
+    @Published public var errorMessage: String
     public var canSave: Bool {
         !openAIApiKey.isEmpty
     }
@@ -17,10 +17,11 @@ public class SettingsViewModel: ObservableObject {
     private let apiKeySaver: APIKeySaver
     private let apiKeyDeleter: APIKeyDeleter
 
-    public init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver, apiKeyDeleter: APIKeyDeleter) {
+    public init(apiKeyLoader: APIKeyLoader, apiKeySaver: APIKeySaver, apiKeyDeleter: APIKeyDeleter, errorMessage: String = "") {
         self.apiKeyLoader = apiKeyLoader
         self.apiKeySaver = apiKeySaver
         self.apiKeyDeleter = apiKeyDeleter
+        self.errorMessage = errorMessage
     }
 
     public func onAppear() async {
@@ -31,9 +32,10 @@ public class SettingsViewModel: ObservableObject {
                 openAIApiKey = loaded
             }
         } catch {
-            await MainActor.run {
-                errorMessage = "Couldn't load API Key"
-            }
+//            await MainActor.run {
+//                errorMessage = "Couldn't load API Key"
+//            }
+            await setErrorMessage(message: "Couldn't load API Key", for: 2)
         }
     }
 
@@ -62,6 +64,16 @@ public class SettingsViewModel: ObservableObject {
             await MainActor.run {
                 errorMessage = "Couldn't delete API Key"
             }
+        }
+    }
+
+    @MainActor private func setErrorMessage(message: String, for seconds: TimeInterval) {
+        self.errorMessage = message
+
+        Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { [weak self] _ in
+            guard let self else { return }
+
+            self.errorMessage = ""
         }
     }
 }

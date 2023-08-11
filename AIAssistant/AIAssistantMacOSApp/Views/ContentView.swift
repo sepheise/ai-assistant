@@ -36,6 +36,7 @@ struct ContentView: View {
     }
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     private static let inMemoryAPIKeyStore = InMemoryAPIKeyStore()
 
@@ -52,3 +53,4 @@ struct ContentView_Previews: PreviewProvider {
         )
     }
 }
+#endif

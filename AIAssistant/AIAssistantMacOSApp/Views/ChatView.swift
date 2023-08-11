@@ -33,6 +33,7 @@ struct ChatView: View {
     }
 }
 
+#if DEBUG
 struct ChatView_Previews: PreviewProvider {
     static let viewModel = ChatViewModel(promptSender: FakePromptSender())
 
@@ -45,3 +46,4 @@ struct ChatView_Previews: PreviewProvider {
             .previewDisplayName("Chat View with Error")
     }
 }
+#endif
